@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="static/css/table.css" rel="stylesheet" type="text/css">
+    <link href="static/css/baidu.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="static/js/artDialog/skins/default.css" type="text/css"/>
+    <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <style>
+    *{ margin:0; padding:0; list-style:none;}
+    a{ text-decoration:none;}
+    a:hover{ text-decoration:none;}
+    .tcdPageCode{padding: 15px 20px;text-align: left;color: #ccc;}
+    .tcdPageCode a{display: inline-block;color: #428bca;display: inline-block;height: 25px;	line-height: 25px;	padding: 0 10px;border: 1px solid #ddd;	margin: 0 2px;border-radius: 4px;vertical-align: middle;}
+    .tcdPageCode a:hover{text-decoration: none;border: 1px solid #428bca;}
+    .tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca;	border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
+    .tcdPageCode span.disabled{	display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;	color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
+    </style>
+</head>
+<body>
+<div class="warn box">
+    <div class="EChart">
+        <h6 style="color: #64adcf">报警信息</h6>
+        <div class="informationMain">
+            <ul id="list">
+
+            </ul>
+
+            <div class="tcdPageCode">
+
+            </div>
+
+
+            <div id="certificateContent" class="list-main">
+                <ul id="imgArea" class="list-img"></ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://www.lanrenzhijia.com/ajaxjs/jquery.min.js"></script>
+<script src="http://www.lanrenzhijia.com/ajaxjs/jquery.page.js"></script>
+<script src="static/js/artDialog/artDialog.js"></script>
+<script src="static/js/artDialog/plugins/iframeTools.source.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.exedit-3.5.js"></script>
+<!--<script src="static/js/jquery/jQuery-2.2.0.min.js"></script>-->
+<script type="text/javascript">
+
+    var glo = 0;
+    var pageSize = 3;
+    show(1);
+    //滚动插件
+    function show( pageNo ){
+        $.ajax({
+        url: '/testValue',
+        type: 'GET',
+        dataType: 'json',
+        success: function (result) {
+            //请求成功时执行该函数内容，result即为服务器返回的json对象
+
+            console.log(pageNo)
+
+            $("#list").html('');
+            var json = eval(result);
+            console.log(json)
+
+                $.each(json.data, function (index, value) {//index是循环的序数
+
+
+                    //$("#list").html($("#list").html() + "<a style = \"color:blue\">" + this.alarmTime + "</a><br>");
+                    if(index >= pageSize * (pageNo-1) & index < pageSize * pageNo){
+                        $("#list").html($("#list").html() +
+                        "<li>"+
+                            "<div>"+
+
+                                "<p class=\"l_left text\"> 设备编号：" + this.alarmId +"</p>"+
+                                "<span class=\"r_right\"><img src=\"static/img/find01.png\" onClick=\"theLocation()\"></span>"+
+                                "<p class=\"r_right text1\"> 报警类型：" + this.alarmType +"</p>"+
+                                "<div class=\"clear\"></div>"+
+                            "</div>"+
+                            "<p>地址：成都市高新区天华路211号</p>"+
+                            "<p>" + this.alarmTime + "</p>"+
+<!--                            "<p>" + this.alarmHandletime + "</p>"+-->
+                        "</li>"
+                        );
+
+                        index = 0;
+                    }
+
+                });
+            },
+            error: function (errorMsg) {
+                //请求失败时执行该函数
+                alert("图表请求数据失败!");
+            }
+        });
+    }
+
+
+
+$(".tcdPageCode").createPage({
+    pageCount:3,
+    current:1,
+    backFn:function(p){
+        glo = p;
+        console.log(p);
+        show(p);
+    }
+});
+
+<!--function getCertificateInfo(){-->
+
+<!--        $(".tcdPageCode").remove();-->
+<!--        $("#certificateContent").append('<div class="tcdPageCode" hidden=""></div>');-->
+
+<!--        var pageNo=1;     //加载第一页-->
+<!--        var pageCount=initCertificate(pageNo);-->
+
+<!--        $(".tcdPageCode").createPage({-->
+<!--                pageCount: pageCount,-->
+<!--                current: pageNo,-->
+<!--                backFn: function (p) {-->
+<!--                    pageNo=p;-->
+<!--                   initCertificate(pageNo);-->
+<!--                }-->
+<!--            });-->
+
+<!-- }-->
+
+<!-- //加载图片-->
+<!-- function initCertificate(pageNo){-->
+<!--     $("#imgArea").html("");       //清空上一次加载得图片-->
+
+<!--     var pageCount;       //总页数-->
+
+<!--     $.ajax({-->
+<!--         cache: true,-->
+<!--         async: false,-->
+<!--         type: "POST",-->
+<!--            dataType: "json",-->
+<!--            url: "selPublishCertificateFile",//请求的action路径-->
+<!--            data:{-->
+<!--                pageSize:9,-->
+<!--                pageNumber:pageNo-->
+<!--               },-->
+<!--            error: function () {-->
+<!--                alert("请求失败", "error");-->
+<!--            },-->
+<!--            success:function(data){-->
+<!--            if(data.rows.length>0){-->
+<!--                $(".tcdPageCode").show();-->
+<!--                 pageCount=data.pageCount;       //总页数-->
+<!--                   var $ul=$("#imgArea");-->
+<!--                  $.each(data.rows, function(index, element) {   //此处li标签中的a标签是为了点击图片，显示大图所用，不需要放大图片的，去掉a标签，直接加入img标签即可-->
+<!--                      var str = $('<p>地址：成都市高新区天华路211号</p>');-->
+<!--                      str.appendTo($ul);-->
+<!--                   });-->
+<!--                  $ul.appendTo($("#certificateContent"));-->
+<!--            }-->
+
+<!--            }-->
+<!--        });-->
+
+<!--     return pageCount;-->
+<!-- }-->
+
+
+
+</script>
+</html>
