@@ -10,29 +10,39 @@ var setting = {
     },
     callback: {
         onRightClick: OnRightClick,
-        onClick:OnClick
+        onClick: zTreeOnClick
     }
 };
 var zNodes =[
     {	rid:101	,	id:	10	,pId:101,name:"	所有区域",open:true,nocheck:true,
         children:[
-            {id:10, name:"山东省", open:false, noR:true,nocheck:true,
+            {id:10, name:"山东省", open:true, noR:true,nocheck:true,
                 children:[
-                    {id:101, name:"青岛市	", noR:true, open:false,nocheck:true,
+                    {id:101, name:"青岛市	", noR:true, open:true,nocheck:true,
                         children:[
-                            {id:1010, name:"城阳区	", noR:true, open:false,nocheck:true,
-                            children:[{id:1010, name:"瑞阳路	", noR:true, open:false,nocheck:true}]}
-                        ]}
+                            {id:1010, name:"城阳区	", noR:true, open:true,nocheck:true,
+                                children:[
+                                    {id:101001, name:"瑞阳路	", noR:true, open:false,nocheck:true},
+                                    {id:101002, name:"春阳路	", noR:true, open:false,nocheck:true}
+                                ]
+                            },
+                            {id:1011, name:"即墨区	", noR:true, open:true,nocheck:true,
+                                children:[
+                                    {id:101101, name:"墨城路	", noR:true, open:false,nocheck:true}
+                                ]
+                            }
                         ]
+                    }
+                ]
             },
             {id:11, name:"陕西省", open:false, noR:true,nocheck:true,
-                            children:[
-                                {id:101, name:"西安市	", noR:true, open:false,nocheck:true,
-                                    children:[
-                                        {id:1010, name:"雁塔区	", noR:true, open:false,nocheck:true,
-                                        children:[{id:1010, name:"太白南路	", noR:true, open:false,nocheck:true}]}
-                                    ]}
-                                    ]
+                children:[
+                    {id:101, name:"西安市	", noR:true, open:false,nocheck:true,
+                        children:[
+                            {id:1010, name:"雁塔区	", noR:true, open:false,nocheck:true,
+                            children:[{id:1010, name:"太白南路	", noR:true, open:false,nocheck:true}]}
+                        ]}
+                        ]
             }
         ]
 
@@ -43,11 +53,142 @@ function OnRightClick(event, treeId, treeNode) {
     if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
         zTree.cancelSelectedNode();
         //showRMenu("root", event.clientX, event.clientY);
+
+        console.log(1);
     } else if (treeNode && !treeNode.noR) {
         zTree.selectNode(treeNode);
         //showRMenu("node", event.clientX, event.clientY);
+        console.log(2);
+        console.log(treeNode.noR);
+
     }
+    console.log(321);
 }
+
+function zTreeOnClick(event, treeId, treeNode){
+
+    if(!treeNode.isParent){//到达最底层，路段信息
+        //console.log("parent");
+        deviceCoord = treeNode.id;
+        roadName = treeNode.name;
+        var a = document.getElementById("road").value;//获取
+        document.getElementById("road").innerText  = "灯箱实时监控：" + roadName;//修改
+        //console.log(treeNode.name);
+
+            $('#table').bootstrapTable('destroy');
+            $('#table').bootstrapTable({
+                        method: "get",
+                        striped: true,
+                        singleSelect: false,
+                        url: '/deviceListByDeviceCoord/'+ deviceCoord,
+                        dataType: "json",
+                        pagination: true, //分页
+                        pageSize: 10,
+                        pageNumber: 1,
+                        search: false, //显示搜索框
+                        contentType: "application/x-www-form-urlencoded",
+                        queryParams:null,
+                        columns: [
+                            {
+                                checkbox: "true",
+                                field: 'check',
+                                align: 'center',
+
+                                valign: 'middle'
+                            }
+                            ,
+                            {
+                                title: "序号",
+                                field: 'deviceId',
+                                align: 'center',
+                                width: 80,
+                                valign: 'middle'
+                            },
+                            {
+                                title: "物理地址",
+                                field: 'deviceMac',
+                                align: 'center',
+                                width: 120,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '网络地址',
+                                field: 'deviceShort',
+                                align: 'center',
+                                width: 120,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '设备标签',
+                                field: 'deviceSerial',
+                                align: 'center',
+                                width: 120,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '在线状态',
+                                field: 'deviceStatus',
+                                width: 70,
+                                align: 'center',
+                                formatter: function (cellval, row) {
+                                    if (cellval == 0 ){
+                                        return '<div  style="color:red"> 离线</div>';
+                                    } else  if (cellval == 1){
+                                        return '<div  style="color:green"> 在线 </div>';
+                                    }else {
+                                        return cellval;
+                                    }}
+                            },
+                            {
+                                title: '开关状态',
+                                field: 'deviceLight',
+                                width: 70,
+                                align: 'center',
+                                formatter: function (cellval, row) {
+                                    if (cellval == 1){
+                                        return '<div  style="color:teal"> 打开 </div>';
+                                    } else  if (cellval == 2){
+                                        return '<div  style="color:gray"> 关闭 </div>';
+                                    }else {
+                                        return cellval;
+                                    }}
+                            },
+                            {
+                                title: '网关编号',
+                                field: 'deviceCoord',
+                                align: 'center',
+                                width: 80,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '设备类型',
+                                field: 'deviceType',
+                                align: 'center',
+                                width: 80,
+                                valign: 'middle'
+                            },
+
+                            {
+                                title: '操作',
+                                field: 'person',
+                                width: 120,
+                                align: 'center',
+                                formatter: function (cellval, row) {
+            <!--                        <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
+                                    var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'1)">打开</button> ';
+
+                                    var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'2)">关闭</button> ';
+                                    return  e + d;
+                                }
+                            }
+
+                        ]
+                    });
+    }
+
+
+}
+
 function showRMenu(type, x, y) {
     $("#rMenu ul").show();
     if (type=="root") {

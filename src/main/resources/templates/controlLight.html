@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="l_left news_right">
-        <h6>灯箱实时监控</h6>
+        <h5 id="road">灯箱实时监控</h5>
 <!--        搜索和查找功能          -->
 <!--        <div class="notice_check">-->
 <!--              <p>-->
@@ -176,9 +176,9 @@
                     align: 'center',
                     formatter: function (cellval, row) {
 <!--                        <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-                        var  e = '<button  id="add" data-id="98" class="btn btn-xs btn-success" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'1)">打开</button> ';
+                        var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'1)">打开</button> ';
 
-                        var  d = '<button  id="add" data-id="99" class="btn btn-xs btn-danger" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'2)">关闭</button> ';
+                        var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'2)">关闭</button> ';
                         return  e + d;
                     }
                 }
@@ -189,7 +189,7 @@
 
     function AllLightControl(type){
         $.ajax({
-                url: '/AllLightControl/'+type,
+                url: '/AllLightControl/'+ type,
                 type: 'GET',
                 dataType: 'text',
             })

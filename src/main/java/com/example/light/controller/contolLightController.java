@@ -45,6 +45,17 @@ public class contolLightController {
         return ResultMapUtil.getHashMapList(deviceList);
     }
 
+    @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
+    @ResponseBody
+    public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
+
+//        System.out.println("deviceCoord: " + deviceCoord);
+
+        List<Device> deviceList = deviceService.deviceListByDeviceCoord(deviceCoord);
+        return ResultMapUtil.getHashMapList(deviceList);
+
+    }
+
     @RequestMapping("/SetTime")
     @ResponseBody
     public void SetTime(){

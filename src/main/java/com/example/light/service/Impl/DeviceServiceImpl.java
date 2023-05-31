@@ -29,6 +29,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
         return deviceMapper.selectList(null);
     }
+    @Override
+    public List<Device> deviceListByDeviceCoord(Integer deviceCoord) {
+
+        QueryWrapper<Device> wrapper = new QueryWrapper<>();
+        wrapper.eq("device_coord",deviceCoord);
+
+        return deviceMapper.selectList(wrapper);
+    }
 
     @Override
     public void insertDevice(Device device){

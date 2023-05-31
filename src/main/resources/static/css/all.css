@@ -676,4 +676,6 @@ height: 300px;
 	margin-right: 5px;
 	top:-2px;
 }
-
+button{
+    outline:none;
+}

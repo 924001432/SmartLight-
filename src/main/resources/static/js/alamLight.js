@@ -103,7 +103,7 @@ function tableLoad(){
                 width: 120,
                 align: 'center',
                 formatter: function (cellval, row) {
-                    var  e = '<button  id="add" data-id="98" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.id + '\')">查看详情</button> ';
+                    var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.id + '\')">查看详情</button> ';
 
                     return  e;
                 }

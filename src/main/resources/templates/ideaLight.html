@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="l_left news_right">
-        <h6>策略管理</h6>
+        <h5>策略管理</h5>
         <div class="notice_check">
 
               <p>
@@ -164,9 +164,9 @@
                     width: 120,
                     align: 'center',
                     formatter: function (cellval, row) {
-                        var  e = '<button  id="add" data-id="98" class="btn btn-xs btn-info" onclick="performIdea(\'' + row.ideaOpentime + '\')">实行</button> ';
-                        var  f = '<button  id="add" data-id="98" class="btn btn-xs btn-success" onclick="add(\'' + row.id + '\')">编辑</button> ';
-                        var  d = '<button  id="add" data-id="98" class="btn btn-xs btn-danger" onclick="del(\'' + row.id + '\')">删除</button> ';
+                        var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-info" onclick="performIdea(\'' + row.ideaOpentime + '\')">实行</button> ';
+                        var  f = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="add(\'' + row.id + '\')">编辑</button> ';
+                        var  d = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-danger" onclick="del(\'' + row.id + '\')">删除</button> ';
                         return  e + f + d;
                     }
                 }

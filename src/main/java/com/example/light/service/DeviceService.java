@@ -12,5 +12,7 @@ public interface DeviceService extends IService<Device> {
 
     public List<Device> queryDeviceList();
 
+    public List<Device> deviceListByDeviceCoord(Integer deviceCoord);
+
     public void insertDevice(Device device);
 }
