@@ -202,11 +202,11 @@ public class testController {
 
         //String msg = "org.apache.catalina.core.StandardContextValve";
 
-        byte[] payload={0x58,0x44,0x03,0x06,0x01,0x01,0x01,0x01,0x01,0x01,0x23};
+        byte[] payload={0x58,0x44,0x00,0x00,0x00,0x00,0x01,0x03,0x00,0x00,0x00,0x23};
 
         //newsProducerService.publish(msg);
 
-        newsProducerService.testPublish(payload);
+        newsProducerService.publishBytes(payload);
 
         //System.out.println("msg:" + msg);
 

@@ -68,12 +68,12 @@ function OnRightClick(event, treeId, treeNode) {
 function zTreeOnClick(event, treeId, treeNode){
 
     if(!treeNode.isParent){//到达最底层，路段信息
-        //console.log("parent");
+
         deviceCoord = treeNode.id;
         roadName = treeNode.name;
-        var a = document.getElementById("road").value;//获取
+
         document.getElementById("road").innerText  = "灯箱实时监控：" + roadName;//修改
-        //console.log(treeNode.name);
+
 
             $('#table').bootstrapTable('destroy');
             $('#table').bootstrapTable({
@@ -173,11 +173,11 @@ function zTreeOnClick(event, treeId, treeNode){
                                 field: 'person',
                                 width: 120,
                                 align: 'center',
-                                formatter: function (cellval, row) {
-            <!--                        <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-                                    var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'1)">打开</button> ';
+                                formatter: function (cellval, row ,index) {
 
-                                    var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'2)">关闭</button> ';
+                                    var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',1)">打开</button> ';
+
+                                    var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',2)">关闭</button> ';
                                     return  e + d;
                                 }
                             }

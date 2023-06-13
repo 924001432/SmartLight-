@@ -17,11 +17,95 @@ import org.springframework.stereotype.Component;
 public class Monitor {
 
 
-    @JmsListener(destination = "newsTopic")
+    @JmsListener(destination = "DHT11")
     public void subscribe(byte[] message) {
-/*
-    测试接收到的故障消息，格式正确
- */
+    /*
+        测试接收到的故障消息，格式正确
+        1.修改字节格式上传
+        2.修改解析方法
+        3.
+     */
+        System.out.println(new String(message));
+        System.out.println(message.length);
+        for (int i = 0; i < message.length; i++) {
+            System.out.print(message[i] + " ");
+            //58446D6FFEED0525004B120021400100020200
+            //88 68 109 111 -2 -19 5 37
+        }
+        System.out.println();
+
+
+    }
+
+    public void analyser(String Messages){
+
+        /**
+         * 先解析协议头
+         * * 网关认证应答消息
+         * * 网关测试消息
+         * * 温度上传消息
+         * * 定位消息
+         * * 路由广播消息
+         * * 路灯状态消息
+         * * 定位状态消息
+         * * 路灯故障消息
+         *  协议头存到一个变量里
+         *  这里也要添加一个帧头帧尾的判定
+         */
+        /**
+         * 0244010DFF——前三位是帧头，数据类型，协议类型
+         * D4ED
+         * 0300
+         * 505F0902004B1200
+         * 02
+         */
+        //获取上下文，构造服务类
+        ApplicationContext applicationContext = SpringUtils.getApplicationContext();
+        DeviceService deviceService = applicationContext.getBean(DeviceService.class);
+        //在考虑要不要转换成int型
+        if(Messages.substring(0,2).equals("58") & Messages.substring(2,4).equals("44")){
+//                & Messages.substring(38).equals("44")){   //帧尾检测
+            if(Messages.substring(32,34).equals("02")){     //协议类型
+                //可以改进
+                Device device = new Device();
+                //PanID
+                System.out.println(Messages.substring(6,8)+Messages.substring(4,6));
+                //MAC地址
+                device.setDeviceMac(Messages.substring(8,24));
+
+                //短地址
+                String temp = Messages.substring(26,28)+Messages.substring(24,26);
+                device.setDeviceShort(temp);
+
+                //序列号
+                temp = Messages.substring(30,32)+Messages.substring(28,30);
+                device.setDeviceSerial(temp);
+                //在线状态更改，收到消息，1表示在线，0表示离线
+                device.setDeviceStatus(1);
+                //做一个计时器功能，十秒钟之内未收到消息，重新清零，写数据库
+
+
+                //开灯状态,int型
+                device.setDeviceLight(Integer.parseInt(Messages.substring(36)));
+
+                deviceService.insertDevice(device);
+
+            }else if(Messages.substring(32,34).equals("55")){
+
+                System.out.println("心跳包");
+
+            }
+
+
+        }else {//未检测到帧头帧尾
+            System.out.println("未检测到帧头帧尾");
+        }
+
+
+    }
+
+    //报警处理方法
+    public void alarm(byte[] message){
 
         ApplicationContext applicationContext = SpringUtils.getApplicationContext();
         AlarmService alarmService = applicationContext.getBean(AlarmService.class);
@@ -66,64 +150,6 @@ public class Monitor {
                 alarmService.insertAlarm(alarm);
             }
         }
-
-    }
-
-    public void analyser(String cmdMessages){
-
-        /**
-         * 先解析协议头
-         * * 网关认证应答消息
-         * * 网关测试消息
-         * * 温度上传消息
-         * * 定位消息
-         * * 路由广播消息
-         * * 路灯状态消息
-         * * 定位状态消息
-         * * 路灯故障消息
-         *  协议头存到一个变量里
-         *  这里也要添加一个帧头帧尾的判定
-         */
-        /**
-         * 0244010DFF——前三位是帧头，数据类型，协议类型
-         * D4ED
-         * 0300
-         * 505F0902004B1200
-         * 02
-         */
-        //获取上下文，构造服务类
-        ApplicationContext applicationContext = SpringUtils.getApplicationContext();
-        DeviceService deviceService = applicationContext.getBean(DeviceService.class);
-        //在考虑要不要转换成int型
-        if(cmdMessages.substring(0,2).equals("02") & cmdMessages.substring(2,4).equals("44") & cmdMessages.substring(4,6).equals("01")){
-            //可以改进
-            Device device = new Device();
-
-            //MAC地址
-            device.setDeviceMac(cmdMessages.substring(18,34));
-
-            //短地址
-            String temp = cmdMessages.substring(12,14)+cmdMessages.substring(10,12);
-            device.setDeviceShort(temp);
-
-            //序列号
-            temp = cmdMessages.substring(16,18)+cmdMessages.substring(14,16);
-            device.setDeviceSerial(temp);
-            //在线状态更改，收到消息，1表示在线，0表示离线
-            device.setDeviceStatus(1);
-            //做一个计时器功能，十秒钟之内未收到消息，重新清零，写数据库
-
-
-            //开灯状态,int型
-            device.setDeviceLight(Integer.parseInt(cmdMessages.substring(34)));
-
-            deviceService.insertDevice(device);
-
-        }else {//其他协议类型
-            System.out.println("其他协议类型");
-        }
-
-
     }
 
 

@@ -23,6 +23,7 @@
     </div>
     <div class="l_left news_right">
         <h5 id="road">灯箱实时监控</h5>
+<!--        <h5 id="roadId" style="display: none">灯箱实时监控</h5>-->
 <!--        搜索和查找功能          -->
 <!--        <div class="notice_check">-->
 <!--              <p>-->
@@ -76,6 +77,9 @@
 <script src="static/js/localLight.js"></script>
 
 <script>
+
+
+
     $(function () {
         $('#table').bootstrapTable({
             method: "get",
@@ -174,11 +178,11 @@
                     field: 'person',
                     width: 120,
                     align: 'center',
-                    formatter: function (cellval, row) {
+                    formatter: function (cellval, row ,index) {
 <!--                        <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-                        var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'1)">打开</button> ';
+                        var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',1)">打开</button> ';
 
-                        var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(\'' + row.deviceSerial + '\','+'2)">关闭</button> ';
+                        var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',2)">关闭</button> ';
                         return  e + d;
                     }
                 }
@@ -187,7 +191,17 @@
         });
     });
 
+    //获取网络号
+    var deviceCoord = 0;
+
+
     function AllLightControl(type){
+
+        //完整的协议，包含网络号和设备标签，修改url“ '/AllLightControl/'+ type '&'+ deviceCoord' ”
+        var rowData = $('#table').bootstrapTable('getData')[0];
+        deviceCoord = rowData.deviceCoord;
+        console.log(deviceCoord)
+
         $.ajax({
                 url: '/AllLightControl/'+ type,
                 type: 'GET',
@@ -195,6 +209,7 @@
             })
         if(type == 1){
             alert("打开所有路灯")
+
         }else if(type == 2){
             alert("关闭所有路灯")
         }else{
@@ -202,7 +217,13 @@
         }
     }
 
-    function SingleLightControl(id,type){
+    function SingleLightControl(id, rowId, type){
+
+
+        var rowData = $('#table').bootstrapTable('getData')[rowId];
+
+        deviceCoord = rowData.deviceCoord;
+
 
         $.ajax({
                 url: '/SingleLightControl/'+id+'&'+type,

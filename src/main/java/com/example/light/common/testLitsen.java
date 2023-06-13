@@ -8,17 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class testLitsen {
 
-//    @JmsListener(destination = "newsTopic")
-//    public void receive1(String msg) {
-//        log.info("{} 接收到消息: {}", "1号", msg);
-//    }
-
     @JmsListener(destination = "newsTopic")
-    public void receive2(byte[] message) {
-
-        System.out.println(new String(message));
-
+    public void receive1(String msg) {
+        log.info("{} 接收到消息: {}", "1号", msg);
     }
+
+//    @JmsListener(destination = "newsTopic")
+//    public void receive2(byte[] message) {
+//
+//        System.out.println(new String(message));
+//
+//
+//    }
 
     private String arrayToStr(int[] arr) {
         String res = "";
