@@ -39,5 +39,14 @@ public class alarmLightController {
 
     }
 
+    @RequestMapping("/alarmListByalarmStatus")
+    @ResponseBody
+    public Object alarmListByalarmStatus(){
+
+        List<Alarm> alarmList = alarmService.alarmListByalarmStatus(0);
+        return ResultMapUtil.getHashMapList(alarmList);
+
+    }
+
 
 }

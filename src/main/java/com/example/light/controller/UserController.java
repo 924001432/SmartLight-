@@ -20,7 +20,7 @@ public class UserController {
 
     @RequestMapping("/Login")
     public String Login(){
-        return "/login2";
+        return "/login";
     }
 
     @RequestMapping("/LoginIn")

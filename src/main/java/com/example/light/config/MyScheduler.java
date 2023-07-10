@@ -1,6 +1,7 @@
 package com.example.light.config;
 
 import com.example.light.job.IdeaJob;
+
 import com.example.light.job.TimingJob;
 import com.example.light.common.SpringUtils;
 import org.quartz.*;
@@ -8,6 +9,9 @@ import org.quartz.impl.StdScheduler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+/**
+ *  定时任务执行情况设置
+ */
 @Component
 public class MyScheduler {
 
@@ -18,6 +22,7 @@ public class MyScheduler {
         Scheduler myScheduler =stdScheduler;
         startScheduler1(myScheduler);
         startScheduler2(myScheduler);
+//        startScheduler3(myScheduler);
         myScheduler.start();
     }
 
@@ -48,5 +53,17 @@ public class MyScheduler {
         scheduler.scheduleJob(jobDetail, trigger);
 
     }
+
+//    public void startScheduler3(Scheduler scheduler) throws SchedulerException {
+//        JobDetail jobDetail = JobBuilder.newJob(TestHeartJob.class).withIdentity("job3", "jobGroup3").build();
+//
+//
+//        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0/10 * * * * ?");//测试，每分钟的10秒钟执行一次
+//
+//        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity("trigger3", "triggerGroup3")
+//                .withSchedule(cronScheduleBuilder).build();
+//        scheduler.scheduleJob(jobDetail, trigger);
+//
+//    }
 
 }

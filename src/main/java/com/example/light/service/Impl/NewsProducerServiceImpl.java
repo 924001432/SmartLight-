@@ -23,11 +23,22 @@ public class NewsProducerServiceImpl implements NewsProducerService {
 
     @Override
     public void testPublish(byte[] payload) {
-        jmsTemplate.convertAndSend("newsTopic", payload);
+        jmsTemplate.convertAndSend("DHT11", payload);
     }
 
     @Override
     public void publishBytes(byte[] payload) {
+
         jmsTemplate.convertAndSend(topic, payload);
+
+    }
+
+    @Override
+    public void publishChars(char[] payload) {
+
+        jmsTemplate.convertAndSend(topic, payload);
+
+        System.out.println(payload);
+
     }
 }

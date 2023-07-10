@@ -29,13 +29,19 @@ public class Device implements Serializable {
     private Integer deviceType;
 
     @TableField(value = "device_coord")
-    private Integer deviceCoord;
+    private String deviceCoord;
 
     @TableField(value = "device_light")
     private Integer deviceLight;
 
     @TableField(value = "device_status")
     private Integer deviceStatus;
+
+    @TableField(value = "device_updatetime")
+    private String deviceUpdatetime;
+
+    @TableField(value = "device_hearttime")
+    private String deviceHearttime;
 
 
 }

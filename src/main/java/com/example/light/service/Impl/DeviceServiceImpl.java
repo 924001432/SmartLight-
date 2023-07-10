@@ -55,4 +55,9 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             不为空则更新，空则插入
          */
     }
+
+    @Override
+    public void updateDeviceHearttime(Device device){
+
+    }
 }

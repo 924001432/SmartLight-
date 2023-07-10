@@ -666,7 +666,7 @@
     //滚动插件
     function show( pageNo ){
         $.ajax({
-        url: '/testValue',
+        url: '/alarmListByalarmStatus',
         type: 'GET',
         dataType: 'json',
         success: function (result) {
@@ -722,7 +722,7 @@
                             "<p>地址：成都市高新区天华路211号</p>"+
                             "<div>"+
                                 "<p class=\"l_left text\">报警时间：" + this.alarmTime + "</p>"+
-                                "<p class=\"r_right text1\" style=\"color:red\"> 处理状态：" + curAlarmStatus +"</p>"+
+<!--                                "<p class=\"r_right text1\" style=\"color:red\"> 处理状态：" + curAlarmStatus +"</p>"+-->
                                 "<div class=\"clear\"></div>"+
                             "</div>"+
 <!--                            "<p>" + this.alarmHandletime + "</p>"+-->

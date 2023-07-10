@@ -4,6 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
+/**
+ *  测试mqtt监听类
+ */
 @Slf4j
 @Component
 public class testLitsen {

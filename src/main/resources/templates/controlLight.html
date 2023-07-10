@@ -199,11 +199,11 @@
 
         //完整的协议，包含网络号和设备标签，修改url“ '/AllLightControl/'+ type '&'+ deviceCoord' ”
         var rowData = $('#table').bootstrapTable('getData')[0];
-        deviceCoord = rowData.deviceCoord;
-        console.log(deviceCoord)
+        PanId = rowData.deviceCoord;
+        console.log(PanId)
 
         $.ajax({
-                url: '/AllLightControl/'+ type,
+                url: '/AllLightControl/'+ PanId + '&' + type,
                 type: 'GET',
                 dataType: 'text',
             })

@@ -18,17 +18,17 @@ var zNodes =[
         children:[
             {id:10, name:"山东省", open:true, noR:true,nocheck:true,
                 children:[
-                    {id:101, name:"青岛市	", noR:true, open:true,nocheck:true,
+                    {id:100, name:"青岛市	", noR:true, open:true,nocheck:true,
                         children:[
-                            {id:1010, name:"城阳区	", noR:true, open:true,nocheck:true,
+                            {id:1000, name:"城阳区	", noR:true, open:true,nocheck:true,
                                 children:[
-                                    {id:101001, name:"瑞阳路	", noR:true, open:false,nocheck:true},
-                                    {id:101002, name:"春阳路	", noR:true, open:false,nocheck:true}
+                                    {id:0001, name:"瑞阳路	", noR:true, open:false,nocheck:true},
+                                    {id:0002, name:"春阳路	", noR:true, open:false,nocheck:true}
                                 ]
                             },
-                            {id:1011, name:"即墨区	", noR:true, open:true,nocheck:true,
+                            {id:1001, name:"即墨区	", noR:true, open:true,nocheck:true,
                                 children:[
-                                    {id:101101, name:"墨城路	", noR:true, open:false,nocheck:true}
+                                    {id:1101, name:"墨城路	", noR:true, open:false,nocheck:true}
                                 ]
                             }
                         ]

@@ -38,6 +38,16 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     @Override
+    public List<Alarm> alarmListByalarmStatus(Integer alarmStatus){
+
+        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+        wrapper.eq("alarm_status",alarmStatus);
+
+        return alarmMapper.selectList(wrapper);
+
+    }
+
+    @Override
     public void insertAlarm(Alarm alarm){
 
 //        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();

@@ -168,48 +168,37 @@ public class testController {
         return response.getBody();
     }
 
-    /**
-        按键定义开关灯指令，前后端交互，发布消息，消息下发到zigbee，解析消息，开关灯，定义开关灯协议
-     **/
-//    @RequestMapping("/testLightAll")
-//    @ResponseBody
-//    public void testLightAll(){
-//        String topic0 = "streetlight/zigbee/coord01";
-//        String topic1 = "light/device/coord01";
-//        String msg = "0444010DFF000102#";
-//        //04开头为Java发布的消息，03开头为mqttfx端发布的消息
-//        if(!connect_tag) {
-//            String serviceUrl = "tcp://127.0.0.1:1883";
-//            String userName = "java";
-//            String password = "java";
-//            String clientId = "javaSubscribeId";
-//
-//            mqttClient = new MyMqttClient(serviceUrl, userName, password, clientId);
-//            mqttClient.init();
-//            mqttClient.publishMessage(topic1, msg, 2);
-//            System.out.println("主题: " + topic1 + "  内容: " + msg);
-//            connect_tag = true;
-//        }else {
-//            mqttClient.publishMessage(topic1, msg, 2);
-//            System.out.println("主题: " + topic1 + "  内容: " + msg);
-//        }
-//    }
-
 
     @RequestMapping("/testProduce")
     @ResponseBody
     public void produce() {
 
-        //String msg = "org.apache.catalina.core.StandardContextValve";
-
-        byte[] payload={0x58,0x44,0x00,0x00,0x00,0x00,0x01,0x03,0x00,0x00,0x00,0x23};
-
-        //newsProducerService.publish(msg);
+        byte[] payload={0x58,0x44,(byte) 0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x02,0x01,0x00,0x23};
 
         newsProducerService.publishBytes(payload);
 
-        //System.out.println("msg:" + msg);
+    }
 
+    @RequestMapping("/testChars")
+    @ResponseBody
+    public void testChars() {
+
+        char[] payload={0x58,0x44,0x23,0x24,0x26,0x25,0x27,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x02,0x01,0x00,0x23};
+
+        newsProducerService.publishChars(payload);
+
+        System.out.println(payload);
+
+
+    }
+
+    @RequestMapping("/testPublishString")
+    @ResponseBody
+    public void testPublishString() {
+
+        String str = "123";
+
+        newsProducerService.publish(str);
 
     }
 
