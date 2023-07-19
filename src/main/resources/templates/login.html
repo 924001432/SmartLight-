@@ -48,12 +48,13 @@
                     },
                     url: "/LoginIn",
                     success: function (result) {
-                        debugger;
+
                         if (result.code == 1) {
                             window.location.href =  '/Index';
                         }else{
                             alert("用户名或密码错误");
                         }
+
                     },
                     error : function() {
                     }

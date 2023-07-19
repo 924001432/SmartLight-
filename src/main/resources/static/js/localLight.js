@@ -69,6 +69,8 @@ function zTreeOnClick(event, treeId, treeNode){
 
     if(!treeNode.isParent){//到达最底层，路段信息
 
+
+
         deviceCoord = treeNode.id;
         roadName = treeNode.name;
 

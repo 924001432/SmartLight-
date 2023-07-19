@@ -11,8 +11,10 @@ import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.AlarmService;
 import com.example.light.service.NewsProducerService;
 import com.example.light.service.UserService;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.light.common.ResultMapUtil;
 import org.springframework.web.client.RestTemplate;
 
+import javax.jms.Destination;
 import java.util.List;
 
 @Controller
@@ -39,6 +42,9 @@ public class testController {
 
     @Autowired
     private AlarmService alarmService;
+
+    @Autowired
+    private JmsMessagingTemplate jmsTemplate;
 
 
     private boolean connect_tag = false;
@@ -69,10 +75,7 @@ public class testController {
         System.out.println("testButton succ!!");
     }
 
-    @RequestMapping("/testLogin")
-    public String testLogin(){
-        return "/login2";
-    }
+
 
     @RequestMapping("/test")
     public Object test(){
@@ -95,21 +98,7 @@ public class testController {
     }
 
 
-    @RequestMapping("/testLoginIn")
-    @ResponseBody
-    public Object testLoginIn(String username,String password){
 
-
-
-        User QueryUser = userService.queryUserByNameAndPassword(username,password);
-
-        if(QueryUser != null){
-            return ResultMapUtil.getHashMapLogin("验证成功","1");
-        }else {
-            return ResultMapUtil.getHashMapLogin("验证失败","2");
-        }
-
-    }
 
     @RequestMapping("/testIndex")
     public Object testIndex(){
@@ -173,7 +162,7 @@ public class testController {
     @ResponseBody
     public void produce() {
 
-        byte[] payload={0x58,0x44,(byte) 0xAA,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x02,0x01,0x00,0x23};
+        byte[] payload={0x58,0x44,(byte) 0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,(byte) 0xAA,0x02,0x01,0x00,0x23};
 
         newsProducerService.publishBytes(payload);
 
@@ -186,8 +175,6 @@ public class testController {
         char[] payload={0x58,0x44,0x23,0x24,0x26,0x25,0x27,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x04,0x02,0x01,0x00,0x23};
 
         newsProducerService.publishChars(payload);
-
-        System.out.println(payload);
 
 
     }

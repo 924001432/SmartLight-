@@ -20,9 +20,7 @@
 
             </a>
             <nav class="navbar navbar-static-top" style="display:block;font-weight: 500;font-size: 14px;color: #fff;padding-left: 10px">
-                <!--<div class="sidebar-toggle">-->
-                    <!--<span class="sr-only">天夏模板</span>-->
-                <!--</div>-->
+
                 <span class="index_top"><strong></strong></span>
                 <div class="navbar-custom-menu">
 
@@ -30,34 +28,14 @@
 
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="static/img/user2-160x160.jpg" class="user-image" alt="User Image">
-                                <span class="hidden-xs">administrator</span>
+                                <span > 当前用户：</span>
+                                <span id="cur_user" class="hidden-xs"> </span>
+                                <span >   [普通管理员]</span>
                             </a>
                             <ul class="dropdown-menu pull-right">
-                                <li><a class="menuItem" data-id="userInfo" href=""><i class="fa fa-user"></i>个人信息</a></li>
-                                <li><a><i class="fa fa-trash-o"></i>清空缓存</a></li>
-                                <li id="color"><a><i class="fa fa-paint-brush"></i>皮肤设置</a>
-                                    <div style="position: absolute;left:-90px;top:50px;border: 1px #eee solid;box-shadow: 0 6px 12px rgba(0,0,0,.175);display: none" id="color_div">
-                                     <ul class="color_ul">
-                                         <li style="background-color: green;color:green"></li>
-                                         <li style="background-color: #3c8dbc;color: #3c8dbc"></li>
-                                         <li style="background-color: red;color: red"></li>
-                                         <li style="background-color: green;color:green"></li>
-                                         <li style="background-color: #3c8dbc;color: #3c8dbc"></li>
-                                         <li style="background-color: red;color: red"></li>
-                                         <li style="background-color: green;color:green"></li>
-                                         <li style="background-color: #3c8dbc;color: #3c8dbc"></li>
-                                         <li style="background-color: red;color: red"></li>
-                                     </ul>
-                                    </div>
-                                </li>
-                                <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
-
-                                <style>
-
-                                </style>
+                                <li><a class="menuItem" data-id="userInfo" onclick="dataLead()" href="/userInfo"><i class="fa fa-user"></i>个人信息</a></li>
                                 <li class="divider"></li>
-                                <li><a><i class="ace-icon fa fa-power-off"></i>安全退出</a></li>
+                                <li><a href="/Logout"><i class="ace-icon fa fa-power-off" ></i>安全退出</a></li>
                             </ul>
                         </li>
 
@@ -117,8 +95,22 @@
     </div>
     <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
     <script src="static/js/bootstrap/js/bootstrap.min.js"></script>
+    <script src="static/js/layer_v2.1/layer/layer.js"></script>
     <script src="static/js/index.js"></script>
     <script>
+
+        <!--        获取用户信息    -->
+        $.ajax({
+                url: '/getUser',
+                type: 'GET',
+                dataType: 'text',
+                success: function (result) {
+
+                        document.getElementById("cur_user").innerText  = result ;//修改
+
+                    }
+            })
+
         var colorIndex = 0;
         $(function(){
             changeColor(colorIndex);
@@ -336,6 +328,21 @@
 
 
         }
+
+
+
+<!--        function dataLead() {-->
+<!--            layer.open({-->
+<!--                type: 2,-->
+<!--                title: '分组信息',-->
+<!--                shade: 0.5,-->
+<!--                skin: 'layui-layer-rim',-->
+<!--                area: ['700px', '300px'],-->
+<!--                shadeClose: true,-->
+<!--                closeBtn: 1,-->
+<!--                content: '/userInfo'-->
+<!--            });-->
+<!--        }-->
     </script>
 </body>
 </html>

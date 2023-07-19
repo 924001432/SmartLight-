@@ -11,6 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class testLitsen {
 
+    @JmsListener(destination = "inTopic")
+    public void receive(char[] payload) {
+        log.info("{} 接收到消息: {}", "1号", payload);
+        System.out.println((byte)payload[2]);
+    }
+
+//    @JmsListener(destination = "newsTopic")
+//    public void receive2(byte[] message) {
+//
+//        System.out.println(new String(message));
+//
+//
+//    }
+
     @JmsListener(destination = "newsTopic")
     public void receive1(String msg) {
         log.info("{} 接收到消息: {}", "1号", msg);

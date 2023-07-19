@@ -67,6 +67,10 @@ public class contolLightController {
 //        System.out.println("deviceCoord: " + deviceCoord);
 
         List<Device> deviceList = deviceService.deviceListByDeviceCoord(deviceCoord);
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
         return ResultMapUtil.getHashMapList(deviceList);
 
     }
@@ -78,8 +82,7 @@ public class contolLightController {
         /*
             采用方法取当前时间转字节
          */
-        //当前时间
-//        byte[] payload={0x05,0x00,0x00,0x00,0x23};
+
         byte[] payload={0x58,0x44,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x03,0x00,0x00,0x00,0x23};
 
         //发布消息

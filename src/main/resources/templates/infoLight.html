@@ -22,39 +22,39 @@
         </div>
     </div>
     <div class="l_left news_right">
-        <h5 id="road">灯箱实时监控</h5>
-<!--        <h5 id="roadId" style="display: none">灯箱实时监控</h5>-->
-<!--        搜索和查找功能          -->
+        <h5 id="road">数据实时监控</h5>
+<!--                <h5 id="roadId" style="display: none">灯箱实时监控</h5>-->
+<!--                -->
+<!--                <div class="notice_check">-->
+<!--                      <p>-->
+<!--                          <label>灯具名称：</label><input type="text" class="find_input">-->
+<!--                          <label>灯具类型：</label><select class="find_input"></select>-->
+<!--                          <button class="check_btn">查询</button>-->
+<!--                      </p>-->
+<!--                </div>-->
+<!--        <div class="clear"></div>-->
+
 <!--        <div class="notice_check">-->
-<!--              <p>-->
-<!--                  <label>灯具名称：</label><input type="text" class="find_input">-->
-<!--                  <label>灯具类型：</label><select class="find_input"></select>-->
-<!--                  <button class="check_btn">查询</button>-->
-<!--              </p>-->
+<!--&lt;!&ndash;            <div class="notice_nav l_left paddingBotme">&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <P>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                    <a class="btn btn-info" onclick="AllLightControl(1)"><span class="glyphicon glyphicon-off"></span> 全开</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <a class="btn btn-danger" onclick="AllLightControl(2)"><span class="glyphicon glyphicon-remove"></span> 全关</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <a class="btn btn-warning" onclick="AllLightControl(3)"><span class="glyphicon glyphicon-flash"></span> 雷达控制</a>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                </P>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--            &lt;!&ndash;            <div class=" r_right ">&ndash;&gt;-->
+
+<!--            &lt;!&ndash;                <P>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <a class="btn btn-default" onclick="SetTime()"><span class="glyphicon glyphicon-refresh"></span> 校时</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;                    <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>&ndash;&gt;-->
+<!--            &lt;!&ndash;                </P>&ndash;&gt;-->
+<!--            &lt;!&ndash;            </div>&ndash;&gt;-->
+
 <!--        </div>-->
         <div class="clear"></div>
-
-        <div class="notice_check">
-            <div class="notice_nav l_left paddingBotme">
-
-                <P>
-
-                <a class="btn btn-info" onclick="AllLightControl(1)"><span class="glyphicon glyphicon-off"></span> 全开</a>
-                <a class="btn btn-danger" onclick="AllLightControl(2)"><span class="glyphicon glyphicon-remove"></span> 全关</a>
-                <a class="btn btn-warning" onclick="AllLightControl(3)"><span class="glyphicon glyphicon-flash"></span> 雷达控制</a>
-
-                </P>
-            </div>
-<!--            <div class=" r_right ">-->
-
-<!--                <P>-->
-<!--                    <a class="btn btn-default" onclick="SetTime()"><span class="glyphicon glyphicon-refresh"></span> 校时</a>-->
-<!--                    <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-<!--                </P>-->
-<!--            </div>-->
-
-        </div>
-            <div class="clear"></div>
 
         <ul class="news_table department_table">
             <li>
@@ -67,7 +67,7 @@
 
 </div>
 <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
-<!--<script src="static/js/bstable/js/bootstrap.min.js"></script>-->
+<script src="static/js/bstable/js/bootstrap.min.js"></script>
 <script src="static/js/bstable/js/bootstrap-table.js"></script>
 <script src="static/js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.core-3.5.js"></script>
@@ -85,12 +85,11 @@
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/deviceList",
+            url: "/infoList",
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
             pageNumber: 1,
-
             search: false, //显示搜索框
             contentType: "application/x-www-form-urlencoded",
             queryParams:null,
@@ -99,94 +98,74 @@
                     checkbox: "true",
                     field: 'check',
                     align: 'center',
-
                     valign: 'middle'
                 }
                 ,
                 {
-                    title: "设备编号",
-                    field: 'deviceId',
+                    title: "序号",
+                    field: 'infoId',
+                    align: 'center',
+                    width: 40,
+                    valign: 'middle'
+                },
+                {
+                    title: "设备标签",
+                    field: 'infoSerial',
                     align: 'center',
                     width: 80,
                     valign: 'middle'
                 },
                 {
-                    title: "物理地址",
-                    field: 'deviceMac',
-                    align: 'center',
-                    width: 120,
-                    valign: 'middle'
-                },
-                {
-                    title: '网络地址',
-                    field: 'deviceShort',
-                    align: 'center',
-                    width: 120,
-                    valign: 'middle'
-                },
-                {
-                    title: '设备标签',
-                    field: 'deviceSerial',
-                    align: 'center',
-                    width: 120,
-                    valign: 'middle'
-                },
-                {
-                    title: '在线状态',
-                    field: 'deviceStatus',
-                    width: 70,
-                    align: 'center',
-                    formatter: function (cellval, row) {
-                        if (cellval == 0 ){
-                            return '<div  style="color:red"> 离线</div>';
-                        } else  if (cellval == 1){
-                            return '<div  style="color:green"> 在线 </div>';
-                        }else {
-                            return '<div  style="color:gray"> 未知 </div>';
-                        }}
-                },
-                {
-                    title: '开关状态',
-                    field: 'deviceLight',
-                    width: 70,
-                    align: 'center',
-                    formatter: function (cellval, row) {
-                        if (cellval == 1){
-                            return '<div  style="color:green"> 打开 </div>';
-                        } else  if (cellval == 2){
-                            return '<div  style="color:red"> 关闭 </div>';
-                        }else {
-                            return '<div  style="color:gray"> 未知 </div>';
-                        }}
-                },
-                {
-                    title: '网关编号',
-                    field: 'deviceCoord',
+                    title: '温度 ℃',
+                    field: 'infoTemp',
                     align: 'center',
                     width: 80,
                     valign: 'middle'
                 },
                 {
-                    title: '设备类型',
-                    field: 'deviceType',
+                    title: '湿度 %rh',
+                    field: 'infoHumi',
                     align: 'center',
                     width: 80,
                     valign: 'middle'
                 },
-
                 {
-                    title: '操作',
-                    field: 'person',
-                    width: 120,
+                    title: '路灯电压 V',
+                    field: 'infoLampV',
                     align: 'center',
-                    formatter: function (cellval, row ,index) {
-<!--                        <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-                        var  e = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',1)">打开</button> ';
-
-                        var  d = '<button  id="add" data-id="99" style="outline:none" class="btn btn-xs btn-danger" onclick="SingleLightControl(' + row.deviceSerial + ','+ index +',2)">关闭</button> ';
-                        return  e + d;
-                    }
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '主板电压 V',
+                    field: 'infoBoardV',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '光照强度 Lux',
+                    field: 'infoLux',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '空气质量 μg/m3',
+                    field: 'infoAir',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '更新时间',
+                    field: 'infoUpdatetime',
+                    align: 'center',
+                    width: 120,
+                    valign: 'middle'
                 }
+
+
 
             ]
         });

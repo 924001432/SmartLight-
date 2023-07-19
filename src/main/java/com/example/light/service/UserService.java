@@ -12,7 +12,7 @@ public interface UserService extends IService<User> {
      * 根据用户名查询用户对象
      */
 
-    public User queryUserById(User user);
+    public User queryUserByName(String username);
 
     public User queryUserByNameAndPassword(String username,String password);
 

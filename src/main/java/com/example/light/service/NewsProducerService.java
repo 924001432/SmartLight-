@@ -1,6 +1,8 @@
 package com.example.light.service;
 
 
+import javax.jms.Destination;
+
 public interface NewsProducerService {
 
 
@@ -12,5 +14,8 @@ public interface NewsProducerService {
 
     //发布字符数组
     void publishChars(char[] payload);
+
+    //添加主题，发布消息
+    void newPublishChars(Destination destination, char[] payload);
 
 }

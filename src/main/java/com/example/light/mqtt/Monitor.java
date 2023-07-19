@@ -1,5 +1,6 @@
 package com.example.light.mqtt;
 
+import com.example.light.common.MessageUtil;
 import com.example.light.common.SpringUtils;
 import com.example.light.entity.Alarm;
 import com.example.light.entity.Device;
@@ -20,25 +21,29 @@ import java.util.Date;
 public class Monitor {
 
 
+    //获取上下文，构造服务类
+    ApplicationContext applicationContext = SpringUtils.getApplicationContext();
+    DeviceService deviceService = applicationContext.getBean(DeviceService.class);
+
+    NewsProducerService newsProducerService = applicationContext.getBean(NewsProducerService.class);
+
+    Device device = new Device();
+
     @JmsListener(destination = "DHT11")
-    public void subscribe(byte[] message) throws InterruptedException {
+    public void subscribe(byte[] payload)  {
     /*
         测试接收到的故障消息，格式正确
         1.修改字节格式上传
         2.修改解析方法
         3.
      */
-        String msg = new String(message);
-        System.out.println(msg);
 
-        analyser(msg);
-
-
+        analyser(new String(payload));
 
 
     }
 
-    public void analyser(String Messages) throws InterruptedException {
+    public void analyser(String Messages)  {
 
         /**
          * 先解析协议头
@@ -53,105 +58,53 @@ public class Monitor {
          *  协议头存到一个变量里
          *  这里也要添加一个帧头帧尾的判定
          */
-        /**
-         * 0244010DFF——前三位是帧头，数据类型，协议类型
-         * D4ED
-         * 0300
-         * 505F0902004B1200
-         * 02
-         */
-        //获取上下文，构造服务类
-        boolean state = false;
-        boolean laststate = false;
 
-        int countDownTime = 0;
 
-        ApplicationContext applicationContext = SpringUtils.getApplicationContext();
-        DeviceService deviceService = applicationContext.getBean(DeviceService.class);
+        //转换为Int型后的数据，便于查找
+        Integer[] integers = MessageUtil.handleStr2ArrInt(MessageUtil.handleStr2ArrStr(Messages));
 
-        NewsProducerService newsProducerService = applicationContext.getBean(NewsProducerService.class);
+        //帧头帧尾检测，消息类型识别
+        if(integers[0]==0x58 && integers[1]==0x44 && integers[integers.length-1]==0x23){
 
-        Device device = new Device();
-        //在考虑要不要转换成int型
-        if(Messages.substring(0,2).equals("58") & Messages.substring(2,4).equals("44") & Messages.substring(38).equals("23")){
-//                & Messages.substring(38).equals("44")){   //帧尾检测
-            switch (Messages.substring(32, 34)) {
-                case "02": {     //协议类型
+            switch (integers[16]) {
+                //路灯信息协议
+                case 0x02 : {     //协议类型
                     //可以改进
+                    System.out.println("路灯信息");
 
-                    //PanID
-                    System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
-                    //MAC地址
-                    device.setDeviceMac(Messages.substring(8, 24));
-
-                    //短地址
-                    String temp = Messages.substring(26, 28) + Messages.substring(24, 26);
-                    device.setDeviceShort(temp);
-
-                    //序列号
-                    temp = Messages.substring(30, 32) + Messages.substring(28, 30);
-                    device.setDeviceSerial(temp);
-
-                    //开灯状态,int型
-                    device.setDeviceLight(Integer.parseInt(Messages.substring(36, 38)));
-
-                    Date date = new Date();
-                    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String update_time = sf.format(date);
-
-                    device.setDeviceUpdatetime(update_time);
-
-                    deviceService.insertDevice(device);
-
-                    //Java端对Zigbee端的应答消息
-                    byte[] payload = {0x58, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xAA, 0x01, 0x02, 0x23};
-
-                    newsProducerService.publishBytes(payload);
-
-//                    char[] ans = {0x22, 0xAA};
+                    infoProcess(Messages);
 
                     break;
                 }
-                case "03":
+                //故障信息协议
+                case 0x03 :
 
                     System.out.println("故障信息");
-
 //                     调用alarm方法，针对不同类型的故障信息，做出相应处理
+                    alarmProcess(Messages , integers);
 
                     break;
-                case "0F":
+                //注册认证协议
+                case 0x0F :
 
                     System.out.println("注册认证消息");
+                    //认证处理方法
+
                     break;
-                case "AA":
+                //应答消息协议
+                case 0xAA :
 
                     System.out.println("应答消息");
 
                     break;
-                case "55": {
-
-                    //PanID
-                    System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
-
-                    //序列号
-                    String temp = Messages.substring(30, 32) + Messages.substring(28, 30);
-                    device.setDeviceSerial(temp);
+                //心跳包协议
+                case 0x55 : {
 
                     System.out.println("心跳包");
 
-
-                    Date date = new Date();
-                    SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String heart_time = sf.format(date);
-
-                    device.setDeviceHearttime(heart_time);
-
-                    //获取心跳包的时间，写入数据库
-                    deviceService.insertDevice(device);
+                    heartProcess(Messages);
 
                     break;
-
-
                 }
                 default:
                     break;
@@ -165,27 +118,71 @@ public class Monitor {
 
     }
 
-    //报警处理方法
-    public void alarm(byte[] message){
+    //路灯信息处理方法
+    public void infoProcess(String Messages){
 
+        //PanID
+        System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
+        //MAC地址
+        device.setDeviceMac(Messages.substring(8, 24));
+
+        //短地址
+        String temp = Messages.substring(26, 28) + Messages.substring(24, 26);
+        device.setDeviceShort(temp);
+
+        //序列号
+        temp = Messages.substring(30, 32) + Messages.substring(28, 30);
+        device.setDeviceSerial(temp);
+
+        //开灯状态,int型
+        device.setDeviceLight(Integer.parseInt(Messages.substring(36, 38)));
+
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String update_time = sf.format(date);
+
+        device.setDeviceUpdatetime(update_time);
+
+        deviceService.insertDevice(device);
+
+        //Java端对Zigbee端的应答消息
+        byte[] payload = {0x58, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xAA, 0x01, 0x02, 0x23};
+
+        newsProducerService.publishBytes(payload);
+    }
+
+    //报警处理方法
+    public void alarmProcess(String alarmMessage, Integer[] integer){
+
+        //获取上下文，构造服务类
         ApplicationContext applicationContext = SpringUtils.getApplicationContext();
         AlarmService alarmService = applicationContext.getBean(AlarmService.class);
 
+        //故障实体类
         Alarm alarm = new Alarm();
-        alarm.setDeviceSerial("0001");
-        alarm.setAlarmTime("2023.05.23");
-        alarm.setAlarmStatus(1);//数据库修改为默认值1
 
+        //获取故障设备编号
+        String temp = alarmMessage.substring(30, 32) + alarmMessage.substring(28, 30);
+        alarm.setDeviceSerial(temp);
 
-        for (int i = 4; i <= message[3]+4; i++) {
+        //获取故障上传时间
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String alarm_time = sf.format(date);
 
-            if(message[i] == 1){//故障
-                switch (i-4){
+        //设置故障时间
+        alarm.setAlarmTime(alarm_time);
+        //设置故障状态
+        alarm.setAlarmStatus(0);//数据库修改为默认值1
+
+        //设置故障类型，插入数据库
+        for (int i = 18; i <= integer[17]+18; i++) {
+
+            if(integer[i] == 1){//故障
+                switch (i-18){
                     case 0://湿度
                         System.out.println("湿度");
-
                         alarm.setAlarmType(0);
-//                        alarmService.insertAlarm(alarm);
                         break;
                     case 1://温度
                         System.out.println("温度");
@@ -207,10 +204,31 @@ public class Monitor {
                         System.out.println("路灯");
                         alarm.setAlarmType(5);
                         break;
+                    default:
+                        break;
                 }
                 alarmService.insertAlarm(alarm);
             }
         }
+    }
+
+    public void heartProcess(String Messages){
+        //PanID
+        System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
+
+        //序列号
+        String temp = Messages.substring(30, 32) + Messages.substring(28, 30);
+        device.setDeviceSerial(temp);
+
+
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String heart_time = sf.format(date);
+
+        device.setDeviceHearttime(heart_time);
+
+        //获取心跳包的时间，写入数据库
+        deviceService.insertDevice(device);
     }
 
 }

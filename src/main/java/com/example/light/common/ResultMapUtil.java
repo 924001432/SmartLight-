@@ -18,6 +18,7 @@ public class ResultMapUtil {
         resultMap.put("msg",msg);
         resultMap.put("code",code);
 
+
         if("1".equals(code)){
             resultMap.put("icon",1);
         }else {

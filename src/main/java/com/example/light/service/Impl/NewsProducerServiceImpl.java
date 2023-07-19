@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.jms.Destination;
 import javax.jms.Topic;
 
 @Service
@@ -38,6 +39,14 @@ public class NewsProducerServiceImpl implements NewsProducerService {
 
         jmsTemplate.convertAndSend(topic, payload);
 
+//        System.out.println(payload);
+
+    }
+
+    @Override
+    public void newPublishChars(Destination destination, char[] payload){
+
+        jmsTemplate.convertAndSend(destination, payload);
         System.out.println(payload);
 
     }
