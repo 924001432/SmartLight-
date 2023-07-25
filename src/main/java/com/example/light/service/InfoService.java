@@ -12,5 +12,7 @@ public interface InfoService extends IService<Info> {
 
     public List<Info> queryInfoList();
 
+    public List<Info> queryInfoListByDeviceSerial(Integer deviceSerial);
+
     //public void insertIdea(Idea idea);
 }

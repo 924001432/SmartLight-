@@ -14,6 +14,8 @@ import com.example.light.service.IdeaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -48,6 +50,16 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     @Override
+    public List<Alarm> alarmListBydeviceSerial(Integer deviceSerial){
+
+        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+        wrapper.eq("device_serial",deviceSerial)
+                .eq("alarm_status",0);
+
+        return alarmMapper.selectList(wrapper);
+    }
+
+    @Override
     public void insertAlarm(Alarm alarm){
 
 //        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
@@ -64,5 +76,24 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
             不为空则更新，空则插入
          */
         alarmMapper.insert(alarm);
+    }
+
+    @Override
+    public void removeAlarm(Integer alarmId){
+
+        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+        wrapper.eq("alarm_id",alarmId);
+
+        Alarm alarm = new Alarm();
+        alarm.setAlarmStatus(1);
+
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String handle_time = sf.format(date);
+
+        alarm.setAlarmHandletime(handle_time);
+        alarm.setAlarmHandlecomment("手动消除");
+
+        alarmMapper.update(alarm,wrapper);
     }
 }

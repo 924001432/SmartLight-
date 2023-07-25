@@ -31,4 +31,13 @@ public class InfoServiceImpl extends ServiceImpl<InfoMapper, Info> implements In
 
         return infoMapper.selectList(null);
     }
+
+    @Override
+    public List<Info> queryInfoListByDeviceSerial(Integer deviceSerial){
+
+        QueryWrapper<Info> wrapper = new QueryWrapper<>();
+        wrapper.eq("info_serial",deviceSerial);
+        return infoMapper.selectList(wrapper);
+
+    }
 }

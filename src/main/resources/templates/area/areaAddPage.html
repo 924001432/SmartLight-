@@ -1,0 +1,130 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link href="static/css/tail.css" rel="stylesheet" type="text/css">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="border-radius: 8px;width: 680px" >
+<form>
+    <div class="top table2_top">
+        <div>
+            <div class="top_out">
+                <table class="table" >
+                    <tbody>
+                    <tr>
+                        <td>区域编号<span>*</span></td>
+                        <td   style="text-align: left">
+                            <input id="areaName" type="text"  ><span  id="partSpan"></span>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>区域级别：<span></span></td>
+                        <td >
+
+                            <select id="areaLevel">
+                                <option value="1">省</option>
+                                <option value="2">市</option>
+                                <option value="3">区县</option>
+                                <option value="4">路段</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr >
+
+                        <td>上级区域：<span></span></td>
+                        <td >
+                            <select id="parentId" name="parentId" ></select>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>备注<span></span></td>
+                        <td  style="text-align: left"> <textarea style="width:50%"></textarea></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="notice_bot">
+
+            <div class="r_right but_p">
+                <button class="but_save"  onclick="save()">保存</button>
+                <button class="but_close" onclick="Cancel()">关闭</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="static/js/jquery-2.2.0.min.js"></script>
+<script src="static/js/bstable/js/bootstrap.min.js"></script>
+<script>
+    //先获取级别，级别传参，查询上一级
+    $(document).ready(function() {
+        //清空select列表数据
+        initParentMenuSelect($("#areaLevel").val());
+
+    });
+    $("#areaLevel").change(function() {
+        initParentMenuSelect($("#areaLevel").val() );
+    });
+
+
+    function initParentMenuSelect(areaLevel){
+        $.ajax({
+            type : 'get',
+            url : '/area/parents/' + areaLevel,
+            async : true,
+            success : function(data) {
+                var select = $("#parentId");
+
+                select.empty();
+                for(var i=0; i<data.length; i++){
+                    var d = data[i];
+                    var id = d['areaId'];
+                    var name = d['areaName'];
+
+                    select.append("<option value='"+ id +"'>" +name+"</option>");
+                }
+            }
+        });
+    }
+
+
+    function Cancel() {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+    }
+
+    function save(){
+
+        $.ajax({
+            type : 'get',
+            url : '/areaAdd',
+            async : true,
+            data:{
+                areaName:$("#areaName").val(),
+                areaLevel:$("#areaLevel").val(),
+                parentId:$("#parentId").val()
+
+            },
+            success: function(data) {
+                console.log(data);
+                if(data == 1){
+                    console.log(111);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }else{
+                    console.log(222);
+                }
+
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

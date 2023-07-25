@@ -1,11 +1,13 @@
 package com.example.light.controller;
 
 
+import com.example.light.annotation.LogAnnotation;
 import com.example.light.entity.Idea;
 
 import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.IdeaService;
 import com.example.light.service.NewsProducerService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,14 +32,16 @@ public class ideaLightController {
 
     @RequestMapping("/ideaLight")
     public Object ideaLight(){
-        return "/ideaLight";
+        return "/idea/ideaLight";
     }
 
     @RequestMapping("/ideaLightTail")
     public Object ideaLightTail(){
-        return "/ideaLightTail";
+        return "/idea/ideaLightTail";
     }
 
+    @LogAnnotation
+    @ApiOperation(value = "获取所有开灯策略信息")
     @RequestMapping("/ideaList")
     @ResponseBody
     public Object ideaList(){
@@ -47,7 +51,8 @@ public class ideaLightController {
 
     }
 
-
+    @LogAnnotation
+    @ApiOperation(value = "执行开灯策略")
     @RequestMapping("/performIdea/{ideaOpentime}")
     @ResponseBody
     public void performIdea(@PathVariable(name = "ideaOpentime",required = true)String ideaOpentime){

@@ -1,0 +1,174 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="utf-8" />
+    <title></title>
+    <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
+    <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link href="static/css/table.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto">
+<div class="news_main">
+
+    <div class="l_left news_left">
+
+        <h6>区域目录</h6>
+        <div class="tree_left_top">
+            <div class=" order_ztree l_left organize_ztree" style="width: 100%">
+                <p><ul id="treeDemo" class="ztree"  style=" overflow:auto;margin-left: 20px"></ul></p>
+            </div>
+        </div>
+    </div>
+    <div class="l_left news_right">
+        <h5>策略管理</h5>
+<!--        <div class="notice_check">-->
+<!--&lt;!&ndash;                           查找功能，未实现                         &ndash;&gt;-->
+<!--&lt;!&ndash;              <p>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                  <label>策略名称：</label><input type="text" class="find_input">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <label>启用状态：</label><select class="find_input"></select>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <button class="check_btn">查询</button>&ndash;&gt;-->
+<!--&lt;!&ndash;              </p>&ndash;&gt;-->
+
+
+<!--        </div>-->
+        <div class="clear"></div>
+
+        <div class="notice_check">
+            <div class="notice_nav r_right paddingBotme">
+
+                <a class="btn btn-default" onclick="plus()"><span class="glyphicon glyphicon-plus"></span>新增</a>
+
+
+
+            </div>
+        </div>
+            <div class="clear"></div>
+
+        <ul class="news_table department_table">
+            <li>
+                <table id="table" class="table_style" style="margin: 0 auto" ></table>
+            </li>
+        </ul>
+
+    </div>
+    <div class="clear"></div>
+
+</div>
+<script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
+<script src="static/js/bstable/js/bootstrap.min.js"></script>
+<script src="static/js/bstable/js/bootstrap-table.js"></script>
+<script src="static/js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="static/js/ztree/jquery.ztree.exedit-3.5.js"></script>
+<script src="static/js/layer_v2.1/layer/layer.js"></script>
+<script src="static/js/areaLight.js"></script>
+<script src="static/layui/layui.js"></script>
+
+<script>
+    $(function () {
+        $('#table').bootstrapTable('destroy');
+        $('#table').bootstrapTable({
+            method: "get",
+            striped: true,
+            singleSelect: false,
+            url: "/areaList",
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: false, //显示搜索框
+            contentType: "application/x-www-form-urlencoded",
+            queryParams:null,
+            columns: [
+                {
+                    checkbox: "true",
+                    field: 'check',
+                    align: 'center',
+
+                    valign: 'middle'
+                },
+                {
+                    title: "区域编号",
+                    field: 'areaId',
+                    align: 'center',
+                    width: 100,
+                    valign: 'middle'
+                },
+                {
+                    title: "区域名称",
+                    field: 'areaName',
+                    align: 'center',
+                    width: 100,
+                    valign: 'middle'
+                },
+                {
+                    title: '区域级别',
+                    field: 'areaLevel',
+                    align: 'center',
+                    width: 120,
+                    valign: 'middle'
+                },
+
+                {
+                    title: '操作',
+                    width: 120,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+
+                        var  f = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-success" >编辑</button> ';
+                        var  d = '<button  id="add" data-id="98" style="outline:none" class="btn btn-xs btn-danger" >删除</button> ';
+                        return  f + d;
+                    }
+                }
+
+            ]
+        });
+    });
+
+    function plus(){
+        layer.open({
+            type: 2,
+            title: '新增区域',
+            content: '/testAddPage',
+            shade:[0.8,'#393d49'],
+            area:['500px','430px'],
+            btn:['确定','取消'],
+            yes:function (index,layero) {
+                var iframeWindow = window['layui-layer-iframe'+index];
+                var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                //监听提交
+                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                    var field = data.field;
+                    $.ajax({
+                        url: '/areaAdd',
+                        data: field,
+                        async: false,
+                        cache: false,
+                        success: function (str) {
+                            if(str.code === 0){
+                                console.log(1111);
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
+                    layer.close(index);     //关闭弹层
+                    $("#table").bootstrapTable('refresh');
+                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                });
+                submit.trigger('click');
+            },
+            success:function (layero,index) {
+
+            }
+        });
+    }
+
+
+
+</script>
+</body>
+</html>

@@ -1,9 +1,11 @@
 package com.example.light.controller;
 
+import com.example.light.annotation.LogAnnotation;
 import com.example.light.common.ResultMapUtil;
 import com.example.light.entity.User;
 import com.example.light.mapper.UserMapper;
 import com.example.light.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -37,8 +39,10 @@ public class UserController {
         String username = (String) session.getAttribute("username");
 
 
+
+
         if (username == null){
-            return "/login";
+            return "/main/login";
         }else {
             return "redirect:/Index";
         }
@@ -79,15 +83,24 @@ public class UserController {
      * 主页跳转
      * @return
      */
+    @LogAnnotation
+    @ApiOperation(value = "用户登录")
     @RequestMapping("/Index")
     public Object Index(){
-        return "/index";
+        return "/main/index";
+    }
+
+    @RequestMapping("/baiduMap")
+    public Object baiduMap(){
+        return "/main/baiduMap";
     }
 
 
     /**
      * 退出登录
      */
+//    @LogAnnotation
+//    @ApiOperation(value = "用户退出")
     @RequestMapping(value = "/Logout")
     public String Logout(){
         Subject subject = SecurityUtils.getSubject();
@@ -100,6 +113,8 @@ public class UserController {
      * 当前用户信息界面
      * @return
      */
+    @LogAnnotation
+    @ApiOperation(value = "查看用户的信息")
     @RequestMapping("/userInfo")
     public Object userInfo(Model model){
         Session session = SecurityUtils.getSubject().getSession();
@@ -108,7 +123,7 @@ public class UserController {
 
         model.addAttribute("obj",user);
 
-        return "/userInfo1";
+        return "/main/userInfo1";
     }
 
     /**

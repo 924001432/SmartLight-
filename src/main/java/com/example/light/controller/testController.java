@@ -1,26 +1,34 @@
 package com.example.light.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.light.entity.Alarm;
-import com.example.light.entity.Device;
-import com.example.light.entity.User;
-import com.example.light.entity.testEntity;
+
+import com.example.light.annotation.LogAnnotation;
+
+import com.example.light.entity.Area;
 import com.example.light.mapper.UserMapper;
 import com.example.light.mapper.testMapper;
 import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.AlarmService;
+import com.example.light.service.AreaService;
 import com.example.light.service.NewsProducerService;
 import com.example.light.service.UserService;
-import org.apache.activemq.command.ActiveMQQueue;
+import io.swagger.annotations.ApiOperation;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.example.light.common.ResultMapUtil;
+
 import org.springframework.web.client.RestTemplate;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import javax.jms.Destination;
 import java.util.List;
@@ -42,6 +50,8 @@ public class testController {
 
     @Autowired
     private AlarmService alarmService;
+
+
 
     @Autowired
     private JmsMessagingTemplate jmsTemplate;
@@ -77,25 +87,9 @@ public class testController {
 
 
 
-    @RequestMapping("/test")
-    public Object test(){
-        return "/test";
-    }
 
-    @RequestMapping("/test1")
-    public Object test1(){
-        return "/test1";
-    }
 
-    @RequestMapping("/testValue")
-    @ResponseBody
-    public Object testValue(){
 
-        List<Alarm> alarmList = alarmService.queryAlarmList();
-
-        return ResultMapUtil.getHashMapList(alarmList);
-
-    }
 
 
 
@@ -105,40 +99,7 @@ public class testController {
         return "/index";
     }
 
-    @RequestMapping("/testBaiduMap")
-    public Object testBaiduMap(){
-        return "/baiduMap";
-    }
 
-    @RequestMapping("/setLight")
-    public Object setLight(){
-        return "/setLight";
-    }
-
-    @RequestMapping("/lightNum")
-    public Object lightNum(){
-        return "/lightNum";
-    }
-
-    @RequestMapping("/lightError")
-    public Object lightError(){
-        return "/lightError";
-    }
-
-    @RequestMapping("/lightOnOff")
-    public Object lightOnOff(){
-        return "/lightOnOff";
-    }
-
-    @RequestMapping("/localLight")
-    public Object localLight(){
-        return "/localLight";
-    }
-
-    @RequestMapping("/groupLight")
-    public Object groupLight(){
-        return "/groupLight";
-    }
 
     @RequestMapping("/testpost")
     @ResponseBody
@@ -188,6 +149,17 @@ public class testController {
         newsProducerService.publish(str);
 
     }
+
+
+    @RequestMapping("/testLogs")
+    @ResponseBody
+    @LogAnnotation
+    @ApiOperation(value = "ceshirizhi")
+    public void testLogs() {
+        System.out.println("测试日志");
+    }
+
+
 
 
 }

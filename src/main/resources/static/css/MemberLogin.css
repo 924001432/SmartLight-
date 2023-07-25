@@ -234,7 +234,7 @@ body{
 .head {
 	position: absolute;
 	top:-15%;
-	left: 35%;
+	left: 36%;
 }
 .head img {
 	border-radius:50%;
@@ -969,9 +969,10 @@ input[type="submit"]:hover{
 		/**/
 /*}*/
 .butSyley{
-    padding: 5px 18px;
+    padding: 10px 28px;
     color: #FFFFff;
     border-radius: 3px;
     border:none;
     background: #23a2cd;
+
 }

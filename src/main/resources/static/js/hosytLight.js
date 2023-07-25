@@ -5,7 +5,7 @@ var currentID;
 function tableLoad(){
     $('#table').bootstrapTable({
         method: "get",
-        url: "json/hosyLight.json",
+        url: "static/json/hosyLight.json",
         striped: true,
         singleSelect: false,
         dataType: "json",

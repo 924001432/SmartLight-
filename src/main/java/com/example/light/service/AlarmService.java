@@ -17,5 +17,9 @@ public interface AlarmService extends IService<Alarm> {
 
     public List<Alarm> alarmListByalarmStatus(Integer alarmStatus);
 
+    public List<Alarm> alarmListBydeviceSerial(Integer deviceSerial);
+
     public void insertAlarm(Alarm alarm);
+
+    public void removeAlarm(Integer alarmId);
 }

@@ -31,5 +31,11 @@ public class Alarm implements Serializable{
     @TableField(value = "alarm_handletime")
     private String alarmHandletime;
 
+    @TableField(value = "alarm_handlecomment")
+    private String alarmHandlecomment;
+
+    @TableField(value = "alarm_handleway")
+    private String alarmHandleway;
+
 
 }

@@ -1,9 +1,11 @@
 package com.example.light.controller;
 
+import com.example.light.annotation.LogAnnotation;
 import com.example.light.entity.Device;
 import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.DeviceService;
 import com.example.light.service.NewsProducerService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +16,7 @@ import com.example.light.common.ResultMapUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -33,15 +36,16 @@ public class contolLightController {
 
     @RequestMapping("/controlLight")
     public Object controlLight(){
-        return "/controlLight";
+        return "/control/controlLight";
     }
 
     @RequestMapping("/controlLightTail")
     public Object controlLightTail(){
-        return "/controlLightTail";
+        return "/control/controlLightTail";
     }
 
-
+    @LogAnnotation
+    @ApiOperation(value = "查看所有设备信息")
     @RequestMapping("/deviceList")
     @ResponseBody
     public Object deviceList() throws ParseException {
@@ -60,6 +64,8 @@ public class contolLightController {
         return ResultMapUtil.getHashMapList(deviceList);
     }
 
+    @LogAnnotation
+    @ApiOperation(value = "查看某区域的所有设备信息")
     @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
     @ResponseBody
     public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
@@ -75,6 +81,28 @@ public class contolLightController {
 
     }
 
+
+    @RequestMapping("/deviceListByDeviceCoordList/{deviceCoordList}")
+    @ResponseBody
+    public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList){
+
+//        System.out.println("deviceCoord: " + deviceCoord);
+        List<Device> deviceList = new ArrayList<>();
+
+        for (Integer integer : deviceCoordList) {
+            deviceList.addAll(deviceService.deviceListByDeviceCoord(integer));
+
+        }
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(deviceList);
+
+    }
+
+    @LogAnnotation
+    @ApiOperation(value = "校准时间")
     @RequestMapping("/SetTime")
     @ResponseBody
     public void SetTime(){
@@ -90,6 +118,8 @@ public class contolLightController {
 
     }
 
+    @LogAnnotation
+    @ApiOperation(value = "开启全部路灯")
     @RequestMapping("/AllLightControl/{PanId}&{type}")
     @ResponseBody
     public void AllLightControl(@PathVariable(name = "PanId",required = true)String PanId, @PathVariable(name = "type",required = true)Integer type){
