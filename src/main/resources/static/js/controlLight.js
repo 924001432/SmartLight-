@@ -187,7 +187,6 @@ function zTreeOnCheck(event, treeId, treeNode) {
               deviceCoordList[i] = childNodes[i].net;
               //do something——去除undefined
 
-
             }
 
             deviceListByDeviceCoord("/deviceListByDeviceCoordList/" , deviceCoordList);

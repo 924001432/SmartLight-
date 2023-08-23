@@ -20,7 +20,28 @@ public class User implements Serializable {
     @TableField(value = "user_name")
     private String userName;
 
-    /*电话*/
+
     @TableField(value = "user_password")
     private String userPassword;
+
+    /*电话*/
+    @TableField(value = "user_phone")
+    private String userPhone;
+
+    @TableField(value = "user_email")
+    private String userEmail;
+
+    @TableField(value = "user_role")
+    private Integer userRole;
+
+    @TableField(value = "user_createtime")
+    private String userCreatetime;
+
+    @TableField(value = "user_updatetime")
+    private String userUpdatetime;
+
+
+
+
+
 }

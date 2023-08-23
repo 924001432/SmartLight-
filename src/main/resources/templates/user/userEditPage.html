@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="userId" th:value="${obj?.userId}" class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" th:value="${obj?.userName}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户密码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userPassword" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userPassword" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户电话：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userPhone" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户邮箱：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userEmail" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户角色：</label>
+                    <div class="layui-input-block">
+                        <select id="parentId" name="userRole" lay-search lay-filter="demo"></select>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            form.on('select(demo)', function(data){
+                //当前区域级别的值，展示或隐藏网络编号
+                var areaLevel = $("#areaLevel").val();
+                if(areaLevel == 4){
+                    $("#net").show();
+                    $("#netName").attr('name','areaNet');
+                }else{
+                    $("#net").hide();
+                    $("#netName").removeAttr('name');
+                }
+                //获取上级区域列表
+                $.ajax({
+                    url: '/area/parents/' + areaLevel,
+                    dataType:'json',
+                    type:'post',
+                    cache:false,
+                    success:function (data) {
+                        //清空列表
+                        var select = $("#parentId");
+                        select.empty();
+
+                        for(var i=0; i<data.length; i++){
+                            var d = data[i];
+                            var id = d['areaId'];
+                            var name = d['areaName'];
+
+                            select.append("<option value='"+ id +"'>" +name+"</option>");
+                        }
+                        form.render();          //下拉列表渲染，把内容加载进去
+                    }
+                });
+
+            });
+
+
+        });
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

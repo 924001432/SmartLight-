@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增角色</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/ztree/zTreeStyle/zTreeStyle.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/ztree/demo.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="" id="form">
+                <input id="roleId" name="roleId" th:value="${obj?.roleId}" class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="roleName" th:value="${obj?.roleName}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色描述：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="roleRemark" th:value="${obj?.roleRemark}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">权限</label>
+                    <div class="col-md-10">
+                        <ul id="treeDemo" class="ztree" name="rolePermission"  ></ul>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="row" align="center">
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" onclick="location.href='/roleInfo'">返回</button>
+                            <button class="btn btn-primary" type="submit" onclick="add()">
+                                <i class="fa fa-save"></i> 保存
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item ">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script th:src="@{/static/js/ztree/roleZtree.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
+<script>
+
+    layui.use(['form','laydate','layer'], function(){
+	    var layer = layui.layer;
+	    var $ = layui.$;
+        var laydate = layui.laydate;
+        var form = layui.form;
+	});
+
+		$.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+
+		function add() {
+            //保存角色信息的同时保存权限修改信息
+
+
+
+            var role = $("#form").serializeObject();
+            role.permissionIds = getCheckedMenuIds();
+            console.log(role);
+
+            var permissionIds = getCheckedMenuIds();
+
+            $.ajax({
+				type : 'GET',
+				url : '/roleAdd',
+				dataType: 'text',
+				data : role,
+				async: false,
+
+			});
+		}
+
+        //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
+		$.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+             if (o[this.name]) {
+              if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+              }
+              o[this.name].push(this.value || '');
+             } else {
+              o[this.name] = this.value || '';
+             }
+            });
+            return o;
+        };
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

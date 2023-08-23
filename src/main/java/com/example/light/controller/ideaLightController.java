@@ -40,8 +40,8 @@ public class ideaLightController {
         return "/idea/ideaLightTail";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "获取所有开灯策略信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "获取所有开灯策略信息")
     @RequestMapping("/ideaList")
     @ResponseBody
     public Object ideaList(){

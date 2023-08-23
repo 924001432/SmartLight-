@@ -1,0 +1,257 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="utf-8" />
+    <title></title>
+    <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
+    <link href="static/css/table.css" rel="stylesheet" type="text/css">
+    <style>
+        .remark{   white-space: nowrap;
+                   text-overflow:ellipsis;
+                   overflow: hidden;
+                   //display: -webkit-box;
+                   -webkit-line-clamp: 2;
+                   //-webkit-box-orient: vertical;
+        }
+        .rowSameHeight {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;" >
+<div class="notice_main">
+    <h5>用户列表</h5>
+    <div style="border-bottom: 1px #ccc solid;padding-bottom: 8px">
+        <p style="line-height: 24px;font-size: 14px;padding: 4px 0 0 36px ;color:#bb8940;background-image: url(static/img/ts_03.png);background-repeat: no-repeat;background-position: 10px 8px;font-weight: bold">温馨提示</p>
+        <ul class="ts">
+            <li><span>*</span>该页面主要显示的是所有用户的信息</li>
+
+        </ul>
+    </div>
+<!--                            查找功能，未实现！                         -->
+<!--    <div class="notice_check">-->
+<!--        <label class="">数据编号：</label> <input type="text" class="find_input">-->
+<!--        <label class="">数据名称：</label> <input type="text" class="find_input">-->
+<!--        <label class="">上传时间：</label> <input type="date" class="find_input">-->
+
+<!--        <button class="check_btn">查询</button>-->
+
+
+<!--    </div>-->
+
+    <div class="notice_check">
+        <div class="notice_nav r_right paddingBotme">
+            <a class="btn btn-default" onclick="addUser()"><span class="glyphicon glyphicon-plus"></span>新增</a>
+        </div>
+    </div>
+
+    <table id="table" class="table_style" style="word-wrap:break-all;word-break:break-all;table-layout:fixed;" > </table>
+</div>
+<script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
+<script src="static/js/bstable/js/bootstrap.min.js"></script>
+<script src="static/js/bstable/js/bootstrap-table.js"></script>
+<script src="static/js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="static/js/layer_v2.1/layer/layer.js"></script>
+<script src="static/layui/layui.js"></script>
+
+<script>
+    $(function () {
+        $('#table').bootstrapTable({
+            method: "get",
+            striped: true,
+            singleSelect: false,
+            url: "/userList",
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: false, //显示搜索框
+            contentType: "application/x-www-form-urlencoded",
+            queryParams:null,
+            columns: [
+                {
+                    checkbox: "true",
+                    field: 'check',
+                    align: 'center',
+                    valign: 'middle'
+                }
+                ,
+                {
+                    title: "序号",
+                    field: 'userId',
+                    align: 'center',
+                    width: 40,
+                    valign: 'middle'
+                },
+                {
+                    title: "用户名",
+                    field: 'userName',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '电话',
+                    field: 'userPhone',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '邮箱',
+                    field: 'userEmail',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '用户角色',
+                    field: 'userRole',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '创建时间',
+                    field: 'userCreatetime',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '更新时间',
+                    field: 'userUpdatetime',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '操作',
+                    width: 100,
+                    align: 'center',
+                    formatter: function (cellval, row ,index) {
+                        var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="editUserInfo('+row.userId+')" ><span class="glyphicon glyphicon-pencil"></span> 编辑</a>'
+                        var f = '<a style="margin: 2;width:80" class="btn btn-xs btn-danger"  onclick="deleteUser('+row.userId+')"><span class="glyphicon glyphicon-pencil"></span> 删除</a>'
+
+                        return  e + f;
+                    }
+                },
+
+
+
+
+
+            ]
+        });
+    });
+
+    function editUserInfo(userId){
+
+        console.log(userId);
+        layer.open({
+            type: 2,
+            title: '编辑用户',
+            content: '/userEditPage/' + userId,
+            shade:[0.8,'#393d49'],
+            area:['500px','450px'],
+            btn:['确定','取消'],
+            yes:function (index,layero) {
+                var iframeWindow = window['layui-layer-iframe'+index];
+                var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                //监听提交
+                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                    var field = data.field;
+                    $.ajax({
+                        url: '/userEdit',
+                        data: field,
+                        async: false,
+                        cache: false,
+                        success: function (str) {
+                            if(str.code === 0){
+                                console.log(1111);
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
+                    layer.close(index);     //关闭弹层
+                    $("#table").bootstrapTable('refresh');
+                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                });
+                submit.trigger('click');
+            },
+            success:function (layero,index) {
+
+            }
+        });
+
+    }
+
+
+    function deleteUser(userId){
+
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+        //do something
+        $.ajax({
+              url: '/userDelete/'+userId,
+              type: 'post',
+              dataType: 'text',
+              success: function (result) {
+                    $("#table").bootstrapTable('refresh');
+              }
+          })
+
+        layer.close(index);
+        });
+
+    }
+
+    function addUser(){
+        layer.open({
+            type: 2,
+            title: '新增用户',
+            content: '/userAddPage',
+            shade:[0.8,'#393d49'],
+            area:['500px','450px'],
+            btn:['确定','取消'],
+            yes:function (index,layero) {
+                var iframeWindow = window['layui-layer-iframe'+index];
+                var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                //监听提交
+                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                    var field = data.field;
+
+                    console.log(field);
+
+                    $.ajax({
+                        url: '/userAdd',
+                        data: field,
+                        async: false,
+                        cache: false,
+                        success: function (str) {
+                            if(str.code === 0){
+
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
+
+                    layer.close(index);     //关闭弹层
+                    $("#table").bootstrapTable('refresh');
+                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                });
+                submit.trigger('click');
+            },
+            success:function (layero,index) {
+
+            }
+        });
+    }
+
+
+
+</script>
+</body>
+</html>

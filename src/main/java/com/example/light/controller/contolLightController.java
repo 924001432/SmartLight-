@@ -44,8 +44,8 @@ public class contolLightController {
         return "/control/controlLightTail";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看所有设备信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看所有设备信息")
     @RequestMapping("/deviceList")
     @ResponseBody
     public Object deviceList() throws ParseException {
@@ -64,8 +64,8 @@ public class contolLightController {
         return ResultMapUtil.getHashMapList(deviceList);
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看某区域的所有设备信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看某区域的所有设备信息")
     @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
     @ResponseBody
     public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){

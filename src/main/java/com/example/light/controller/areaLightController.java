@@ -44,8 +44,8 @@ public class areaLightController {
         return "/zTree/testZTree";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "获取所有区域")
+//    @LogAnnotation
+//    @ApiOperation(value = "获取所有区域")
     @RequestMapping("/area/all")
     @ResponseBody
     public JSONArray areaAll() {

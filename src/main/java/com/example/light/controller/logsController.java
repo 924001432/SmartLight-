@@ -2,7 +2,6 @@ package com.example.light.controller;
 
 import com.example.light.annotation.LogAnnotation;
 import com.example.light.common.ResultMapUtil;
-import com.example.light.entity.Device;
 import com.example.light.entity.SysLogs;
 import com.example.light.service.SyslogsService;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-public class LogsController {
+public class logsController {
 
     @Autowired
     private SyslogsService syslogsService;
@@ -26,8 +25,8 @@ public class LogsController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看所有日志")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看所有日志")
     @RequestMapping("/logsList")
     @ResponseBody
     public Object logsList(){

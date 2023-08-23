@@ -22,27 +22,7 @@
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto;">
 <div class="notice_main" style="background-color: #ccc">
     <div class="myMap_left l_left">
-        <div class="carSearch">
-            <h5>轨迹设置</h5>
-            <div>
-                <p>
-                    <label>时间段：</label><input type="date" style="margin:0 4px"> — <input type="date" style="margin-left: 4px">
-                </p>
-                <p>
-                    <label>车速：</label>
-                    <select id="carSelect">
-                       <option value="500">500m/s</option>
-                        <option value="1000">1000m/s</option>
-                        <option value="2000">2000m/s</option>
-                        <option value="4000">4000m/s</option>
-                    </select>
-                </p>
 
-            </div>
-            <div class="carBtn">
-                <button class="btn btn-sm btn-primary" onClick="carInfo()">开始</button><button class="btn btn-sm btn-danger" onClick="carMove()">取消</button>
-            </div>
-        </div>
         <div class="map" id="allmap"></div>
         <div class="notice">
             <p>青岛市 晴 18-20℃</p>
@@ -146,6 +126,15 @@
 <script src="static/js/baidu.js"></script>
 <script type="text/javascript">
 
+    var zTree, rMenu;
+    var marker = undefined;
+    var label = undefined;
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+
+        zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        rMenu = $("#rMenu");
+    });
 
     var pageSize = 7;
     show(1);
@@ -165,11 +154,13 @@
             var curAlarmType;
             var curAlarmStatus;
 
+
                 $.each(json.data, function (index, value) {//index是循环的序数
 
                     switch(this.alarmType){
                         case 0:
                             curAlarmType = '湿度报警';
+
                             break;
                         case 1:
                             curAlarmType =  '温度报警';
@@ -200,9 +191,9 @@
                         "<li>"+
                             "<div>"+
 
-                                "<p class=\"l_left text\" onClick=\"Location()\"> 设备编号：" + this.deviceSerial +"</p>"+
+                                "<p class=\"l_left text\" onClick=\"theLocation(1)\"> 设备编号：" + this.deviceSerial +"</p>"+
 <!--                                "<span class=\"r_right\"><img src=\"static/img/find01.png\" onClick=\"theLocation()\"></span>"+-->
-                                "<p class=\"r_right text1\" style=\"color:red\"> 报警类型：" + curAlarmType +"</p>"+
+                                "<p class=\"r_right text1\" onClick=\"theLocation(2)\" style=\"color:red\"> 报警类型：" + curAlarmType +"</p>"+
                                 "<div class=\"clear\"></div>"+
                             "</div>"+
                             "<p>地址：成都市高新区天华路211号</p>"+
@@ -241,8 +232,40 @@ $(".tcdPageCode").createPage({
 
 
 
-    function Location(){
-        console.log("定位")
+    function theLocation(id){
+
+
+        map.clearOverlays();
+        var new_point;
+        if(id ==1 ){
+            new_point = new BMap.Point(116.32490 , 39.80739  );
+            var polyline = new BMap.Polyline([
+                new BMap.Point(116.32535 , 39.79937 ),
+                new_point,
+                new BMap.Point(116.32442 , 39.81439 )
+            ], {
+                strokeColor: 'black',
+                strokeWeight: 4,
+                strokeOpacity: 0.5
+            });
+
+
+        }else {
+            new_point = new BMap.Point(116.42490 , 39.90739  );
+            var polyline = new BMap.Polyline([
+                new BMap.Point(116.42535 , 39.89937 ),
+                new_point,
+                new BMap.Point(116.42442 , 39.91439 )
+            ], {
+                strokeColor: 'red',
+                strokeWeight: 4,
+                strokeOpacity: 0.5
+            });
+
+
+        }
+        map.addOverlay(polyline);
+        map.panTo(new_point);
 
     }
 

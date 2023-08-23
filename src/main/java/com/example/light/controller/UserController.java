@@ -5,6 +5,7 @@ import com.example.light.common.ResultMapUtil;
 import com.example.light.entity.User;
 import com.example.light.mapper.UserMapper;
 import com.example.light.service.UserService;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -15,9 +16,9 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -37,9 +38,6 @@ public class UserController {
 
         Session session = SecurityUtils.getSubject().getSession();
         String username = (String) session.getAttribute("username");
-
-
-
 
         if (username == null){
             return "/main/login";
@@ -113,9 +111,9 @@ public class UserController {
      * 当前用户信息界面
      * @return
      */
-    @LogAnnotation
-    @ApiOperation(value = "查看用户的信息")
-    @RequestMapping("/userInfo")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看用户的信息")
+    @RequestMapping("/curUserInfo")
     public Object userInfo(Model model){
         Session session = SecurityUtils.getSubject().getSession();
 
@@ -137,6 +135,97 @@ public class UserController {
 
         return (String) session.getAttribute("username");
     }
+
+    /**
+     * 所有用户信息页面
+     */
+    @RequestMapping("/allUserInfo")
+    public Object allUserInfo(){
+        return "/user/allUserInfo";
+    }
+
+    /**
+     * 获取全部的用户信息
+     * @return
+     */
+    @GetMapping("/userList")
+    @ResponseBody
+    public List<User> userList(){
+
+        return userService.queryUserList();
+    }
+
+    /**
+     * 新增用户界面
+     * @return
+     */
+    @RequestMapping("/userAddPage")
+    public Object userAddPage(){
+
+        return "/user/userAddPage";
+    }
+
+    /**
+     * 编辑用户信息页面
+     */
+    @RequestMapping("/userEditPage/{userId}")
+    public Object userEditPage(@PathVariable(name = "userId",required = true)Integer userId, Model model){
+
+        User user = userService.queryUserById(userId);
+        model.addAttribute("obj",user);
+
+
+        return "/user/userEditPage";
+    }
+
+
+
+    /**
+     * 编辑用户信息
+     * @return
+     */
+    @GetMapping("/userEdit")
+    @ResponseBody
+    public Object userEdit(User user){
+
+        try{
+            int i = userService.userEdit(user);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
+    }
+
+    /**
+     * 新增用户信息
+     * @return
+     */
+    @GetMapping("/userAdd")
+    @ResponseBody
+    public Object userAdd(User user){
+
+        try{
+            int i = userService.userAdd(user);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
+    }
+
+    /**
+     * 删除用户
+     */
+    @RequestMapping("/userDelete/{userId}")
+    @ResponseBody
+    public void userDelete(@PathVariable(name = "userId",required = true)Integer userId){
+
+        userService.userDelete(userId);
+
+    }
+
+
 
 
 }

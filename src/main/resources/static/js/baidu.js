@@ -6,14 +6,14 @@
 var map = new BMap.Map("allmap");
 
 /**-----------------------------设置中心点坐标和地图级别----------------------- */
-map.centerAndZoom(new BMap.Point(120.38946 , 36.07223), 12);
+//map.centerAndZoom(new BMap.Point(120.38946 , 36.07223), 12);
+map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
 
 /**-----------------------------开启鼠标滚轮缩放----------------------- */
 map.enableScrollWheelZoom(true);
 
 /**-----------------------------设置鼠标样式----------------------- */
 map.setDefaultCursor("url('bird.cur')");
-
 
 /**-----------------------------添加带有定位的导航控件----------------------- */
 var navigationControl = new BMap.NavigationControl({
@@ -426,3 +426,5 @@ function videoInfo(){
     art.dialog.open('playback.html',
         {title: '视频监控', width: '900px', height: '600px',shade: 0.5,mask:true});
 }
+
+
