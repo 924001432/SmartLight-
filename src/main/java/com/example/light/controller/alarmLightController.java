@@ -33,8 +33,8 @@ public class alarmLightController {
         return "/alarm/alarmLightTail";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "获取所有报警数据")
+//    @LogAnnotation
+//    @ApiOperation(value = "获取所有报警数据")
     @RequestMapping("/alarmList")
     @ResponseBody
     public Object alarmList(){
@@ -44,8 +44,8 @@ public class alarmLightController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "根据报警状态获取报警数据")
+//    @LogAnnotation
+//    @ApiOperation(value = "根据报警状态获取报警数据")
     @RequestMapping("/alarmListByalarmStatus/{alarmStatus}")
     @ResponseBody
     public Object alarmListByalarmStatus(@PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
@@ -55,8 +55,8 @@ public class alarmLightController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看某设备的报警数据信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看某设备的报警数据信息")
     @RequestMapping("/alarmListBydeviceSerial/{deviceSerial}")
     @ResponseBody
     public Object alarmListBydeviceSerial(@PathVariable(name = "deviceSerial",required = true)Integer deviceSerial){

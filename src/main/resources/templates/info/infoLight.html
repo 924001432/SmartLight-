@@ -8,7 +8,7 @@
     <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
     <link href="static/css/table.css" rel="stylesheet" type="text/css">
 </head>
-<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto" onload="tableLoad()">
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto" >
 <div class="notice_main">
     <h5>上报数据列表</h5>
     <div style="border-bottom: 1px #ccc solid;padding-bottom: 8px">
@@ -19,15 +19,15 @@
         </ul>
     </div>
 
-<!--    <div class="notice_check">-->
-<!--        <label class="">数据编号：</label> <input type="text" class="find_input">-->
-<!--        <label class="">数据名称：</label> <input type="text" class="find_input">-->
-<!--        <label class="">上传时间：</label> <input type="date" class="find_input">-->
+    <div class="notice_check">
+        <label class="">设备编号：</label> <input type="text" class="find_input">
+        <button class="check_btn">查询</button>
 
-<!--        <button class="check_btn">查询</button>-->
+        <label class="">上传时间：</label> <input type="date" class="find_input">
+        <button class="check_btn">查询</button>
 
 
-<!--    </div>-->
+    </div>
     <table id="table" class="table_style" style="margin: 0 auto" > </table>
 </div>
 <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
@@ -49,7 +49,7 @@
             pageNumber: 1,
             search: false, //显示搜索框
             contentType: "application/x-www-form-urlencoded",
-            queryParams:null,
+            queryParams: queryParams,
             columns: [
                 {
                     checkbox: "true",
@@ -128,6 +128,18 @@
         });
     });
 
+function queryParams(params) {
+    return {
+        page: params.pageNumber,
+        rows: params.limit,//页码大小
+        order: params.order,
+        sort: params.sort,
+        SendPeople: $("#person").val(),
+        Title: $("#tit").val(),
+        BeginSendTime: $("#beginSendTime").val(),
+        EndSendTime: $("#endSendTime").val()
+    };
+}
 
 
 </script>

@@ -40,6 +40,7 @@ public class IdeaJob implements Job {
         //时间数据格式处理，获取每一位值转16进制
         /*
         *   自动执行定时计划，获取当前月份，匹配数据库记录，数据处理，构造协议，下发命令
+        *   数据库记录应该包含路段编号为索引，到执行时间点，查询所有符合该月份的记录，执行
         */
         //获取当前月份计划的数据库记录
         int current_month = Integer.parseInt(strDate.substring(5, 7));

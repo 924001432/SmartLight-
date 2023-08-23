@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增菜单项</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="id" th:value="${obj?.id}" class="layui-input layui-hide"/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">菜单名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" th:value="${obj?.name}" lay-verify="required" placeholder="请输入菜单名称" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上级菜单：</label>
+                    <div class="layui-input-block">
+                        <select id="parentId" name="parentId" lay-verify="required"></select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">区域级别：</label>
+                    <div class="layui-input-block">
+                        <select id="type" name="type"  lay-verify="required" lay-filter="demo">
+                            <option value="1">菜单</option>
+                            <option value="2">按钮</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">URL链接：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="href" th:value="${obj?.href}"  placeholder="请输入URL链接" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">权限：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="permission" th:value="${obj?.permission}"  placeholder="请输入权限" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序：</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" placeholder="排序" name="sort" id="sort" type="number" value="100"
+                               data-bv-notempty="true"
+                               data-bv-notempty-message="排序 不能为空">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    $('#parentId').prepend("<option value='0'>root</option>");
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            //获取上级区域列表
+            $.ajax({
+                url: '/permissions/parents',
+                dataType:'json',
+                type:'GET',
+                cache:false,
+                success:function (data) {
+
+                    //获取要渲染的数据
+                    var parentId = '[[${obj?.parentId}]]';
+                    var type = '[[${obj?.type}]]';
+                    //类型值固定，直接赋值
+                    $("#type").val(type);
+
+                    //上级区域值比较多，需要清空列表，重新渲染
+                    var select = $("#parentId");
+
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var id = d['id'];
+                        var name = d['name'];
+                        //选中行上级编号和获取到数据的编号一致，赋该值
+                        if( id == parentId) {
+                            select.append("<option selected value='"+ id +"'>" +name+"</option>");
+                        } else {
+                            select.append("<option value='"+ id +"'>" +name+"</option>");
+                        }
+
+                    }
+                    layui.form.render("select");          //下拉列表渲染，把内容加载进去
+                }
+            });
+
+
+        });
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

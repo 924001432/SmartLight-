@@ -31,8 +31,8 @@ public class infoLightController {
         return "/info/infoLightTail";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "获取所有环境数据信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "获取所有环境数据信息")
     @RequestMapping("/infoList")
     @ResponseBody
     public Object infoList(){
@@ -45,8 +45,8 @@ public class infoLightController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看某设备的环境数据信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看某设备的环境数据信息")
     @RequestMapping("/infoListByDeviceSerial/{deviceSerial}")
     @ResponseBody
     public Object infoListByDeviceSerial(@PathVariable(name = "deviceSerial",required = true)Integer deviceSerial){
