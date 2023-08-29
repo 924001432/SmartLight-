@@ -45,21 +45,6 @@ public class Monitor {
 
     public void analyser(String Messages)  {
 
-        /**
-         * 先解析协议头
-         * * 网关认证应答消息
-         * * 网关测试消息
-         * * 温度上传消息
-         * * 定位消息
-         * * 路由广播消息
-         * * 路灯状态消息
-         * * 定位状态消息
-         * * 路灯故障消息
-         *  协议头存到一个变量里
-         *  这里也要添加一个帧头帧尾的判定
-         */
-
-
         //转换为Int型后的数据，便于查找
         Integer[] integers = MessageUtil.handleStr2ArrInt(MessageUtil.handleStr2ArrStr(Messages));
 
@@ -214,7 +199,7 @@ public class Monitor {
 
     public void heartProcess(String Messages){
         //PanID
-        System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
+        System.out.println("PanID:" + Messages.substring(6, 8) + Messages.substring(4, 6));
 
         //序列号
         String temp = Messages.substring(30, 32) + Messages.substring(28, 30);

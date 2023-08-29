@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="stockId"  class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备编号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceSerial" name="deviceSerial"  lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceName" name="deviceName"  lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备类型：</label>
+                    <div class="layui-input-block">
+<!--                        <input type="text" id="deviceType" name="deviceType" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input" >-->
+                        <select id="deviceType" name="deviceType" lay-filter="demo">
+                            <option value="1">网关</option>
+                            <option value="2">路灯</option>
+
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备型号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceModel" name="deviceModel" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备品牌：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceBrand" name="deviceBrand" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">批次：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="stockBatch" name="stockBatch" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生产时间：</label>
+                    <div class="layui-input-block">
+                        <input type="date" id="deviceProducetime" name="deviceProducetime" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            //获取角色列表
+            $.ajax({
+                url: '/roleList',
+                dataType:'json',
+                type:'GET',
+                cache:false,
+                success:function (data) {
+
+                    console.log(data);
+                    //清空列表
+                    var select = $("#parentId");
+
+
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var id = d['roleId'];
+                        var name = d['roleName'];
+
+                        select.append("<option value='"+ id +"'>" +name+"</option>");
+                    }
+                    layui.form.render("select");          //下拉列表渲染，把内容加载进去
+                }
+            });
+
+
+
+
+
+
+        });
+
+        function checkUserName(value) {
+            //使用正则表达式校验用户名
+            //只能由英文字母和数字组成，长度为4～16个字符，并且以英文字母开头
+            //1. 编写一个正则表达式
+            var reg = /^[a-zA-Z][a-zA-Z0-9]{3,15}$/
+            //2. 使用正则表达式取校验用户名
+
+            console.log(value);
+            if(value.length <= 0){
+                console.log("value.length <= 0");
+
+            }else {
+                if (reg.test(value)) {
+
+                    //查询用户名是否已使用
+                    $.ajax({
+                        url: '/queryUserByName/' + value,
+
+                        async: false,
+                        cache: false,
+                        success: function (str) {
+
+                            if(str == -1){//找到重复的
+                                layer.msg("用户名已被使用",{icon:5,anim:6});
+                            }else{
+                                layer.msg("用户名合法",{icon:1,anim:4});
+                            }
+
+                        }
+                    });
+
+
+
+                }else {
+                    layer.msg("用户名不合法，请重新输入",{icon:5,anim:6});
+                    document.getElementById("userName").focus();;
+                }
+            }
+
+        }
+
+        function checkUserPhone(value) {
+            //使用正则表达式校验
+            //11位数字，以1开头。
+            //1. 编写一个正则表达式
+            var reg = /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/;
+            //2. 使用正则表达式取校验
+            if(value.length <= 0){
+                console.log("value.length <= 0");
+
+            }else {
+                if (reg.test(value)) {
+
+                    layer.msg("手机号码合法",{icon:1,anim:4});
+
+                }else {
+                    layer.msg("手机号码不合法，请重新输入",{icon:5,anim:6});
+                    document.getElementById("userPhone").focus();;
+                }
+            }
+        }
+
+        function checkUserEmail(value) {
+            //使用正则表达式校验
+            //姑且把邮箱地址分成“第一部分@第二部分”这样。第一部分：由字母、数字、下划线、短线“-”、点号“.”组成；第二部分：为一个域名，域名由字母、数字、
+            //短线“-”、域名后缀组成，而域名后缀一般为.xxx或.xxx.xx，一区的域名后缀一般为2-4位，如cn、com、net，现在域名有的也会大于4位
+
+            //1. 编写一个正则表达式
+            var reg = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/
+            //2. 使用正则表达式取校验
+            if(value.length <= 0){
+                console.log("value.length <= 0");
+
+            }else {
+                if (reg.test(value)) {
+
+                    layer.msg("邮箱合法",{icon:1,anim:4});
+
+                }else {
+                    layer.msg("邮箱不合法，请重新输入",{icon:5,anim:6});
+                    document.getElementById("userEmail").focus();;
+                }
+            }
+        }
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

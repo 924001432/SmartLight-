@@ -49,9 +49,35 @@ public class infoLightController {
 //    @ApiOperation(value = "查看某设备的环境数据信息")
     @RequestMapping("/infoListByDeviceSerial/{deviceSerial}")
     @ResponseBody
-    public Object infoListByDeviceSerial(@PathVariable(name = "deviceSerial",required = true)Integer deviceSerial){
+    public Object infoListByDeviceSerial(@PathVariable(name = "deviceSerial",required = true)String deviceSerial){
 
         List<Info> infoList = infoService.queryInfoListByDeviceSerial(deviceSerial);
+
+        return ResultMapUtil.getHashMapList(infoList);
+
+    }
+
+    @RequestMapping("/infoListByDate/{uptime}")
+    @ResponseBody
+    public Object infoListByDate(@PathVariable(name = "uptime",required = true)String uptime){
+
+        List<Info> infoList = infoService.queryInfoListByDate(uptime);
+
+
+        return ResultMapUtil.getHashMapList(infoList);
+
+    }
+
+    @RequestMapping("/testInfo")
+    @ResponseBody
+    public Object testInfo(){
+
+        List<Info> infoList = infoService.queryInfoListByDate("2023-07-18");
+
+
+        for (Info info : infoList) {
+            System.out.println(info);
+        }
 
         return ResultMapUtil.getHashMapList(infoList);
 

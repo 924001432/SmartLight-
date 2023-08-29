@@ -26,9 +26,9 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     private AlarmMapper alarmMapper;
 
     @Override
-    public Alarm queryAlarmById(Alarm alarm) {
+    public Alarm queryAlarmById(Integer alarmId) {
         QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
-        wrapper.eq("alarm_id",alarm.getAlarmId());
+        wrapper.eq("alarm_id",alarmId);
         return alarmMapper.selectOne(wrapper);
     }
 
@@ -42,10 +42,19 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     @Override
     public List<Alarm> alarmListByalarmStatus(Integer alarmStatus){
 
-        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
-        wrapper.eq("alarm_status",alarmStatus);
+        if(alarmStatus != 0){
+            QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+            wrapper.eq("alarm_status",alarmStatus).orderBy(true,false,"alarm_handletime");
 
-        return alarmMapper.selectList(wrapper);
+            return alarmMapper.selectList(wrapper);
+        }else {
+            QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+            wrapper.eq("alarm_status",alarmStatus).orderBy(true,false,"alarm_time");
+
+            return alarmMapper.selectList(wrapper);
+
+        }
+
 
     }
 
@@ -79,7 +88,28 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     @Override
-    public void removeAlarm(Integer alarmId){
+    public Integer removeAlarm(Integer alarmId){
+
+        QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
+        wrapper.eq("alarm_id",alarmId);
+
+        Alarm alarm = new Alarm();
+        alarm.setAlarmStatus(1);
+
+
+
+        Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String handle_time = sf.format(date);
+
+        alarm.setAlarmHandletime(handle_time);
+        alarm.setAlarmHandlecomment("手动消除");
+
+        return alarmMapper.update(alarm,wrapper);
+    }
+
+    @Override
+    public Integer repairAlarm(Integer alarmId){
 
         QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
         wrapper.eq("alarm_id",alarmId);
@@ -92,8 +122,8 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
         String handle_time = sf.format(date);
 
         alarm.setAlarmHandletime(handle_time);
-        alarm.setAlarmHandlecomment("手动消除");
+        alarm.setAlarmHandlecomment("报修中");
 
-        alarmMapper.update(alarm,wrapper);
+        return alarmMapper.update(alarm,wrapper);
     }
 }

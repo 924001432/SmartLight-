@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>故障报修</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="stockId" th:value="${obj?.stockId}" class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备编号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceSerial" name="deviceSerial" th:value="${obj?.deviceSerial}" lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceName" name="deviceName" th:value="${obj?.deviceName}" lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <input name="deviceType" th:value="${obj?.deviceType}" class="layui-input layui-hide"/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备类型：</label>
+                    <div class="layui-input-block">
+                        <!--                        <input type="text" id="deviceType" name="deviceType" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input" >-->
+                        <select id="type" name="type" lay-search lay-filter="demo">
+
+
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备型号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceModel" name="deviceModel" th:value="${obj?.deviceModel}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备品牌：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="deviceBrand" name="deviceBrand" th:value="${obj?.deviceBrand}" lay-verify="required"  autocomplete="off" class="layui-input" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">批次：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="stockBatch" name="stockBatch" th:value="${obj?.stockBatch}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">生产时间：</label>
+                    <div class="layui-input-block">
+                        <input type="date" id="deviceProducetime" name="deviceProducetime" th:value="${obj?.deviceProducetime}" lay-verify="required"  autocomplete="off" class="layui-input"  >
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            //获取设备类型
+            var type = '[[${obj?.deviceType}]]';
+            //获取select
+            var select = $("#type");
+
+            //定义设备
+            var typeList = [
+                {"typeId":1,"typeName":"网关"},
+                {"typeId":2,"typeName":"路灯"}
+            ];
+            //渲染
+            for(var i=0; i<typeList.length; i++){
+                var d = typeList[i];
+                var id = d['typeId'];
+                var name = d['typeName'];
+                if(id == type){
+                    select.append("<option selected value='"+ id +"'>" +name+"</option>");
+                } else {
+                    select.append("<option value='"+ id +"'>" +name+"</option>");
+                }
+            }
+            layui.form.render("select");
+
+        });
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

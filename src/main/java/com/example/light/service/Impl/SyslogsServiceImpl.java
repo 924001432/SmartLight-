@@ -3,6 +3,7 @@ package com.example.light.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.light.entity.Device;
+import com.example.light.entity.Info;
 import com.example.light.entity.SysLogs;
 import com.example.light.entity.User;
 import com.example.light.mapper.SyslogsMapper;
@@ -22,8 +23,10 @@ public class SyslogsServiceImpl extends ServiceImpl<SyslogsMapper, SysLogs> impl
 
     @Override
     public List<SysLogs> queryLogList(){
+        QueryWrapper<SysLogs> wrapper = new QueryWrapper<>();
+        wrapper.orderBy(true,false,"logs_createtime");
 
-        return syslogsMapper.selectList(null);
+        return syslogsMapper.selectList(wrapper);
 
     }
 

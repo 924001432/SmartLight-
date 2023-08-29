@@ -4,10 +4,17 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html"; charset="utf-8" />
     <title></title>
+    <link rel="stylesheet" href="static/layui/css/layui.css" media="all">
     <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
     <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
     <link href="static/css/table.css" rel="stylesheet" type="text/css" />
+
+    <style>
+.form-check-label{font-size:18px}
+.notice_nav a{font-size:15px}
+
+    </style>
 </head>
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto">
 <div class="news_main">
@@ -35,7 +42,7 @@
         <div class="clear"></div>
 
         <div class="notice_check">
-            <div class="notice_nav l_left paddingBotme">
+            <div class="notice_nav l_left paddingBotme" style=".{}font-size: 16px;">
 
                 <P>
 
@@ -45,13 +52,18 @@
 
                 </P>
             </div>
-<!--            <div class=" r_right ">-->
+            <div class=" r_right ">
 
-<!--                <P>-->
+
+
+
+
+                    <input class="form-check-input" type="checkbox" id="checkTimer" name="checkTimer" >
+                    <label class="form-check-label" for="checkTimer">定时刷新</label>
 <!--                    <a class="btn btn-default" onclick="SetTime()"><span class="glyphicon glyphicon-refresh"></span> 校时</a>-->
 <!--                    <a class="btn btn-default" onclick="TestJob()"><span class="glyphicon glyphicon-refresh"></span> 测试任务</a>-->
-<!--                </P>-->
-<!--            </div>-->
+
+            </div>
 
         </div>
             <div class="clear"></div>
@@ -74,9 +86,11 @@
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.excheck-3.5.js"></script>
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.exedit-3.5.js"></script>
 <script src="static/js/layer_v2.1/layer/layer.js"></script>
+<script src="static/layui/layui.js"></script>
 <script src="static/js/controlLight.js"></script>
 
 <script>
+
 
 
 
@@ -155,6 +169,20 @@
                                 return '<div  style="color:gray"> 关闭 </div>';
                             }else {
                                 return cellval;
+                            }}
+                    },
+                    {
+                        title: '模式',
+                        field: 'deviceModel',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:teal"> 普通模式 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:gray"> 雷达模式 </div>';
+                            }else {
+                                return '<div  style="color:gray"> 光敏模式 </div>';;
                             }}
                     },
                     {
@@ -242,10 +270,26 @@
         $.ajax({
                 url: '/SetTime',
                 type: 'GET',
-                dataType: 'text',
+                dataType: 'json',
+                success: function (str) {
+                    console.log(str);
+                    if(str.code === 0){
+
+                    }
+                    layer.msg("111",{icon:1,anim:4});
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log(xhr);
+                    var str = xhr.responseJSON;
+                    console.log(str);
+
+                    console.log(str.message);
+
+                    layer.msg(str.message,{icon:5,anim:6});
+                }
             })
 
-        alert("设置时间成功")
+
 
     }
 
@@ -254,18 +298,13 @@
                 url: '/TestJob',
                 type: 'GET',
                 dataType: 'text',
+
             })
 
         alert("执行计划")
 
     }
 
-    function data() {
-        var Name = "监控数据";
-        var Href = "setData.html";
-        var data_id = $("#add").attr('data-id');
-        window.parent.$.learuntab.myAddTab(Name, Href, data_id);
-    }
 </script>
 </body>
 </html>

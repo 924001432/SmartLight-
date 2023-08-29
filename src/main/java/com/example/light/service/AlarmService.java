@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AlarmService extends IService<Alarm> {
 
-    public Alarm queryAlarmById(Alarm alarm);
+    public Alarm queryAlarmById(Integer alarmId);
 
     public List<Alarm> queryAlarmList();
 
@@ -21,5 +21,7 @@ public interface AlarmService extends IService<Alarm> {
 
     public void insertAlarm(Alarm alarm);
 
-    public void removeAlarm(Integer alarmId);
+    public Integer removeAlarm(Integer alarmId);
+
+    public Integer repairAlarm(Integer alarmId);
 }

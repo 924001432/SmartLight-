@@ -70,12 +70,12 @@ public class ResultMapUtil {
     public static HashMap<String,Object> getHashMapSave(int i){
         HashMap<String,Object> resultMap = new HashMap<>();
         if(i == 0){
-            resultMap.put("msg","保存失败");
+            resultMap.put("msg","操作失败");
             resultMap.put("code",1);
             resultMap.put("icon",5);
             resultMap.put("anim",6);
         }else {
-            resultMap.put("msg","保存成功");
+            resultMap.put("msg","操作成功");
             resultMap.put("code",0);
             resultMap.put("icon",1);
             resultMap.put("anim",4);

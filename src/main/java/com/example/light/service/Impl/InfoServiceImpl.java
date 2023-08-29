@@ -16,7 +16,7 @@ import java.util.List;
 public class InfoServiceImpl extends ServiceImpl<InfoMapper, Info> implements InfoService {
 
     @Autowired
-    private InfoMapper infoMapper;
+    private  InfoMapper infoMapper;
 
     @Override
     public Info queryInfoById(Integer id) {
@@ -28,16 +28,31 @@ public class InfoServiceImpl extends ServiceImpl<InfoMapper, Info> implements In
     @Override
     public List<Info> queryInfoList(){
         //return this.list();
-
-        return infoMapper.selectList(null);
+        QueryWrapper<Info> wrapper = new QueryWrapper<>();
+        wrapper.orderBy(true,false,"info_updatetime");
+        return infoMapper.selectList(wrapper);
     }
 
     @Override
-    public List<Info> queryInfoListByDeviceSerial(Integer deviceSerial){
+    public List<Info> queryInfoListByDeviceSerial(String deviceSerial){
 
         QueryWrapper<Info> wrapper = new QueryWrapper<>();
-        wrapper.eq("info_serial",deviceSerial);
+        wrapper.eq("info_serial",deviceSerial).orderBy(true,false,"info_updatetime");
         return infoMapper.selectList(wrapper);
 
     }
+
+    @Override
+    public List<Info> queryInfoListByDate(String uptime){
+
+
+
+        QueryWrapper<Info> wrapper = new QueryWrapper<>();
+        wrapper.like("info_updatetime",uptime).orderBy(true,false,"info_updatetime");
+//        wrapper.eq("info_updatetime",uptime);
+        return infoMapper.selectList(wrapper);
+
+    }
+
+
 }

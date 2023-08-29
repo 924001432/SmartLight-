@@ -73,6 +73,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public Integer userAdd(User user) {
 
+        //设置默认密码
+        user.setUserPassword("123456");
+
         Date date = new Date();
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String create_time = sf.format(date);

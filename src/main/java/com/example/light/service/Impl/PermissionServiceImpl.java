@@ -20,8 +20,10 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     private PermissionMapper permissionMapper;
 
 
-
-
+    @Override
+    public List<Permission> permissions(){
+        return permissionMapper.listAll();
+    }
 
 
 
@@ -53,6 +55,14 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     @Override
+    public Permission queryPermissionBypermissionId(Integer id){
+        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
+        wrapper.eq("id",id);
+
+        return permissionMapper.selectOne(wrapper);
+    }
+
+    @Override
     public Integer menuAdd(Permission permission){
 
         return permissionMapper.insert(permission);
@@ -70,23 +80,25 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public Integer menuDelete(Integer id){
 
-        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
-        wrapper.eq("id",id);
-
+//        QueryWrapper<Permission> wrapper = new QueryWrapper<>();
+//        wrapper.eq("id",id);
+//        Permission permission = permissionMapper.selectOne(wrapper);//先找要删的那个，得到他的id，
 
         QueryWrapper<Permission> wrapper1 = new QueryWrapper<>();
         wrapper1.eq("parentId",id);
-        List<Permission> list = permissionMapper.selectList(wrapper1);
+        Permission permission = permissionMapper.selectOne(wrapper1);
 
 
-        if(list != null){//已经有子节点
-            System.out.println(list.get(0).getName());
+        if(permission != null){//已经有子节点
+            System.out.println(permission.getName());
             return -1;
+        }else {
+            return permissionMapper.deleteById(id);
         }
 
 
 
-        return permissionMapper.deleteById(id);
+
     }
 
 
