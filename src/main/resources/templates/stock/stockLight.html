@@ -1,0 +1,84 @@
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html"; charset="utf-8" />
+    <title></title>
+    <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
+    <link href="static/css/table.css" rel="stylesheet" type="text/css">
+    <style>
+        .form-check-label{font-size:15px}
+    </style>
+</head>
+<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto" >
+<div class="notice_main">
+    <h5>设备列表</h5>
+    <div style="border-bottom: 1px #ccc solid;padding-bottom: 8px">
+        <p style="line-height: 24px;font-size: 14px;padding: 4px 0 0 36px ;color:#bb8940;background-image: url(static/img/ts_03.png);background-repeat: no-repeat;background-position: 10px 8px;font-weight: bold">温馨提示</p>
+        <ul class="ts">
+            <li><span>*</span>该页面主要显示的是设备的相关信息</li>
+
+        </ul>
+    </div>
+
+
+    <div class="notice_check">
+
+
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="0" checked>
+        <label class="form-check-label" for="inlineRadio3">待出库</label>
+        <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio4" value="1">
+        <label class="form-check-label" for="inlineRadio4" style="margin-right:20px">已出库</label>
+
+
+
+        <label class="">设备编号：</label> <input id="deviceSerial" type="text" class="find_input">
+        <button class="check_btn" onclick="queryStockByDeviceSerial()">查询</button>
+
+<!--        <label class="">上传时间：</label> <input type="date" class="find_input">-->
+<!--        <button class="check_btn">查询</button>-->
+
+        <div class="notice_nav r_right paddingBotme">
+
+            <a class="btn btn-default" onclick="inStock()"><span class="glyphicon glyphicon-plus"></span>入库</a>
+
+
+
+        </div>
+
+
+<!--    <div class="notice_nav r_right">-->
+<!--        <a class="btn btn-default"><span class="glyphicon glyphicon-export"></span>导出</a>-->
+<!--        <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span>打印</a>-->
+
+
+<!--    </div>-->
+
+
+<!--    <ul class="news_table department_table">-->
+<!--        <li>-->
+<!--            <table id="table" class="table_style" style="margin: 0 auto" ></table>-->
+<!--        </li>-->
+<!--    </ul>-->
+
+
+    </div>
+
+    <table id="table" class="table_style" style="margin: 0 auto" > </table>
+</div>
+<script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
+<script src="static/js/bstable/js/bootstrap.min.js"></script>
+<script src="static/js/bstable/js/bootstrap-table.js"></script>
+<script src="static/js/bstable/js/bootstrap-table-zh-CN.min.js"></script>
+<script src="static/js/layer_v2.1/layer/layer.js"></script>
+<script src="static/js/light/stock/stockLight.js"></script>
+
+<script>
+
+
+</script>
+
+
+</body>
+</html>

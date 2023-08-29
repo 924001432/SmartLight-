@@ -10,7 +10,7 @@ import java.util.Map;
 public interface PermissionService extends IService<Permission> {
 
 
-
+    public List<Permission> permissions();
 
     public List<Permission> permissionList();
 
@@ -18,6 +18,8 @@ public interface PermissionService extends IService<Permission> {
     public List<Permission> listParents();
 
     public Permission queryPermission(Integer id);
+
+    public Permission queryPermissionBypermissionId(Integer id);
 
     public Integer menuAdd(Permission permission);
 

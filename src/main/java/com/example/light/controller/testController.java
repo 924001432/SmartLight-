@@ -75,12 +75,14 @@ public class testController {
 
     @RequestMapping("/testString")
     @ResponseBody
+    @RequiresPermissions("sys:user:password")
     public String testString(){
         return "hello";
     }
 
     @RequestMapping("/testButton")
     @ResponseBody
+    @RequiresPermissions("sys:user:qqq")
     public void testButton(){
         System.out.println("testButton succ!!");
     }
@@ -90,7 +92,15 @@ public class testController {
 
 
 
+    @RequestMapping("/404")
+    public Object page404(){
+        return "/error/404";
+    }
 
+    @RequestMapping("/500")
+    public Object page500(){
+        return "/error/500";
+    }
 
 
 

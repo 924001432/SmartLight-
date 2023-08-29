@@ -4,12 +4,15 @@ import com.example.light.annotation.LogAnnotation;
 import com.example.light.entity.Alarm;
 import com.example.light.entity.Device;
 import com.example.light.entity.Idea;
+import com.example.light.entity.User;
 import com.example.light.service.AlarmService;
 import com.example.light.service.DeviceService;
 import com.example.light.service.IdeaService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,10 +73,57 @@ public class alarmLightController {
     @ApiOperation(value = "消除报警")
     @RequestMapping("/removeAlarm/{alarmId}")
     @ResponseBody
-    public void removeAlarm(@PathVariable(name = "alarmId",required = true)Integer alarmId){
+    public Object removeAlarm(@PathVariable(name = "alarmId",required = true)Integer alarmId){
 
         //手动消除警报和自动消除警报，两种
-        alarmService.removeAlarm(alarmId);
+//        alarmService.removeAlarm(alarmId);
+
+        try{
+            int i = alarmService.removeAlarm(alarmId);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+    }
+
+    /**
+     * 报修页面
+     */
+    @RequestMapping("/alarmRepairPage/{alarmId}")
+    public Object alarmRepairPage(@PathVariable(name = "alarmId",required = true)Integer alarmId, Model model){
+
+
+        Alarm alarm = alarmService.queryAlarmById(alarmId);
+        model.addAttribute("obj",alarm);
+
+
+        return "/alarm/alarmRepairPage";
+    }
+
+    /**
+     *
+     * 报修处理过程，新建一张表，报修情况
+     * @param
+     * @return
+     */
+    @GetMapping("/alarmRepair")
+    @ResponseBody
+    public Object alarmRepair(Alarm alarm){
+        //存在问题：页面转换数据时，替换原来的int型为string导致数据库存储出现问题
+
+
+        System.out.println(alarm.toString());
+
+        //将状态改为  “待维修”
+
+
+
+        try{
+            int i = alarmService.repairAlarm(alarm.getAlarmId());
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
 
     }
 

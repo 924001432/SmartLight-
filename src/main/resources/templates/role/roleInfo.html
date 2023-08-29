@@ -100,7 +100,14 @@
                     field: 'roleRemark',
                     align: 'center',
                     width: 80,
-                    valign: 'middle'
+                    valign: 'middle',
+                    class: 'remark',
+                    formatter:function(value, row , index){
+                                var span=document.createElement('span');
+                                span.setAttribute('title',value);
+                                span.innerHTML = value;
+                                return span.outerHTML;
+                                }
                 },
                 {
                     title: '创建时间',

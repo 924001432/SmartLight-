@@ -11,6 +11,8 @@ public interface AreaService extends IService<Area> {
 
     public List<Area> findByParentId(Integer parentId);
 
+    public List<Area> areaListByuserArea(Integer userArea);
+
     public List<Map<String,Object>> getParent(List<Area> list, Integer parentId);
 
     public boolean hasChild(Integer areaId);

@@ -44,6 +44,22 @@ public class areaLightController {
         return "/zTree/testZTree";
     }
 
+
+    /**
+     * 根据用户负责区域查询区域
+     * @return
+     */
+    @RequestMapping("/areaListByareaId/{areaId}")
+    @ResponseBody
+    public Object areaListByareaId(@PathVariable(name = "areaId",required = true)Integer areaId) {
+
+        Area area = areaService.getById(areaId);
+
+
+
+        return area;
+    }
+
 //    @LogAnnotation
 //    @ApiOperation(value = "获取所有区域")
     @RequestMapping("/area/all")
@@ -52,6 +68,24 @@ public class areaLightController {
         List<Area> areaAll = areaService.areaList();
         JSONArray array = new JSONArray();
         setPermissionsTree(0, areaAll, array);
+
+        return array;
+    }
+
+    /**
+     * 根据用户负责区域构造区域目录
+     * @return
+     */
+    @RequestMapping("/areaListByuserArea/{userArea}")
+    @ResponseBody
+    public JSONArray areaListByuserArea(@PathVariable(name = "userArea",required = true)Integer userArea) {
+
+        List<Area> areaAll = areaService.areaList();
+
+        JSONArray array = new JSONArray();
+        setPermissionsTree(userArea, areaAll, array);
+
+//        System.out.println(array);
 
         return array;
     }

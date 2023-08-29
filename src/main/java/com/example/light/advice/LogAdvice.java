@@ -57,7 +57,8 @@ public class LogAdvice {
 
 			Session session = SecurityUtils.getSubject().getSession();
 			String username = (String) session.getAttribute("username");
-			sysLogs.setUserId(username);
+
+			sysLogs.setUserName(username);
 
 			sysLogs.setLogsFlag(1);
 
@@ -74,6 +75,11 @@ public class LogAdvice {
 
 			return object;
 		} catch (Exception e) {
+			Session session = SecurityUtils.getSubject().getSession();
+			String username = (String) session.getAttribute("username");
+
+			sysLogs.setUserName(username);
+
 			sysLogs.setLogsFlag(0);
 			sysLogs.setLogsRemark(e.getMessage());
 

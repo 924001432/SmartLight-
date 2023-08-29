@@ -33,14 +33,18 @@
     </div>
 <!--                            查找功能，未实现！                         -->
     <div class="notice_check">
-        <label class="">数据编号：</label> <input type="text" class="find_input">
-        <label class="">数据名称：</label> <input type="text" class="find_input">
+        <label class="">用户名：</label> <input type="text" class="find_input">
+        <button class="check_btn">查询</button>
+
+        <label class="">模块：</label> <input type="text" class="find_input">
+        <button class="check_btn">查询</button>
+
         <label class="">上传时间：</label> <input type="date" class="find_input">
 
         <button class="check_btn">查询</button>
         <div class="notice_nav r_right">
             <a class="btn btn-default"><span class="glyphicon glyphicon-export"></span>导出</a>
-            <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span>打印</a>
+<!--            <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span>打印</a>-->
 
 
         </div>
@@ -75,8 +79,7 @@
                     field: 'check',
                     align: 'center',
                     valign: 'middle'
-                }
-                ,
+                },
                 {
                     title: "序号",
                     field: 'logsId',
@@ -86,7 +89,7 @@
                 },
                 {
                     title: "用户名",
-                    field: 'userId',
+                    field: 'userName',
                     align: 'center',
                     width: 80,
                     valign: 'middle'

@@ -37,6 +37,9 @@ public class Device implements Serializable {
     @TableField(value = "device_status")
     private Integer deviceStatus;
 
+    @TableField(value = "device_model")
+    private Integer deviceModel;
+
     @TableField(value = "device_updatetime")
     private String deviceUpdatetime;
 

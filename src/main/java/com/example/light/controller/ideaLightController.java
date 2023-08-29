@@ -8,6 +8,7 @@ import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.IdeaService;
 import com.example.light.service.NewsProducerService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ public class ideaLightController {
     MyMqttClient mqttClient;
 
     @RequestMapping("/ideaLight")
+    @RequiresPermissions("sys:user:hello")
     public Object ideaLight(){
         return "/idea/ideaLight";
     }

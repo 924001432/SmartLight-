@@ -6,6 +6,7 @@ import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.DeviceService;
 import com.example.light.service.NewsProducerService;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,11 +65,15 @@ public class contolLightController {
         return ResultMapUtil.getHashMapList(deviceList);
     }
 
+
+
+
+
 //    @LogAnnotation
 //    @ApiOperation(value = "查看某区域的所有设备信息")
     @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
     @ResponseBody
-    public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
+    public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
 
@@ -76,6 +81,13 @@ public class contolLightController {
 
         //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
         //插入代码
+        for (Device device : deviceList) {
+            if (cal_time(device.getDeviceHearttime())){
+                device.setDeviceStatus(1);
+            }else {
+                device.setDeviceStatus(0);
+            }
+        }
 
         return ResultMapUtil.getHashMapList(deviceList);
 
@@ -84,7 +96,7 @@ public class contolLightController {
 
     @RequestMapping("/deviceListByDeviceCoordList/{deviceCoordList}")
     @ResponseBody
-    public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList){
+    public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
         List<Device> deviceList = new ArrayList<>();
@@ -96,6 +108,13 @@ public class contolLightController {
 
         //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
         //插入代码
+        for (Device device : deviceList) {
+            if (cal_time(device.getDeviceHearttime())){
+                device.setDeviceStatus(1);
+            }else {
+                device.setDeviceStatus(0);
+            }
+        }
 
         return ResultMapUtil.getHashMapList(deviceList);
 
@@ -103,9 +122,10 @@ public class contolLightController {
 
     @LogAnnotation
     @ApiOperation(value = "校准时间")
+    @RequiresPermissions("sys:user:qqq")
     @RequestMapping("/SetTime")
     @ResponseBody
-    public void SetTime(){
+    public Object SetTime(){
 
         /*
             采用方法取当前时间转字节
@@ -115,6 +135,7 @@ public class contolLightController {
 
         //发布消息
         newsProducerService.publishBytes(payload);
+        return ResultMapUtil.getHashMapSave(1);
 
     }
 
@@ -196,17 +217,18 @@ public class contolLightController {
         // 当前时间
         Date now = new Date();
 
+        Date d1=df.parse(heart_time);
+        // 时间差：天、时、分、秒
+        long diff = now.getTime() - d1.getTime();
 
-            Date d1=df.parse(heart_time);
-            // 时间差：天、时、分、秒
-            long diff = now.getTime() - d1.getTime();
+//        System.out.println(df.format(now.getTime()));
+//        System.out.println(df.format(d1.getTime()));
 
-            long diffMinutes = diff / (60 * 1000) % 60;
-            long diffSeconds = diff / 1000 % 60;
+        long diffMinutes = diff / (60 * 1000) % 60;
+        long diffSeconds = diff / 1000 % 60;
 
-            //小于20s，在线
-            return ((diffMinutes * 60) + diffSeconds) <= 20;
-
-
+        //小于20s，在线
+        return ((diffMinutes * 60) + diffSeconds) <= 60;
     }
+
 }

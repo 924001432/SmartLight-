@@ -27,6 +27,20 @@ public class permissionController {
     @Autowired
     private PermissionService permissionService;
 
+
+    @RequestMapping("/permissionAll")
+    @ResponseBody
+    public void permissions() {
+        List<Permission> permissions = permissionService.permissions();
+        //读取数据
+
+        for (Permission permission : permissions) {
+            System.out.println(permission.toString());
+        }
+
+
+    }
+
     @RequestMapping("/newIndex")
     public Object Index(){
         return "/main/newIndex";

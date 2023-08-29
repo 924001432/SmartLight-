@@ -5,7 +5,7 @@ var currentID;
 $(document).ready(function() {
         tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
                                                           var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                                                           return  e + d;
                                                       });
@@ -18,19 +18,27 @@ $(document).ready(function() {
 
                 $('#table').bootstrapTable('destroy');
                 tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
-                                                          var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                                                          var  e = '<button  id="remove" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                                                          var  d = '<button  id="repair1" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                                                           return  e + d;
                                                       });
-            } else if( val == 1 ){
+            } else if( val == 1 ){//已消警
 
                 $('#table').bootstrapTable('destroy');
                 tableLoad("/alarmListByalarmStatus/1",function (cellval, row) {
-                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                                                          var  d = '<button  id="repair2" data-id="100" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                                                           return  d;
                                                       });
+            }else if( val == 2){//已报修
+                $('#table').bootstrapTable('destroy');
+                tableLoad("/alarmListByalarmStatus/2",function (cellval, row) {
+                                                          var  f = '<button  id="cancel" data-id="101" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="cancelRepair(\'' + row.alarmId + '\')">撤销</button> ';
+
+                                                          return  f;
+                                                      });
+
             }
 
 
@@ -50,7 +58,7 @@ function tableLoad(myUrl,myFuc){
         pageNumber: 1,
         search: false, //显示搜索框
         contentType: "application/x-www-form-urlencoded",
-        queryParams: queryParams,
+
         columns: [
 
             {
@@ -59,8 +67,7 @@ function tableLoad(myUrl,myFuc){
                 align: 'center',
 
                 valign: 'middle'
-            }
-            ,
+            },
             {
                 title: '报警编号',
                 field: 'alarmId',
@@ -122,6 +129,8 @@ function tableLoad(myUrl,myFuc){
                         return '<div  style="color:red"> 未处理 </div>';
                     } else  if (cellval == 1){
                         return '<div  style="color:green"> 已处理 </div>';
+                    }else  if (cellval == 2){
+                        return '<div  style="color:green"> 已报修 </div>';
                     }else {
                         return cellval;
                     }}
@@ -159,24 +168,6 @@ function tableLoad(myUrl,myFuc){
 
         ]
     });
-}
-
-function queryParams(params) {
-    return {
-        page: params.pageNumber,
-        rows: params.limit,//页码大小
-        order: params.order,
-        sort: params.sort,
-        SendPeople: $("#person").val(),
-        Title: $("#tit").val(),
-        BeginSendTime: $("#beginSendTime").val(),
-        EndSendTime: $("#endSendTime").val()
-    };
-}
-
-//数据的查询
-function checkPersonData() {
-    $("#table").bootstrapTable('refresh');
 }
 
 function removeAlarm(alarmId) {
@@ -218,85 +209,66 @@ function repairAlarm(alarmId) {
     })
 }
 
-function dataLead() {
-    layer.open({
-        type: 2,
-        title: '分组信息',
-        shade: 0.5,
-        skin: 'layui-layer-rim',
-        area: ['700px', '350px'],
-        shadeClose: true,
-        closeBtn: 1,
-        content: '/alarmLightTail'
-    });
+
+//撤销报修操作，撤销之后的状态是什么呢
+function cancelRepair() {
+//    $.ajax({
+//        url: '/removeAlarm/'+alarmId,
+//        type: 'post',
+//        dataType: 'text',
+//        success: function (result) {
+//            $('#table').bootstrapTable('destroy');
+//            tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
+//                                                                      var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+//                                                                      var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+//
+//                                                                      return  e + d;
+//                                                                  });
+//
+//
+//        }
+//    })
+    console.log("cancel repair");
 }
 
-//取消操作
-function cancel() {
-    var index = parent.layer.getFrameIndex(window.name);
-    parent.layer.close(index);
-}
+function repairAlarm(alarmId){
 
-//单个下载
-function down(id){
+        console.log(alarmId);
+        layer.open({
+            type: 2,
+            title: '故障报修',
+            content: '/alarmRepairPage/' + alarmId,
+            shade:[0.8,'#393d49'],
+            area:['500px','450px'],
+            btn:['确定','取消'],
+            yes:function (index,layero) {
+                var iframeWindow = window['layui-layer-iframe'+index];
+                var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                //监听提交
+                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                    var field = data.field;
+                    $.ajax({
+                        url: '/alarmRepair',
+                        data: field,
+                        async: false,
+                        cache: false,
+                        success: function (str) {
+                            if(str.code === 0){
+                                console.log(1111);
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
+                    layer.close(index);     //关闭弹层
+                    $("#table").bootstrapTable('refresh');
+                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                });
+                submit.trigger('click');
+            },
+            success:function (layero,index) {
 
-        var personId = id;
-        $.ajax({
-            url: '/OAMessagePush/Delete?Ids=' + personId,
-            type: 'post',
-            dataType: 'json',
-            success: function (result) {
-                var result = handleError(result);
-                if (result.IsError) {
-                    alter("下载失败");
-                    return;
-                }
-                else {
-                    alter("下载成功");
-
-                }
             }
-        })
+        });
 
+    }
 
-}
-
-
-//批量下载
-function downAll(){
-    var idArray = $('#table').bootstrapTable('getSelections');
-    if(idArray == null || idArray.length ==0){
-        alert("请选择你要下载的类容!");
-        return false;
-    }else {
-        var personID = [];
-        for(var i=0;i<idArray.length;i++){
-            personID.push(idArray[i].id);
-        }
-        //$.each(idArray, function (index, row) {
-        //    personID.push(row.Id);
-        //});
-
-            $.ajax({
-                url: '/OAMessagePush/Delete?Ids=' + personID.join(","),
-                type: 'post',
-                dataType: 'json',
-                success: function (result) {
-                    var result = handleError(result);
-                    if (result.IsError) {
-                        return;
-                    }
-                    else {
-                        checkPersonData();
-                    }
-                }
-            })
-        }
-
-
-
-}
-//测试下载
-function textDel(){
-    alert("下载成功")
-}

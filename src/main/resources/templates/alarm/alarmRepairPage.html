@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>故障报修</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="alarmId" th:value="${obj?.alarmId}" class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">设备编号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="deviceSerial" th:value="${obj?.deviceSerial}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <input name="alarmType" th:value="${obj?.alarmType}" class="layui-input layui-hide"/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报警类型：</label>
+                    <div class="layui-input-block">
+
+                        <input type="text" id="type" name="type"  lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报警时间：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="alarmTime" th:value="${obj?.alarmTime}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <input name="alarmStatus" th:value="${obj?.alarmStatus}" class="layui-input layui-hide"/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报警状态：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="status" name="status" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">处理建议：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="alarmHandleway" th:value="${obj?.alarmHandleway}"   autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报警备注：</label>
+                    <div class="layui-input-block">
+                        <textarea name="alarmHandlecomment" autocomplete="off" class="layui-input"></textarea>
+<!--                        <input type="text" name="alarmHandlecomment" th:value="${obj?.alarmHandlecomment}" lay-verify="required"  autocomplete="off" class="layui-input">-->
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            var type = '[[${obj?.alarmType}]]';
+            console.log(type);
+            switch(type){
+                case '0':
+                    $("#type").val("湿度报警");
+                    break;
+                case '1':
+                    $("#type").val("温度报警");
+                    break;
+                case '2':
+                    $("#type").val("路灯电压报警");
+                    break;
+                case '3':
+                    $("#type").val("主板电压报警");
+                    break;
+                case '4':
+                    $("#type").val("GPS报警");
+                    break;
+                case '5':
+                    $("#type").val("路灯报警");
+                    break;
+                default:
+                    $("#type").val("未知报警");
+                    break;
+            }
+
+             var status = '[[${obj?.alarmStatus}]]';
+             console.log(status);
+             switch(status){
+                case '0':
+                    $("#status").val("未消警");
+                    break;
+                case '1':
+                    $("#status").val("已消警");
+                    break;
+
+                default:
+                    $("#status").val("未知状态");
+                    break;
+            }
+
+
+
+
+
+        });
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

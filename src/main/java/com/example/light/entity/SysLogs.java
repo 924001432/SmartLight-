@@ -19,6 +19,9 @@ public class SysLogs implements Serializable {
 	@TableField(value = "user_id")
 	private String userId;
 
+	@TableField(value = "user_name")
+	private String userName;
+
 	@TableField(value = "logs_module")
 	private String logsModule;
 

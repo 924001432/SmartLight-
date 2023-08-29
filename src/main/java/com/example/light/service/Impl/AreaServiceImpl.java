@@ -32,6 +32,13 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
     }
 
     @Override
+    public List<Area> areaListByuserArea(Integer userArea){
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",userArea);
+        return areaMapper.selectList(wrapper);
+    }
+
+    @Override
     public List<Map<String, Object>> getParent(List<Area> list, Integer parentId) {
         return null;
     }

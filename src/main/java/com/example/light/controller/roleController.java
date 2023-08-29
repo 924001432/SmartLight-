@@ -47,6 +47,17 @@ public class roleController {
         return roleService.queryRoleList();
     }
 
+    @RequestMapping("/queryRoleById/{roleId}")
+    @ResponseBody
+    public Object queryRoleById(@PathVariable(name = "roleId",required = true)Integer roleId){
+
+        Role role = roleService.queryRoleById(roleId);
+
+
+
+        return role;
+    }
+
     /**
      * 编辑角色信息页面
      */
@@ -102,6 +113,7 @@ public class roleController {
         if (role.getRoleId() != null) {// 修改，查询是否存在
             //更新数据库
             roleService.updateRole(role,role.getRoleId());
+
 
 
         } else {// 新增

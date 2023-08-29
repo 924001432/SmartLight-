@@ -28,12 +28,21 @@ public class Alarm implements Serializable{
     @TableField(value = "alarm_status")
     private Integer alarmStatus;
 
+    /**
+     * 处理时间
+     */
     @TableField(value = "alarm_handletime")
     private String alarmHandletime;
 
+    /**
+     * 处理备注
+     */
     @TableField(value = "alarm_handlecomment")
     private String alarmHandlecomment;
 
+    /**
+     * 建议方式
+     */
     @TableField(value = "alarm_handleway")
     private String alarmHandleway;
 
