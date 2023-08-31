@@ -60,4 +60,26 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     public void updateDeviceHearttime(Device device){
 
     }
+
+    @Override
+    public List<Device> deviceListByIsOnline(Integer deviceCoord) {
+        QueryWrapper<Device> wrapper = new QueryWrapper<>();
+        wrapper.eq("device_coord",deviceCoord);
+        wrapper.eq("device_status",1);
+        return deviceMapper.selectList(wrapper);
+    }
+
+    @Override
+    public void updateOnlineStatus(Integer deviceId ,int status) {
+        deviceMapper.updateOnlineStatus(deviceId,status);
+
+    }
+
+    @Override
+    public List<Device> deviceListByIsNotOnline(Integer deviceCoord) {
+        QueryWrapper<Device> wrapper = new QueryWrapper<>();
+        wrapper.eq("device_coord",deviceCoord);
+        wrapper.eq("device_status",0);
+        return deviceMapper.selectList(wrapper);
+    }
 }

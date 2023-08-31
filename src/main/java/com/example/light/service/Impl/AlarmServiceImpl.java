@@ -126,4 +126,15 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
 
         return alarmMapper.update(alarm,wrapper);
     }
+
+    @Override
+    public List<Alarm> alarmListByDeviceCoord(Integer deviceCoord , Integer alarmStatus) {
+
+        return alarmMapper.alarmByAreaAndStatus(deviceCoord,alarmStatus);
+    }
+
+    @Override
+    public List<Alarm> alarmListByArea(Integer deviceCoord) {
+        return alarmMapper.alarmByArea(deviceCoord);
+    }
 }

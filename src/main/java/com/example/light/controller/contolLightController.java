@@ -84,14 +84,49 @@ public class contolLightController {
         for (Device device : deviceList) {
             if (cal_time(device.getDeviceHearttime())){
                 device.setDeviceStatus(1);
+                deviceService.updateOnlineStatus(device.getDeviceId(),1);
+                System.out.println("更新为在线");
             }else {
                 device.setDeviceStatus(0);
+                deviceService.updateOnlineStatus(device.getDeviceId(),0);
+                System.out.println("更新为离线");
             }
         }
 
         return ResultMapUtil.getHashMapList(deviceList);
 
     }
+
+    @RequestMapping("/deviceListByIsOnline/{deviceCoord}")
+    @ResponseBody
+    public Object deviceListByIsOnline(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
+
+//        System.out.println("deviceCoord: " + deviceCoord);
+
+        List<Device> deviceList = deviceService.deviceListByIsOnline(deviceCoord);
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(deviceList);
+
+    }
+
+    @RequestMapping("/deviceListByIsNotOnline/{deviceCoord}")
+    @ResponseBody
+    public Object deviceListByIsNotOnline(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
+
+//        System.out.println("deviceCoord: " + deviceCoord);
+
+        List<Device> deviceList = deviceService.deviceListByIsNotOnline(deviceCoord);
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(deviceList);
+
+    }
+
 
 
     @RequestMapping("/deviceListByDeviceCoordList/{deviceCoordList}")
@@ -110,7 +145,7 @@ public class contolLightController {
         //插入代码
         for (Device device : deviceList) {
             if (cal_time(device.getDeviceHearttime())){
-                device.setDeviceStatus(1);
+                device.setDeviceStatus(1);//在线
             }else {
                 device.setDeviceStatus(0);
             }

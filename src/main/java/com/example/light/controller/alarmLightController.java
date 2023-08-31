@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.example.light.common.ResultMapUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -124,6 +125,58 @@ public class alarmLightController {
         } catch (Exception e){
             return ResultMapUtil.getHashMapException(e);
         }
+
+    }
+
+    @LogAnnotation
+    @ApiOperation(value = "查看某区域的所有报警信息")
+    @RequestMapping("/alarmListByArea/{deviceCoord}")
+    @ResponseBody
+    public Object alarmListByArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
+
+        System.out.println("deviceCoord: " + deviceCoord);
+
+        List<Alarm> alarmList = alarmService.alarmListByArea(deviceCoord);
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(alarmList);
+
+    }
+
+    @LogAnnotation
+    @ApiOperation(value = "查看某区域的所有报警信息按状态查看")
+    @RequestMapping("/alarmListByalarmArea/{deviceCoord}/{alarmStatus}")
+    @ResponseBody
+    public Object alarmListByalarmArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
+
+        System.out.println("deviceCoord: " + deviceCoord);
+
+        List<Alarm> alarmList = alarmService.alarmListByDeviceCoord(deviceCoord,alarmStatus);
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(alarmList);
+
+    }
+
+    @RequestMapping("/alarmListByDeviceCoordList/{deviceCoordList}/{alarmStatus}")
+    @ResponseBody
+    public Object alarmListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
+
+        List<Alarm> alarmList = new ArrayList<>();
+
+        for (Integer integer : deviceCoordList) {
+            alarmList.addAll(alarmService.alarmListByDeviceCoord(integer,alarmStatus));
+
+        }
+
+        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
+        //插入代码
+
+        return ResultMapUtil.getHashMapList(alarmList);
 
     }
 
