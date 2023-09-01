@@ -5,16 +5,19 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.light.annotation.LogAnnotation;
 import com.example.light.common.ResultMapUtil;
 import com.example.light.entity.Area;
+import com.example.light.entity.User;
 import com.example.light.service.AreaService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -29,9 +32,29 @@ public class areaLightController {
         return "/area/areaLight";
     }
 
-    @RequestMapping("/areaAddPage")
-    public Object areaAddPage(){
+    @RequestMapping("/areaAddPage/{areaId}")
+    public Object areaAddPage(@PathVariable(name = "areaId",required = true)Integer areaId, Model model){
+        Area area = areaService.getById(areaId);
+        model.addAttribute("obj",area);
+
         return "/area/areaAddPage";
+    }
+
+    @LogAnnotation
+    @ApiOperation(value = "新增区域")
+    @RequestMapping("/areaAdd")
+    @ResponseBody
+    public Object areaAdd(Area area) {
+        System.out.println("here");
+
+        try{
+            int i = areaService.areaAdd(area);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
+
     }
 
     @RequestMapping("/testAddPage")
@@ -54,10 +77,12 @@ public class areaLightController {
     public Object areaListByareaId(@PathVariable(name = "areaId",required = true)Integer areaId) {
 
         Area area = areaService.getById(areaId);
+//        System.out.println(area.toString());
+        List<Area> list = new ArrayList<>();
+        list.add(area);
 
 
-
-        return area;
+        return list;
     }
 
 //    @LogAnnotation
@@ -116,21 +141,7 @@ public class areaLightController {
     }
 
 
-    @LogAnnotation
-    @ApiOperation(value = "新增区域")
-    @RequestMapping("/areaAdd")
-    @ResponseBody
-    public Object areaAdd(Area area) {
 
-        try{
-            int i = areaService.areaAdd(area);
-            return ResultMapUtil.getHashMapSave(i);
-        } catch (Exception e){
-            return ResultMapUtil.getHashMapException(e);
-        }
-
-
-    }
 
     @RequestMapping("/areaList")
     @ResponseBody

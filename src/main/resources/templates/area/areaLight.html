@@ -8,10 +8,30 @@
     <link href="static/js/bstable/css/bootstrap-table.css" rel="stylesheet" type="text/css">
     <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
     <link href="static/css/table.css" rel="stylesheet" type="text/css" />
+    <style>
+        div#rMenu {
+            position:absolute;
+            visibility:hidden;
+            top:0;
+            text-align: left;
+            padding:4px;
+            z-index:999;
+        }
+        div#rMenu a{
+            padding: 3px 15px 3px 15px;
+            background-color:#cad4e6;
+            vertical-align:middle;
+            text-decoration:none;
+        }
+    </style>
 </head>
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto">
 <div class="news_main">
-
+    <div id="rMenu" style="display: none">
+        <a href="#" class="rMenuA" onclick="addNode();">增加</a>
+        <a href="#" class="rMenuA" onclick="delNode();">删除</a>
+        <a href="#" class="rMenuA" onclick="updNode();">修改</a>
+    </div>
     <div class="l_left news_left">
 
         <h6>区域目录</h6>
@@ -56,6 +76,7 @@
     </div>
     <div class="clear"></div>
 
+
 </div>
 <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
 <script src="static/js/bstable/js/bootstrap.min.js"></script>
@@ -75,7 +96,7 @@
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/areaList",
+<!--            url: "/areaList",-->
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,

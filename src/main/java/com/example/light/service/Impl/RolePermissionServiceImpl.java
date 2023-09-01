@@ -29,10 +29,10 @@ public class RolePermissionServiceImpl extends ServiceImpl<RolePermissionMapper,
     @Override
     public void addRolePermission(Integer roleId, List<Integer> permissionIds) {
 
-        System.out.println(roleId);
-        for (Integer permissionId : permissionIds) {
-            System.out.println(permissionId);
-        }
+//        System.out.println(roleId);
+//        for (Integer permissionId : permissionIds) {
+//            System.out.println(permissionId);
+//        }
 
         RolePermission rolePermission = new RolePermission();
         for (Integer permissionId : permissionIds) {

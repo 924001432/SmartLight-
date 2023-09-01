@@ -10,7 +10,7 @@ $(document).ready(function(){
     var userAreaName="";
     //ajax——"/getArea"
     $.ajax({
-        url: '/getUserArea',
+        url: '/getUser',
         type: 'GET',
         dataType: 'json',
         //开启同步可赋值

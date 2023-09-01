@@ -102,19 +102,11 @@ public class roleController {
     @ResponseBody
     public void roleAdd( RoleDto roleDto){
 
-//        System.out.println(roleDto);
-//        for (Integer permissionId : roleDto.getPermissionIds()) {
-//            System.out.println(permissionId);
-//        }
-        //
         Role role = roleDto;
-
 
         if (role.getRoleId() != null) {// 修改，查询是否存在
             //更新数据库
             roleService.updateRole(role,role.getRoleId());
-
-
 
         } else {// 新增
             Role r = roleService.queryRoleByName(role.getRoleName());
@@ -136,7 +128,7 @@ public class roleController {
     private void saveRolePermission(Integer roleId, List<Integer> permissionIds) {
         //删除
         rolePermissionService.deleteRolePermission(roleId);
-        permissionIds.remove(0L);
+        permissionIds.remove(0);
         if (!CollectionUtils.isEmpty(permissionIds)) {
             //插入
             rolePermissionService.addRolePermission(roleId, permissionIds);

@@ -37,6 +37,9 @@ public class User implements Serializable {
     @TableField(value = "user_area")
     private Integer userArea;
 
+    @TableField(value = "user_builder")
+    private Integer userBuilder;
+
     @TableField(value = "user_createtime")
     private String userCreatetime;
 

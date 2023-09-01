@@ -13,9 +13,10 @@
         <img src="static/img/ajax-loader.gif" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; margin: auto;" />
 
     </div>
+
     <div class="wrapper">
         <!--头部信息-->
-        <header class="main-header">
+        <header class="main-header" >
             <a href="javascript:void (0)" class="logo">
                <img src="static/img/ligthLogo.png" />
 
@@ -32,6 +33,7 @@
                                 <span > 当前用户：</span>
                                 <span id="cur_userName"> </span>
                                 <span id="cur_userRole"></span>
+                                <span id="cur_userArea"></span>
                             </a>
                             <ul class="dropdown-menu pull-right">
                                 <li><a class="menuItem" data-id="userInfo" onclick="dataLead()" href="/curUserInfo"><i class="fa fa-user"></i>个人信息</a></li>
@@ -61,8 +63,8 @@
             </div>
         </div>
         <!--中间内容-->
-        <div id="content-wrapper" class="content-wrapper">
-            <div class="content-tabs">
+        <div id="content-wrapper" class="content-wrapper" >
+            <div class="content-tabs" >
                 <button class="roll-nav roll-left tabLeft">
                     <i class="fa fa-backward"></i>
                 </button>
@@ -111,6 +113,7 @@
                         console.log(result);
                         document.getElementById("cur_userName").innerText  = result.userName ;//修改
                         document.getElementById("cur_userRole").innerText  = "【 "+result.userRoleName+" 】" ;//修改
+                        document.getElementById("cur_userArea").innerText  = "【 "+result.userAreaName+" 】" ;//修改
 
 
                     }
