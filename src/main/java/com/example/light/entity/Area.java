@@ -24,6 +24,12 @@ public class Area {
     @TableField(value = "area_level")
     Integer areaLevel;
 
+    @TableField(value = "area_rank")
+    Integer areaRank;
+
+    @TableField(value = "area_serial")
+    String areaSerial;
+
     @TableField(value = "area_net")
     String areaNet;
 

@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <title>编辑用户</title>
     <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
-<!--    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">-->
+    <link rel="stylesheet" th:href="@{/static/css/ztree/zTreeStyle/zTreeStyle.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/ztree/demo.css}" media="all">
 </head>
 <body>
 <div class="layui-fluid">
     <div class="layui-card">
         <div class="layui-card-body" style="padding: 15px;">
-            <form class="layui-form layui-form-pane" action="">
+            <form class="layui-form layui-form-pane" action="" id="form">
                 <input name="userId" th:value="${obj?.userId}" class="layui-input layui-hide"/>
 
 
@@ -56,18 +57,16 @@
                     </div>
                 </div>
 
+                <input id="userArea" name="userArea" th:value="${obj?.userArea}" class="layui-input layui-hide"/>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">负责区域：</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="userArea" name="userArea" th:value="${obj?.userArea}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)" >
+                    <label class="layui-form-label">负责区域</label>
+                    <div class="col-md-10">
+                        <ul id="treeDemo" class="ztree" name="userArea1"  ></ul>
                     </div>
                 </div>
 
-
-
-
                 <div class="layui-form-item layui-hide">
-                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
                 </div>
             </form>
         </div>
@@ -76,6 +75,11 @@
 <script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
+<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
 <script>
 
     layui.use(['form','laydate'],function () {
@@ -116,6 +120,57 @@
 
 
         });
+
+
+        //构造区域目录树形结构
+        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+
+        var id = $("#userArea").val();
+        console.log(id);
+
+        initMenuDatas(id);
+
+        function add() {
+            //保存用户信息的同时保存负责区域信息
+
+            var user = $("#form").serializeObject();
+            user.userArea = getCheckedMenuIds();
+            console.log("user:" + user.userArea);
+
+
+
+            $.ajax({
+				type : 'GET',
+				url : '/userEdit',
+				dataType: 'text',
+				data : user,
+				async: false,
+                success: function (str) {
+                    if(str.code === 0){
+
+                    }
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                }
+			});
+		}
+
+        //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
+		$.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+             if (o[this.name]) {
+              if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+              }
+              o[this.name].push(this.value || '');
+             } else {
+              o[this.name] = this.value || '';
+             }
+            });
+            return o;
+        };
 
 
 

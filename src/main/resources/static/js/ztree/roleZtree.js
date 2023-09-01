@@ -134,10 +134,13 @@ function getSettting() {
 	var setting = {
 		check : {
 			enable : true,
+//			chkStyle: "radio",
+//			radioType : "all",
 			chkboxType : {
 				"Y" : "ps",
 				"N" : "ps"
 			}
+
 		},
 		async : {
 			enable : true,

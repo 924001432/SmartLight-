@@ -11,8 +11,10 @@ import com.example.light.mapper.UserMapper;
 import com.example.light.service.AreaService;
 import com.example.light.service.RoleService;
 import com.example.light.service.UserService;
+import com.google.common.collect.Lists;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -92,13 +94,13 @@ public class UserController {
             return ResultMapUtil.getHashMapLogin("密码错误","2");
         }
 
-        Session session = SecurityUtils.getSubject().getSession();
+//        Session session = SecurityUtils.getSubject().getSession();
                               //默认30min
-        User user = userService.queryUserByName(username);
-        //可以放在UserUtil中，创建userDto
-        session.setAttribute("username",username);
-        session.setAttribute("userRole",user.getUserRole());
-        session.setAttribute("userArea",user.getUserArea());
+//        User user = userService.queryUserByName(username);
+//        //可以放在UserUtil中，创建userDto
+//        session.setAttribute("username",username);
+//        session.setAttribute("userRole",user.getUserRole());
+//        session.setAttribute("userArea",user.getUserArea());
 
         return ResultMapUtil.getHashMapLogin("验证成功","1");
 
@@ -168,6 +170,19 @@ public class UserController {
     }
 
     /**
+     * 获取当前用户信息
+     * @return
+     */
+    @RequestMapping("/queryUserById/{userId}")
+    @ResponseBody
+    public Object queryUserById(@PathVariable(name = "userId",required = true)Integer userId){
+
+
+        return userService.queryUserById(userId);
+
+    }
+
+    /**
      * 根据用户姓名获取用户信息
      * @return
      */
@@ -185,6 +200,9 @@ public class UserController {
 
         Role role = roleService.queryRoleById(user.getUserRole());
         user.setUserRoleName(role.getRoleName());
+
+        Area area = areaService.getById(user.getUserArea());
+        user.setUserAreaName(area.getAreaName());
 
         return  user;
     }
@@ -222,8 +240,45 @@ public class UserController {
     @GetMapping("/userList")
     @ResponseBody
     public List<User> userList(){
+        //获取基本信息，角色ID，区域ID，创建人ID；获取数据填充到VO中，
 
         return userService.queryUserList();
+    }
+
+    /**
+     * 通过区域ID来获取该用户下属的全部的用户信息
+     * @par
+     * @return
+     */
+    @GetMapping("/userListByuserArea/{userArea}")
+    @ResponseBody
+    public List<User> userListByuserArea(@PathVariable(name = "userArea",required = true)Integer userArea){
+        //获取基本信息，角色ID，区域ID，创建人ID；获取数据填充到VO中，
+
+        List<Area> areaList = areaService.areaList();
+
+        List<Area> list = Lists.newArrayList();//满足条件的所有区域ID
+        setAreaList(userArea,areaList,list);
+        List<User> userList = Lists.newArrayList();
+        for (Area area : list) {
+//            System.out.println(area.getAreaId());//正确
+            //遍历，构造用户集合
+            userList.addAll(userService.queryUserByuserArea(area.getAreaId()));
+        }
+
+
+        return userList;
+    }
+
+    private void setAreaList(Integer pId, List<Area> areaListAll, List<Area> list) {
+        for (Area area : areaListAll) {
+            if (area.getParentId().equals(pId)) {
+                list.add(area);
+                if (areaListAll.stream().filter(p -> p.getParentId().equals(area.getAreaId())).findAny() != null) {
+                    setAreaList(area.getAreaId(), areaListAll, list);
+                }
+            }
+        }
     }
 
     /**
@@ -277,7 +332,13 @@ public class UserController {
     public Object userAdd(User user){
 
         try{
+            curUserDto curUser = UserUtil.getCurrentUser();
+            user.setUserBuilder(curUser.getUserId());//当前登录用户创建
+
+
+            System.out.println(user.toString());
             int i = userService.userAdd(user);
+//            int i = 1;
             return ResultMapUtil.getHashMapSave(i);
         } catch (Exception e){
             return ResultMapUtil.getHashMapException(e);

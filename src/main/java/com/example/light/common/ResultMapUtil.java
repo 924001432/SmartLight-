@@ -61,6 +61,8 @@ public class ResultMapUtil {
         HashMap<String,Object> resultMap = new HashMap<>();
         resultMap.put("code",0);
         resultMap.put("msg",e.getMessage());
+        resultMap.put("icon",5);
+        resultMap.put("anim",6);
         return resultMap;
     }
 

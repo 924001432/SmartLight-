@@ -46,6 +46,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
+    public List<User> queryUserByuserArea(Integer userArea){
+
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_area",userArea);
+        return userMapper.selectList(wrapper);
+
+    }
+
+
+    @Override
     public List<User> queryUserList(){
 
         return userMapper.selectList(null);

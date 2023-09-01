@@ -59,11 +59,28 @@
 
 <script>
     $(function () {
+        var userArea;
+        $.ajax({
+            url: '/getUser',
+            type: 'GET',
+            dataType: 'json',
+            //开启同步可赋值
+            async:false,
+            success: function (result) {
+
+                    console.log(result);
+                    userArea  = result.userArea ;//修改
+
+
+                }
+        })
+        console.log(userArea);
+
         $('#table').bootstrapTable({
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/userList",
+            url: "/userListByuserArea/"+userArea,
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
@@ -82,28 +99,28 @@
                     title: "用户名",
                     field: 'userName',
                     align: 'center',
-                    width: 80,
+                    width: 50,
                     valign: 'middle'
                 },
-                {
-                    title: '电话',
-                    field: 'userPhone',
-                    align: 'center',
-                    width: 80,
-                    valign: 'middle'
-                },
-                {
-                    title: '邮箱',
-                    field: 'userEmail',
-                    align: 'center',
-                    width: 80,
-                    valign: 'middle'
-                },
+<!--                {-->
+<!--                    title: '电话',-->
+<!--                    field: 'userPhone',-->
+<!--                    align: 'center',-->
+<!--                    width: 80,-->
+<!--                    valign: 'middle'-->
+<!--                },-->
+<!--                {-->
+<!--                    title: '邮箱',-->
+<!--                    field: 'userEmail',-->
+<!--                    align: 'center',-->
+<!--                    width: 80,-->
+<!--                    valign: 'middle'-->
+<!--                },-->
                 {
                     title: '用户角色',
                     field: 'userRole',
                     align: 'center',
-                    width: 80,
+                    width: 60,
                     formatter: function (cellval, row) {
                         var e;
 
@@ -121,16 +138,13 @@
                         });
 
                         return e;
-
                     }
-
-
                 },
                 {
                     title: '负责区域',
                     field: 'userArea',
                     align: 'center',
-                    width: 80,
+                    width: 60,
                     formatter: function (cellval, row) {
                         var e;
 
@@ -143,6 +157,29 @@
                             async:false,                            //!!!!!
                             success:function (data) {
                                  e = data.areaName
+
+                            }
+                        });
+                        return e;
+                    }
+                },
+                {
+                    title: '创建人',
+                    field: 'userBuilder',
+                    align: 'center',
+                    width: 60,
+                    formatter: function (cellval, row) {
+                        var e;
+
+                        //ajax异步请求数据不执行，async属性为false，为同步请求，true为异步请求，可能会跳过。
+                        $.ajax({
+                            url: '/queryUserById/'+cellval,
+                            dataType:'json',
+                            type:'GET',
+                            cache:false,
+                            async:false,                            //!!!!!
+                            success:function (data) {
+                                 e = data.userName
 
                             }
                         });
@@ -203,18 +240,7 @@
                 //监听提交
                 iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
                     var field = data.field;
-                    $.ajax({
-                        url: '/userEdit',
-                        data: field,
-                        async: false,
-                        cache: false,
-                        success: function (str) {
-                            if(str.code === 0){
-                                console.log(1111);
-                            }
-                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                        }
-                    });
+
                     layer.close(index);     //关闭弹层
                     $("#table").bootstrapTable('refresh');
                     $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
@@ -263,25 +289,6 @@
                     var field = data.field;
 
                     console.log(field);
-
-
-
-                    $.ajax({
-                        url: '/userAdd',
-                        data: field,
-                        async: false,
-                        cache: false,
-                        success: function (str) {
-                            if(str.code === 0){
-
-                            }
-                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                        }
-                    });
-
-
-
-
 
                     layer.close(index);     //关闭弹层
                     $("#table").bootstrapTable('refresh');
