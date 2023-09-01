@@ -1,47 +1,141 @@
 /**
  * Created by Administrator on 2017/6/12.
  */
-var currentID;
-$(document).ready(function() {
-        tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
-                                                          var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
+var currentID,zTree, rMenu;
+var timer;
+var isRefresh;
+var curPage = 0;
 
-                                                          return  e + d;
-                                                      });
+var globalDeviceCoord = undefined;
+var globalDeviceCoordList = undefined;
+$(document).ready(function() {
+
+    var userArea=0;
+    var userAreaName="";
+    //ajax——"/getArea"
+    $.ajax({
+        url: '/getUserArea',
+        type: 'GET',
+        dataType: 'json',
+        //开启同步可赋值
+        success: function (result) {
+
+            console.log(result);
+            userArea  = result.userArea ;//修改
+            userAreaName  = result.userAreaName ;//修改
+            $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree(userArea,userAreaName));
+
+            zTree = $.fn.zTree.getZTreeObj("treeDemo");
+            rMenu = $("#rMenu");
+
+        }
+    })
+
+    tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
+        var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+        var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+        return  e + d;
+    });
 
         $("[name='inlineRadioOptions']").change(function() {
             var val = $(this).val();
-
-            //do select table
             if( val == 0 ) { //未消警
+                if(globalDeviceCoord === undefined && globalDeviceCoordList === undefined){
 
-                $('#table').bootstrapTable('destroy');
-                tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
-                                                          var  e = '<button  id="remove" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                                                          var  d = '<button  id="repair1" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
+                    $('#table').bootstrapTable('destroy');
 
-                                                          return  e + d;
-                                                      });
-            } else if( val == 1 ){//已消警
+                    tableLoad("/alarmListByalarmStatus/0", function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
 
-                $('#table').bootstrapTable('destroy');
-                tableLoad("/alarmListByalarmStatus/1",function (cellval, row) {
-                                                          var  d = '<button  id="repair2" data-id="100" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord !== undefined && globalDeviceCoordList === undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
 
-                                                          return  d;
-                                                      });
-            }else if( val == 2){//已报修
-                $('#table').bootstrapTable('destroy');
-                tableLoad("/alarmListByalarmStatus/2",function (cellval, row) {
-                                                          var  f = '<button  id="cancel" data-id="101" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="cancelRepair(\'' + row.alarmId + '\')">撤销</button> ';
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord === undefined && globalDeviceCoordList !== undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
 
-                                                          return  f;
-                                                      });
+                        return e + d;
+                    });
+                }
+
+            } else if( val == 1 ){
+
+                if(globalDeviceCoord === undefined && globalDeviceCoordList === undefined){
+
+                    $('#table').bootstrapTable('destroy');
+
+                    tableLoad("/alarmListByalarmStatus/1", function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord !== undefined && globalDeviceCoordList === undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord === undefined && globalDeviceCoordList !== undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }
+
+            }else if( val == 2) {//已报修
+
+                if(globalDeviceCoord === undefined && globalDeviceCoordList === undefined){
+
+                    $('#table').bootstrapTable('destroy');
+
+                    tableLoad("/alarmListByalarmStatus/2", function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord !== undefined && globalDeviceCoordList === undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }else if(globalDeviceCoord === undefined && globalDeviceCoordList !== undefined){
+                    $('#table').bootstrapTable('destroy');
+                    myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
+                    tableLoad(myUrl, function (cellval, row) {
+                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                        return e + d;
+                    });
+                }
 
             }
-
-
         });
     });
 
@@ -130,7 +224,7 @@ function tableLoad(myUrl,myFuc){
                     } else  if (cellval == 1){
                         return '<div  style="color:green"> 已处理 </div>';
                     }else  if (cellval == 2){
-                        return '<div  style="color:green"> 已报修 </div>';
+                        return '<div  style="color:grey"> 已报修 </div>';
                     }else {
                         return cellval;
                     }}
@@ -271,4 +365,341 @@ function repairAlarm(alarmId){
         });
 
     }
+
+/**
+ * 以下为区域相关
+ * @returns {{name: string, id: number, open: boolean}}
+ */
+function getMenuTree(userArea,userAreaName) {
+    var root = {
+        id : userArea,
+        name : userAreaName,//变量，如何赋值
+        open : true,
+    };
+
+    $.ajax({
+        type : 'get',
+//		url : '/area/all',
+        url : '/areaListByuserArea/'+userArea,//返回dto格式，包含区域列表，区域id，区域
+        contentType : "application/json; charset=utf-8",
+        async : false,
+        success : function(data) {
+            var length = data.length;
+            var children = [];
+            for (var i = 0; i < length; i++) {
+                var d = data[i];
+                var node = createNode(d);
+                children[i] = node;
+            }
+
+            root.children = children;
+            console.log(root);
+        }
+    });
+
+    return root;
+}
+
+function initMenuDatas(roleId){
+    $.ajax({
+        type : 'get',
+        url : '/permissions?roleId=' + roleId,
+        success : function(data) {
+            var length = data.length;
+            var ids = [];
+            for(var i=0; i<length; i++){
+                ids.push(data[i]['id']);
+            }
+
+            initMenuCheck(ids);
+        }
+    });
+}
+
+function initMenuCheck(ids) {
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    var length = ids.length;
+    if(length > 0){
+        var node = treeObj.getNodeByParam("id", 0, null);
+        treeObj.checkNode(node, true, false);
+    }
+
+    for(var i=0; i<length; i++){
+        var node = treeObj.getNodeByParam("id", ids[i], null);
+        treeObj.checkNode(node, true, false);
+    }
+
+}
+
+function getCheckedMenuIds(){
+    var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+    var nodes = treeObj.getCheckedNodes(true);
+
+    var length = nodes.length;
+    var ids = [];
+    for(var i=0; i<length; i++){
+        var n = nodes[i];
+        var id = n['id'];
+        ids.push(id);
+    }
+
+    return ids;
+}
+
+function createNode(d) {
+    var id = d['areaId'];
+    var pId = d['parentId'];
+    var name = d['areaName'];
+    var net = d['areaNet'];
+    var child = d['child'];
+
+    var node = {
+        open : true,
+        id : id,
+        name : name,
+        pId : pId,
+        net : net,
+    };
+
+    if (child != null) {
+        var length = child.length;
+        if (length > 0) {
+            var children = [];
+            for (var i = 0; i < length; i++) {
+                children[i] = createNode(child[i]);
+            }
+
+            node.children = children;
+        }
+
+    }
+    return node;
+}
+
+function initParentMenuSelect(areaLevel){
+    $.ajax({
+        type : 'get',
+        url : '/permissions/parents/' + areaLevel,
+        async : false,
+        success : function(data) {
+            var select = $("#parentId");
+            select.append("<option value='0'>root</option>");
+            for(var i=0; i<data.length; i++){
+                var d = data[i];
+                var id = d['areaId'];
+                var name = d['areaName'];
+
+                select.append("<option value='"+ id +"'>" +name+"</option>");
+            }
+        }
+    });
+}
+
+function getSettting() {
+    var setting = {
+//		check : {
+//			enable : true,
+//			chkboxType : {
+//				"Y" : "ps",
+//				"N" : "ps"
+//			}
+//		},
+        async : {
+            enable : true,
+        },
+        data : {
+            simpleData : {
+                enable : true,
+                idKey : "id",
+                pIdKey : "pId",
+                rootPId : 0
+            }
+        },
+        callback : {
+            onClick : zTreeOnCheck
+        }
+    };
+
+    return setting;
+}
+
+function zTreeOnCheck(event, treeId, treeNode) {
+
+    roadName = treeNode.name;
+
+    console.log(treeNode.net);
+    $('#table').bootstrapTable('destroy');
+
+    var val = $("[name='inlineRadioOptions']:checked").val();
+    document.getElementById("road").innerText  = "故障报警列表：" + roadName;//修改~·#
+
+    if(!treeNode.isParent){//到达最底层，路段信息
+        //点击路段，不是父节点，查询设备表，得到所有该路段的设备
+        deviceCoord = treeNode.net;
+        globalDeviceCoord = deviceCoord;
+        globalDeviceCoordList = undefined;
+
+        var alarmStatus = val;
+        alarmListByDeviceCoord("alarmListByalarmArea/" , deviceCoord,alarmStatus);
+
+    } else {//父节点
+
+        if( treeNode.id == 0 ){   //所有区域，待定，之后实现数据库获取区域功能
+
+
+            tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
+                var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                return  e + d;
+            });
+
+
+        } else {
+            var alarmStatus = val;
+            var childNodes = zTree.transformToArray(treeNode);
+            var deviceCoordList = new Array();
+            for(i = 0; i < childNodes.length; i++) {
+                deviceCoordList[i] = childNodes[i].net;
+                //do something——去除undefined
+            }
+            globalDeviceCoordList = deviceCoordList;
+            globalDeviceCoord = undefined;
+            console.log(globalDeviceCoord);
+            console.log(globalDeviceCoordList);
+            alarmListByDeviceCoord("/alarmListByDeviceCoordList/" , deviceCoordList, alarmStatus);
+
+        }
+
+    }
+
+}
+
+function alarmListByDeviceCoord(myUrl,deviceCoord,alarmStatus){
+
+    $('#table').bootstrapTable({
+        method: "get",
+        striped: true,
+        singleSelect: false,
+        url: myUrl+deviceCoord+"/"+alarmStatus,
+        dataType: "json",
+        pagination: true, //分页
+        pageSize: 10,
+        pageNumber: 1,
+        search: false, //显示搜索框
+        contentType: "application/x-www-form-urlencoded",
+        queryParams:null,
+        columns: [
+            {
+                checkbox: "true",
+                field: 'check',
+                align: 'center',
+
+                valign: 'middle'
+            }
+            ,
+            {
+                title: '报警编号',
+                field: 'alarmId',
+                width: 40,
+                align: 'center',
+                valign: 'middle'
+            },
+            {
+                title: '设备编号',
+                field: 'deviceSerial',
+                align: 'center',
+                width: 100,
+                valign: 'middle'
+            },
+            {
+                title: '报警类型',
+                field: 'alarmType',
+                align: 'center',
+                width: 100,
+                formatter: function (cellval, row) {
+                    switch(cellval){
+                        case 0:
+                            return '<div  style="color:red"> 湿度报警 </div>';
+                            break;
+                        case 1:
+                            return '<div  style="color:red"> 温度报警 </div>';
+                            break;
+                        case 2:
+                            return '<div  style="color:red"> 路灯电压报警 </div>';
+                            break;
+                        case 3:
+                            return '<div  style="color:red"> 主板电压报警 </div>';
+                            break;
+                        case 4:
+                            return '<div  style="color:red"> GPS报警 </div>';
+                            break;
+                        case 5:
+                            return '<div  style="color:red"> 路灯报警 </div>';
+                            break;
+                    }
+
+                }
+            },
+            {
+                title: '报警时间',
+                field: 'alarmTime',
+                align: 'center',
+                width: 100,
+                valign: 'middle'
+            },
+
+            {
+                title: '处理状态',
+                field: 'alarmStatus',
+                width: 100,
+                align: 'center',
+                formatter: function (cellval, row) {
+                    if (cellval == 0){
+                        return '<div  style="color:red"> 未处理 </div>';
+                    } else  if (cellval == 1){
+                        return '<div  style="color:green"> 已处理 </div>';
+                    }else  if (cellval == 2){
+                        return '<div  style="color:grey"> 已报修 </div>';
+                    }else {
+                        return cellval;
+                    }}
+            },
+            {
+                title: '消警时间',
+                field: 'alarmHandletime',
+                align: 'center',
+                width: 100,
+                valign: 'middle'
+            },
+            {
+                title: '消警备注',
+                field: 'alarmHandlecomment',
+                align: 'center',
+                width: 80,
+                valign: 'middle'
+            },
+            {
+                title: '处理措施',
+                field: 'alarmHandleway',
+                align: 'center',
+                width: 80,
+                valign: 'middle'
+            },
+            {
+                title: '操作',
+                field: 'person',
+                width: 120,
+                align: 'center',
+                formatter: function (cellval, row) {
+                    var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                    var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                    return  e + d;
+                }
+            },
+
+        ]
+    });
+}
 

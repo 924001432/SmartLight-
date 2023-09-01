@@ -24,4 +24,8 @@ public interface AlarmService extends IService<Alarm> {
     public Integer removeAlarm(Integer alarmId);
 
     public Integer repairAlarm(Integer alarmId);
+
+    List<Alarm> alarmListByDeviceCoord(Integer deviceCoord, Integer alarmStatus);
+
+    List<Alarm> alarmListByArea(Integer deviceCoord);
 }

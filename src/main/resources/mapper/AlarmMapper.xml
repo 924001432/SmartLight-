@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.light.mapper.AlarmMapper">
+    <select id="alarmByAreaAndStatus" resultType="com.example.light.entity.Alarm">
+        SELECT *
+        FROM alarm
+        WHERE device_serial IN (
+            SELECT device_serial
+            FROM device
+            WHERE device_coord = #{deviceCoord}
+        ) and alarm_status = #{alarmStatus}
+    </select>
+    <select id="alarmByArea" resultType="com.example.light.entity.Alarm">
+        SELECT *
+        FROM alarm
+        WHERE device_serial IN (
+            SELECT device_serial
+            FROM device
+            WHERE device_coord = #{deviceCoord}
+        ) and alarm_status != 1
+    </select>
+
+
+</mapper>

@@ -8,59 +8,97 @@
     <link href="static/css/baidu.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="static/js/artDialog/skins/default.css" type="text/css"/>
     <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="static/js/bstable/css/bootstrap-table.min.css">
     <style>
-    *{ margin:0; padding:0; list-style:none;}
-    a{ text-decoration:none;}
-    a:hover{ text-decoration:none;}
-    .tcdPageCode{padding: 15px 20px;text-align: left;color: #ccc;}
-    .tcdPageCode a{display: inline-block;color: #428bca;display: inline-block;height: 25px;	line-height: 25px;	padding: 0 10px;border: 1px solid #ddd;	margin: 0 2px;border-radius: 4px;vertical-align: middle;}
-    .tcdPageCode a:hover{text-decoration: none;border: 1px solid #428bca;}
-    .tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca;	border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
-    .tcdPageCode span.disabled{	display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;	color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
+        *{ margin:0; padding:0; list-style:none;}
+        a{ text-decoration:none;}
+        a:hover{ text-decoration:none;}
+        .tcdPageCode{padding: 15px 20px;text-align: left;color: #ccc;}
+        .tcdPageCode a{display: inline-block;color: #428bca;display: inline-block;height: 25px;	line-height: 25px;	padding: 0 10px;border: 1px solid #ddd;	margin: 0 2px;border-radius: 4px;vertical-align: middle;}
+        .tcdPageCode a:hover{text-decoration: none;border: 1px solid #428bca;}
+        .tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca;	border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
+        .tcdPageCode span.disabled{	display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;	color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
+        .top {
+            height: 80%;
+
+        }
+
+        .bottom {
+            background-color: #f5f5f5;
+            width: 100%;
+            box-shadow: 1px 1px 2px #968383;
+            height: 20%;
+        }
+
+
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 500px;
+        }
+
+        .statistic {
+            flex: 1;
+            text-align: center;
+        }
     </style>
 </head>
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto;">
-<div class="notice_main" style="background-color: #ccc">
+<div class="notice_main" style="background-color: #fff">
+
+
     <div class="myMap_left l_left">
-
-        <div class="map" id="allmap"></div>
-        <div class="notice">
-            <p id="weather"></p>
-
-            <div class="map_btn"><span class="glyphicon glyphicon-fullscreen first"></span><span class="two">全屏</span>
+        <div class="top">
+            <div class="map" id="allmap"></div>
+            <div class="notice">
+                <p id="weather"></p>
             </div>
-            <div class="map_btn"><span class="glyphicon glyphicon-wrench first"></span><span class="two">工具</span></div>
-            <div class="map_btn"><span class="glyphicon glyphicon-search first"></span><span class="two">搜索</span></div>
-
-            <div class="map_btn"><span class="glyphicon glyphicon-screenshot first"></span><span class="two">对比</span>
-            </div>
-            <div class="map_btn"><span class="glyphicon glyphicon-zoom-out first"></span><span class="two">放大</span>
-            </div>
-            <div class="map_btn"><span class="glyphicon glyphicon-zoom-in first"></span><span class="two">缩小</span>
-            </div>
-            <div class="map_btn"><span class="glyphicon glyphicon-pencil first"></span><span class="two">图层选择</span>
-            </div>
-
         </div>
-<!--        <div class="bill">-->
-<!--            <p>功能菜单<span class="glyphicon glyphicon-chevron-up" id="listDown" onClick="listDown()"></span><span class="glyphicon glyphicon-chevron-down" id="listUp" onClick="listUp()" style="display: none"></span></p>-->
-<!--            <ul style="background-color: rgb(84, 122, 169)" class="list">-->
-<!--                <li>-->
-<!--                    <input type="checkbox" name="person"><span>路灯</span>-->
-<!--                    <div class="clear"></div>-->
-<!--                </li>-->
-
-<!--                <li>-->
-<!--                    <input type="checkbox" name="video"><span>摄像头</span>-->
-<!--                    <div class="clear"></div>-->
-<!--                </li>-->
-<!--                <li>-->
-<!--                    <input type="checkbox" name="hot"><span>热力图</span>-->
-<!--                    <div class="clear"></div>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--        </div>-->
+        <div class="bottom">
+            <!-- 模态框 -->
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">详情</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <table id="modalTable" class="table"></table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="statistic">
+                    <h3>设备总数</h3>
+                    <p id = "total">0</p>
+                    <button id="details-button-1">详情</button>
+                </div>
+                <div class="statistic">
+                    <div  style="background-color: green; color: white;" ><h3>在线数</h3></div>
+                    <p id = "theOnline">0</p>
+                    <button id="details-button-2">详情</button>
+                </div>
+                <div class="statistic">
+                    <div  style="background-color: #bce8f1; color: black;" ><h3>离线数</h3></div>
+                    <p id = "notOnline">0</p>
+                    <button id="details-button-3">详情</button>
+                </div>
+                <div class="statistic">
+                    <div  style="background-color: red; color: black;" ><h3>警报数</h3></div>
+                    <p id = "alarm">0</p>
+                    <button id="details-button-4">详情</button>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="myMap_right l_left">
         <h6>区域目录</h6>
         <div class="tree_left_top">
@@ -106,53 +144,659 @@
         src="https://api.map.baidu.com/library/Heatmap/2.0/src/Heatmap_min.js"></script>
 <script src="static/js/baidu.js"></script>
 <script type="text/javascript">
-
     var zTree, rMenu;
+    var timer;
+    var isRefresh;
+    var curPage = 0;
+    var curUrl;
+    var curDeviceCoord;
+    var curDeviceSerial;
+    var curReq;//当前请求
+
+    var isCover;//是否有覆盖物
+    var deviceList;
+    var isTableExist = undefined;
+    var DeviceCoord = undefined;
+    var DeviceCoordList = undefined;
     var marker = undefined;
     var label = undefined;
+    var pathName = undefined;
     $(document).ready(function(){
-        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+        var userArea=0;
+        var userAreaName="";
+        //ajax——"/getArea"
+        $.ajax({
+            url: '/getUserArea',
+            type: 'GET',
+            dataType: 'json',
+            //开启同步可赋值
+            success: function (result) {
 
-        zTree = $.fn.zTree.getZTreeObj("treeDemo");
-        rMenu = $("#rMenu");
+                console.log(result);
+                userArea  = result.userArea ;//修改
+                userAreaName  = result.userAreaName ;//修改
+                $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree(userArea,userAreaName));
+
+                zTree = $.fn.zTree.getZTreeObj("treeDemo");
+                rMenu = $("#rMenu");
+
+            }
+        })
+
+
+        // $('#checkTimer').change(function() {
+        //     if ($(this).is(':checked')) {
+        //
+        //         console.log("isRefresh = 1");
+        //         isRefresh = 1;
+        //         //开启定时器，而且要识别当前的页面
+        //         console.log(curPage);
+        //
+        //         switch(curPage){
+        //             case 1:
+        //                 console.log("开启定时器页面："+curPage);
+        //                 deviceListTimer(curUrl , curDeviceCoord);
+        //                 break;
+        //             case 2:
+        //                 //没有到这个页面就不会有deviceSerial的值
+        //                 console.log("开启定时器页面："+curPage);
+        //                 infoListTimer(curDeviceSerial);
+        //                 break;
+        //             case 3:
+        //                 console.log("开启定时器页面："+curPage);
+        //                 alarmListTimer(curDeviceSerial);
+        //                 break;
+        //             default://没有数据的界面
+        //
+        //                 break;
+        //         }
+        //
+        //     } else {
+        //         console.log("isRefresh = 0");
+        //         isRefresh = 0;
+        //         //关闭定时器
+        //         clearInterval(timer);
+        //     }
+        // });
+
+
+
+
+        $('#details-button-1').click(function() {
+
+            curReq = '/deviceListByDeviceCoord/'+DeviceCoord;
+            // 生成表格
+            if (isTableExist !== undefined) {
+                $('#modalTable').bootstrapTable('destroy');
+            }
+            var $table = $('#modalTable').bootstrapTable({
+                method: "get",
+                striped: true,
+                singleSelect: false,
+                url: curReq,
+                dataType: "json",
+                pagination: true, //分页
+                pageSize: 10,
+                pageNumber: 1,
+                search: false, //显示搜索框
+                contentType: "application/x-www-form-urlencoded",
+                queryParams:null,
+                columns: [
+                    {
+                        checkbox: "true",
+                        field: 'check',
+                        align: 'center',
+
+                        valign: 'middle'
+                    }
+                    ,
+                    {
+                        title: "序号",
+                        field: 'deviceId',
+                        align: 'center',
+                        width: 40,
+                        valign: 'middle'
+                    },
+                    {
+                        title: "物理地址",
+                        field: 'deviceMac',
+                        align: 'center',
+                        width: 120,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '网络地址',
+                        field: 'deviceShort',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备标签',
+                        field: 'deviceSerial',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '在线状态',
+                        field: 'deviceStatus',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0 ){
+                                return '<div  style="color:red"> 离线</div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:green"> 在线 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+                    {
+                        title: '开关状态',
+                        field: 'deviceLight',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 1){
+                                return '<div  style="color:teal"> 打开 </div>';
+                            } else  if (cellval == 2){
+                                return '<div  style="color:gray"> 关闭 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+
+                    {
+                        title: '模式',
+                        field: 'deviceModel',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:teal"> 普通模式 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:gray"> 雷达模式 </div>';
+                            }else {
+                                return '<div  style="color:gray"> 光敏模式 </div>';;
+                            }}
+                    },
+                    {
+                        title: '网关编号',
+                        field: 'deviceCoord',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备类型',
+                        field: 'deviceType',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+
+                    {
+                        title: '设备详情',
+                        field: 'person',
+                        width: 160,
+                        align: 'center',
+                        formatter: function (cellval, row ,index) {
+
+                            var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                            var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                            return  e+d;
+                        }
+                    },
+
+                ],
+                title: '该区域所有设备信息',
+            });
+            isTableExist = 1;
+            // 弹出弹窗
+            $('#myModal').modal('show');
+        });
+
+        $('#details-button-2').click(function() {
+
+            curReq = '/deviceListByIsOnline/'+DeviceCoord;
+            // 生成表格
+            if (isTableExist !== undefined) {
+                $('#modalTable').bootstrapTable('destroy');
+            }
+            var $table = $('#modalTable').bootstrapTable({
+                method: "get",
+                striped: true,
+                singleSelect: false,
+                url: curReq,
+                dataType: "json",
+                pagination: true, //分页
+                pageSize: 10,
+                pageNumber: 1,
+                search: false, //显示搜索框
+                contentType: "application/x-www-form-urlencoded",
+                queryParams:null,
+                columns: [
+                    {
+                        checkbox: "true",
+                        field: 'check',
+                        align: 'center',
+
+                        valign: 'middle'
+                    }
+                    ,
+                    {
+                        title: "序号",
+                        field: 'deviceId',
+                        align: 'center',
+                        width: 40,
+                        valign: 'middle'
+                    },
+                    {
+                        title: "物理地址",
+                        field: 'deviceMac',
+                        align: 'center',
+                        width: 120,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '网络地址',
+                        field: 'deviceShort',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备标签',
+                        field: 'deviceSerial',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '在线状态',
+                        field: 'deviceStatus',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0 ){
+                                return '<div  style="color:red"> 离线</div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:green"> 在线 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+                    {
+                        title: '开关状态',
+                        field: 'deviceLight',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 1){
+                                return '<div  style="color:teal"> 打开 </div>';
+                            } else  if (cellval == 2){
+                                return '<div  style="color:gray"> 关闭 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+
+                    {
+                        title: '模式',
+                        field: 'deviceModel',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:teal"> 普通模式 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:gray"> 雷达模式 </div>';
+                            }else {
+                                return '<div  style="color:gray"> 光敏模式 </div>';;
+                            }}
+                    },
+                    {
+                        title: '网关编号',
+                        field: 'deviceCoord',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备类型',
+                        field: 'deviceType',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+
+                    {
+                        title: '设备详情',
+                        field: 'person',
+                        width: 160,
+                        align: 'center',
+                        formatter: function (cellval, row ,index) {
+
+                            var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                            var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                            return  e+d;
+                        }
+                    },
+
+                ],
+                title: '该区域所有在线设备信息',
+            });
+            isTableExist = 1;
+            // 弹出弹窗
+            $('#myModal').modal('show');
+        });
+        $('#details-button-3').click(function() {
+
+            curReq = '/deviceListByIsNotOnline/'+DeviceCoord;
+            // 生成表格
+            if (isTableExist !== undefined) {
+                $('#modalTable').bootstrapTable('destroy');
+            }
+            var $table = $('#modalTable').bootstrapTable({
+                method: "get",
+                striped: true,
+                singleSelect: false,
+                url: curReq,
+                dataType: "json",
+                pagination: true, //分页
+                pageSize: 10,
+                pageNumber: 1,
+                search: false, //显示搜索框
+                contentType: "application/x-www-form-urlencoded",
+                queryParams:null,
+                columns: [
+                    {
+                        checkbox: "true",
+                        field: 'check',
+                        align: 'center',
+
+                        valign: 'middle'
+                    }
+                    ,
+                    {
+                        title: "序号",
+                        field: 'deviceId',
+                        align: 'center',
+                        width: 40,
+                        valign: 'middle'
+                    },
+                    {
+                        title: "物理地址",
+                        field: 'deviceMac',
+                        align: 'center',
+                        width: 120,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '网络地址',
+                        field: 'deviceShort',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备标签',
+                        field: 'deviceSerial',
+                        align: 'center',
+                        width: 70,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '在线状态',
+                        field: 'deviceStatus',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0 ){
+                                return '<div  style="color:red"> 离线</div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:green"> 在线 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+                    {
+                        title: '开关状态',
+                        field: 'deviceLight',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 1){
+                                return '<div  style="color:teal"> 打开 </div>';
+                            } else  if (cellval == 2){
+                                return '<div  style="color:gray"> 关闭 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+
+                    {
+                        title: '模式',
+                        field: 'deviceModel',
+                        width: 70,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:teal"> 普通模式 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:gray"> 雷达模式 </div>';
+                            }else {
+                                return '<div  style="color:gray"> 光敏模式 </div>';;
+                            }}
+                    },
+                    {
+                        title: '网关编号',
+                        field: 'deviceCoord',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备类型',
+                        field: 'deviceType',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+
+                    {
+                        title: '设备详情',
+                        field: 'person',
+                        width: 160,
+                        align: 'center',
+                        formatter: function (cellval, row ,index) {
+
+                            var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                            var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                            return  e+d;
+                        }
+                    },
+
+                ],
+                title: '该区域所有在线设备信息',
+            });
+            isTableExist = 1;
+            // 弹出弹窗
+            $('#myModal').modal('show');
+        });
+        $('#details-button-4').click(function() {
+
+            curReq = '/alarmListByArea/'+DeviceCoord;
+            // 生成表格
+            if (isTableExist !== undefined) {
+                $('#modalTable').bootstrapTable('destroy');
+            }
+            var $table = $('#modalTable').bootstrapTable({
+                method: "get",
+                striped: true,
+                singleSelect: false,
+                url: curReq,
+                dataType: "json",
+                pagination: true, //分页
+                pageSize: 10,
+                pageNumber: 1,
+                search: false, //显示搜索框
+                contentType: "application/x-www-form-urlencoded",
+                queryParams:null,
+                columns: [
+                    {
+                        checkbox: "true",
+                        field: 'check',
+                        align: 'center',
+
+                        valign: 'middle'
+                    }
+                    ,
+                    {
+                        title: '报警编号',
+                        field: 'alarmId',
+                        width: 40,
+                        align: 'center',
+                        valign: 'middle'
+                    },
+                    {
+                        title: '设备编号',
+                        field: 'deviceSerial',
+                        align: 'center',
+                        width: 100,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '报警类型',
+                        field: 'alarmType',
+                        align: 'center',
+                        width: 100,
+                        formatter: function (cellval, row) {
+                            switch(cellval){
+                                case 0:
+                                    return '<div  style="color:red"> 湿度报警 </div>';
+                                    break;
+                                case 1:
+                                    return '<div  style="color:red"> 温度报警 </div>';
+                                    break;
+                                case 2:
+                                    return '<div  style="color:red"> 路灯电压报警 </div>';
+                                    break;
+                                case 3:
+                                    return '<div  style="color:red"> 主板电压报警 </div>';
+                                    break;
+                                case 4:
+                                    return '<div  style="color:red"> GPS报警 </div>';
+                                    break;
+                                case 5:
+                                    return '<div  style="color:red"> 路灯报警 </div>';
+                                    break;
+                            }
+
+                        }
+                    },
+                    {
+                        title: '报警时间',
+                        field: 'alarmTime',
+                        align: 'center',
+                        width: 100,
+                        valign: 'middle'
+                    },
+
+                    {
+                        title: '处理状态',
+                        field: 'alarmStatus',
+                        width: 100,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:red"> 未处理 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:green"> 已处理 </div>';
+                            }else  if (cellval == 2){
+                                return '<div  style="color:grey"> 已报修 </div>';
+                            }else {
+                                return cellval;
+                            }}
+                    },
+                    {
+                        title: '消警时间',
+                        field: 'alarmHandletime',
+                        align: 'center',
+                        width: 100,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '消警备注',
+                        field: 'alarmHandlecomment',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '处理措施',
+                        field: 'alarmHandleway',
+                        align: 'center',
+                        width: 80,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '操作',
+                        field: 'person',
+                        width: 120,
+                        align: 'center',
+                        formatter: function (cellval, row) {
+                            var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                            var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+
+                            return  e + d;
+                        }
+                    },
+
+                ],
+                title: '该区域所有故障设备信息',
+            });
+            isTableExist = 1;
+            // 弹出弹窗
+            $('#myModal').modal('show');
+        });
+
+
+
     });
 
-    function theLocation(id){
 
 
-        map.clearOverlays();
-        var new_point;
-        if(id ==1 ){
-            new_point = new BMap.Point(116.32490 , 39.80739  );
-            var polyline = new BMap.Polyline([
-                new BMap.Point(116.32535 , 39.79937 ),
-                new_point,
-                new BMap.Point(116.32442 , 39.81439 )
-            ], {
-                strokeColor: 'black',
-                strokeWeight: 4,
-                strokeOpacity: 0.5
-            });
 
+    // $(function () {
+    //     $('#table').bootstrapTable({
+    //         method: "get",
+    //         striped: true,
+    //         singleSelect: false,
+    //         url: "/deviceList",
+    //         dataType: "json",
+    //         pagination: true, //分页
+    //         pageSize: 10,
+    //         pageNumber: 1,
+    //         search: false, //显示搜索框
+    //         contentType: "application/x-www-form-urlencoded",
+    //         queryParams:null,
+    //         columns: [
+    //
+    //
+    //             {
+    //                 title: "物理地址",
+    //                 field: 'deviceMac',
+    //                 align: 'center',
+    //                 width: 120,
+    //                 valign: 'middle'
+    //             }
+    //
+    //         ]
+    //     });
+    // });
 
-        }else {
-            new_point = new BMap.Point(116.42490 , 39.90739  );
-            var polyline = new BMap.Polyline([
-                new BMap.Point(116.42535 , 39.89937 ),
-                new_point,
-                new BMap.Point(116.42442 , 39.91439 )
-            ], {
-                strokeColor: 'red',
-                strokeWeight: 4,
-                strokeOpacity: 0.5
-            });
-
-
-        }
-        map.addOverlay(polyline);
-        map.panTo(new_point);
-
-    }
 
     $(".map_btn").each(function (index) {
         $(this).click(function () {
@@ -199,16 +843,17 @@
         $(".list").slideDown();
     }
 
-    function getMenuTree() {
+    function getMenuTree(userArea,userAreaName) {
         var root = {
-            id : 0,
-            name : "所有区域",
+            id : userArea,
+            name : userAreaName,//变量，如何赋值
             open : true,
         };
 
         $.ajax({
             type : 'get',
-            url : '/area/all',
+//		url : '/area/all',
+            url : '/areaListByuserArea/'+userArea,//返回dto格式，包含区域列表，区域id，区域
             contentType : "application/json; charset=utf-8",
             async : false,
             success : function(data) {
@@ -352,10 +997,19 @@
     }
 
     function zTreeOnCheck(event, treeId, treeNode) {
+
+        if(isCover !== undefined){
+            // 获取当前地图的所有覆盖物
+            var allOverlays = map.getOverlays();
+            // 移除当前地图的所有覆盖物
+            for (var i = 0; i < allOverlays.length; i++) {
+                map.removeOverlay(allOverlays[i]);
+            }
+        }
         var parentNodes = getPath(treeNode);
         var pathNames = [];
         // 打印所有父节点的id和name
-        for (var i = 1; i < parentNodes.length; i++) {
+        for (var i = 0; i < parentNodes.length; i++) {
             pathNames.push(parentNodes[i].name);
         }
         pathNames.push(treeNode.name);
@@ -372,11 +1026,374 @@
         if(!treeNode.isParent){//到达最底层，路段信息
 
 
+
+            DeviceCoord = treeNode.net;
+            console.log(DeviceCoord);
+            $.ajax({
+                url: '/deviceListByDeviceCoord/'+DeviceCoord, // 替换成你的后台接口地址
+                type: 'GET',
+                success: function(response) {
+                    // 成功获取数据后，更新指定位置的内容
+                    $('#total').text(response.data.length); // 将获取的数据写入到id为total的元素中
+
+                    //以下用于测试
+                    var ceshideviceList = [
+                        { longitude: 120.311592,latitude: 36.318853, status: 0 },
+                        { longitude: 120.315364,latitude: 36.318853, status: 1 },
+                        { longitude: 120.319546,latitude: 36.318875, status: 0 },
+                    ];
+                    $.each(ceshideviceList, function(index, device) {
+                        var longitude = device.longitude;
+                        var latitude = device.latitude;
+                        var status = device.status; // 假设设备状态字段为 status，可以根据实际情况进行修改
+
+                        // 创建设备的经纬度位置对象
+                        var point = new BMap.Point(longitude, latitude);
+
+                        // 根据设备状态创建不同的图标
+                        var iconUrl;
+                        if (status === 1) {
+                            iconUrl = '../../../static/img/ludeng.svg';
+                        } else if (status === 0) {
+                            iconUrl = '../../../static/img/lixian.svg';
+                        }
+                        console.log(iconUrl);
+                        // 创建图标对象
+                        var icon = new BMap.Icon(iconUrl, new BMap.Size(50, 50));
+                        // 创建覆盖物
+                        var marker = new BMap.Marker(point, { icon: icon });
+                        console.log(marker);
+                        // 将覆盖物添加到地图上
+                        // 使用闭包保存每个覆盖物的索引数据
+                        (function (i) {
+                            // 监听点击覆盖物的事件
+                            marker.addEventListener("click", function () {
+                                if (isTableExist !== undefined) {
+                                    $('#modalTable').bootstrapTable('destroy');
+                                }
+                                console.log(device);
+                                var $table = $('#modalTable').bootstrapTable({
+                                    contentType: "application/x-www-form-urlencoded",
+                                    data: device,
+                                    title: '设备信息',
+                                    columns: [
+                                        {
+                                            checkbox: "true",
+                                            field: 'check',
+                                            align: 'center',
+
+                                            valign: 'middle'
+                                        }
+                                        ,
+                                        {
+                                            title: "序号",
+                                            field: 'deviceId',
+                                            align: 'center',
+                                            width: 40,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: "物理地址",
+                                            field: 'deviceMac',
+                                            align: 'center',
+                                            width: 120,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: '网络地址',
+                                            field: 'deviceShort',
+                                            align: 'center',
+                                            width: 70,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: '设备标签',
+                                            field: 'deviceSerial',
+                                            align: 'center',
+                                            width: 70,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: '在线状态',
+                                            field: 'deviceStatus',
+                                            width: 70,
+                                            align: 'center',
+                                            formatter: function (cellval, row) {
+                                                if (cellval == 0 ){
+                                                    return '<div  style="color:red"> 离线</div>';
+                                                } else  if (cellval == 1){
+                                                    return '<div  style="color:green"> 在线 </div>';
+                                                }else {
+                                                    return cellval;
+                                                }}
+                                        },
+                                        {
+                                            title: '开关状态',
+                                            field: 'deviceLight',
+                                            width: 70,
+                                            align: 'center',
+                                            formatter: function (cellval, row) {
+                                                if (cellval == 1){
+                                                    return '<div  style="color:teal"> 打开 </div>';
+                                                } else  if (cellval == 2){
+                                                    return '<div  style="color:gray"> 关闭 </div>';
+                                                }else {
+                                                    return cellval;
+                                                }}
+                                        },
+
+                                        {
+                                            title: '模式',
+                                            field: 'deviceModel',
+                                            width: 70,
+                                            align: 'center',
+                                            formatter: function (cellval, row) {
+                                                if (cellval == 0){
+                                                    return '<div  style="color:teal"> 普通模式 </div>';
+                                                } else  if (cellval == 1){
+                                                    return '<div  style="color:gray"> 雷达模式 </div>';
+                                                }else {
+                                                    return '<div  style="color:gray"> 光敏模式 </div>';;
+                                                }}
+                                        },
+                                        {
+                                            title: '网关编号',
+                                            field: 'deviceCoord',
+                                            align: 'center',
+                                            width: 80,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: '设备类型',
+                                            field: 'deviceType',
+                                            align: 'center',
+                                            width: 80,
+                                            valign: 'middle'
+                                        },
+                                        {
+                                            title: '设备详情',
+                                            field: 'person',
+                                            width: 160,
+                                            align: 'center',
+                                            formatter: function (cellval, row ,index) {
+
+                                                var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                                                var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                                                return  e+d;
+                                            }
+                                        },
+                                    ],
+                                });
+                                isTableExist = 1;
+                                // 弹出弹窗
+                                $('#myModal').modal('show');
+
+                            });
+                        })(index);
+                        map.addOverlay(marker);
+                    });
+                    //测试结束
+
+                    // ////以下为正确代码
+                    // deviceList = response.data;
+                    // console.log(deviceList);
+                    // $.each(deviceList, function(index, device) {
+                    //     var longitude = device.deviceLongitude;
+                    //     var latitude = device.deviceLatitude;
+                    //     var status = device.deviceStatus;
+                    //
+                    //     // 创建设备的经纬度位置对象
+                    //     var point = new BMap.Point(longitude, latitude);
+                    //
+                    //     // 根据设备状态创建不同的图标
+                    //     var iconUrl;
+                    //     if (status === 1) {
+                    //         iconUrl = '../../../static/img/ludeng.svg';
+                    //     } else if (status === 0) {
+                    //         iconUrl = '../../../static/img/lixian.svg';
+                    //     }
+                    //     console.log(iconUrl);
+                    //     // 创建图标对象
+                    //     var icon = new BMap.Icon(iconUrl, new BMap.Size(50, 50));
+                    //     // 创建覆盖物
+                    //     var marker = new BMap.Marker(point, { icon: icon });
+                    //     console.log(marker);
+                    //     // 将覆盖物添加到地图上
+                    //     // 使用闭包保存每个覆盖物的索引数据
+                    //     (function (i) {
+                    //         // 监听点击覆盖物的事件
+                    //         marker.addEventListener("click", function () {
+                    //             if (isTableExist !== undefined) {
+                    //                 $('#modalTable').bootstrapTable('destroy');
+                    //             }
+                    //             console.log(device);
+                    //             var $table = $('#modalTable').bootstrapTable({
+                    //                 contentType: "application/x-www-form-urlencoded",
+                    //                 data: device,
+                    //                 title: '设备信息',
+                    //                 columns: [
+                    //                     {
+                    //                         checkbox: "true",
+                    //                         field: 'check',
+                    //                         align: 'center',
+                    //
+                    //                         valign: 'middle'
+                    //                     }
+                    //                     ,
+                    //                     {
+                    //                         title: "序号",
+                    //                         field: 'deviceId',
+                    //                         align: 'center',
+                    //                         width: 40,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: "物理地址",
+                    //                         field: 'deviceMac',
+                    //                         align: 'center',
+                    //                         width: 120,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: '网络地址',
+                    //                         field: 'deviceShort',
+                    //                         align: 'center',
+                    //                         width: 70,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: '设备标签',
+                    //                         field: 'deviceSerial',
+                    //                         align: 'center',
+                    //                         width: 70,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: '在线状态',
+                    //                         field: 'deviceStatus',
+                    //                         width: 70,
+                    //                         align: 'center',
+                    //                         formatter: function (cellval, row) {
+                    //                             if (cellval == 0 ){
+                    //                                 return '<div  style="color:red"> 离线</div>';
+                    //                             } else  if (cellval == 1){
+                    //                                 return '<div  style="color:green"> 在线 </div>';
+                    //                             }else {
+                    //                                 return cellval;
+                    //                             }}
+                    //                     },
+                    //                     {
+                    //                         title: '开关状态',
+                    //                         field: 'deviceLight',
+                    //                         width: 70,
+                    //                         align: 'center',
+                    //                         formatter: function (cellval, row) {
+                    //                             if (cellval == 1){
+                    //                                 return '<div  style="color:teal"> 打开 </div>';
+                    //                             } else  if (cellval == 2){
+                    //                                 return '<div  style="color:gray"> 关闭 </div>';
+                    //                             }else {
+                    //                                 return cellval;
+                    //                             }}
+                    //                     },
+                    //
+                    //                     {
+                    //                         title: '模式',
+                    //                         field: 'deviceModel',
+                    //                         width: 70,
+                    //                         align: 'center',
+                    //                         formatter: function (cellval, row) {
+                    //                             if (cellval == 0){
+                    //                                 return '<div  style="color:teal"> 普通模式 </div>';
+                    //                             } else  if (cellval == 1){
+                    //                                 return '<div  style="color:gray"> 雷达模式 </div>';
+                    //                             }else {
+                    //                                 return '<div  style="color:gray"> 光敏模式 </div>';;
+                    //                             }}
+                    //                     },
+                    //                     {
+                    //                         title: '网关编号',
+                    //                         field: 'deviceCoord',
+                    //                         align: 'center',
+                    //                         width: 80,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: '设备类型',
+                    //                         field: 'deviceType',
+                    //                         align: 'center',
+                    //                         width: 80,
+                    //                         valign: 'middle'
+                    //                     },
+                    //                     {
+                    //                         title: '设备详情',
+                    //                         field: 'person',
+                    //                         width: 160,
+                    //                         align: 'center',
+                    //                         formatter: function (cellval, row ,index) {
+                    //
+                    //                             var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                    //                             var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                    //                             return  e+d;
+                    //                         }
+                    //                     },
+                    //                 ],
+                    //             });
+                    //             isTableExist = 1;
+                    //             // 弹出弹窗
+                    //             $('#myModal').modal('show');
+                    //
+                    //         });
+                    //     })(index);
+                    //     map.addOverlay(marker);
+                    //});
+
+                    $.ajax({
+                        url: '/deviceListByIsOnline/'+DeviceCoord, // 替换成你的后台接口地址
+                        type: 'GET',
+                        success: function(response) {
+                            // 成功获取数据后，更新指定位置的内容
+                            $('#theOnline').text(response.data.length); // 将获取的数据写入到id为total的元素中
+
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // 打印错误信息
+                        }
+                    });
+                    $.ajax({
+                        url: '/deviceListByIsNotOnline/'+DeviceCoord, // 替换成你的后台接口地址
+                        type: 'GET',
+                        success: function(response) {
+                            // 成功获取数据后，更新指定位置的内容
+                            $('#notOnline').text(response.data.length); // 将获取的数据写入到id为total的元素中
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText); // 打印错误信息
+                        }
+                    });
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText); // 打印错误信息
+                }
+            });
+            $.ajax({
+                url: '/alarmListByArea/'+DeviceCoord, // 替换成你的后台接口地址
+                type: 'GET',
+                success: function(response) {
+                    // 成功获取数据后，更新指定位置的内容
+                    $('#alarm').text(response.data.length); // 将获取的数据写入到id为total的元素中
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText); // 打印错误信息
+                }
+            });
+
+
         } else {//父节点
 
             if( treeNode.id == 0 ){   //所有区域，待定，之后实现数据库获取区域功能
 
-
+                deviceListByDeviceCoord("/deviceList","");
 
             } else {
 
@@ -389,11 +1406,12 @@
 
                 }
 
-
+                deviceListByDeviceCoord("/deviceListByDeviceCoordList/" , deviceCoordList);
 
             }
 
         }
+        isCover = 1;
     }
 
     function getPath(treeNode) {
@@ -444,29 +1462,6 @@
                     // 将地图中心移动到标注点
                     map.panTo(newPoint);
 
-                    var opts = {
-                        position: newPoint, // 指定文本标注所在的地理位置
-                        offset: new BMap.Size(30, -30) // 设置文本偏移量
-                    };
-                    var content = '此处为文本标注';
-                    if (label !== undefined) {
-                        map.removeOverlay(label);
-                    }
-                    label = new BMap.Label(content, opts);
-                    // 自定义文本标注样式
-                    label.setStyle({
-                        color: 'blue',
-                        borderRadius: '5px',
-                        borderColor: '#ccc',
-                        padding: '10px',
-                        fontSize: '16px',
-                        height: '30px',
-                        lineHeight: '20px',
-                        fontFamily: '微软雅黑',
-
-                    });
-
-                    map.addOverlay(label);
 
                 } else {
                     console.log("地理编码失败");
@@ -481,16 +1476,17 @@
     function getZoomLevelByPathLen(pathLen) {
         var zoomLevel;
         if (pathLen === 1) {
-            zoomLevel = 5; // 省级别的缩放级别
+            zoomLevel = 7; // 省级别的缩放级别
         } else if (pathLen === 2) {
-            zoomLevel = 10; // 城市级别的缩放级别
+            zoomLevel = 12; // 城市级别的缩放级别
         } else if (pathLen === 3){
-            zoomLevel = 15; // 区县的缩放级别
-        } else {
+            zoomLevel = 13; // 区县的缩放级别
+        } else if (pathLen === 4){
             zoomLevel = 18; //街道
         }
         return zoomLevel;
     }
+
 
 
     function getWeather(pathName,location_id) {
@@ -520,6 +1516,154 @@
             }
         });
     }
+
+    function getCover() {
+        var overlays = [
+            {point: new BMap.Point(120.303047, 36.318785), content: "覆盖物1的文本内容"},
+            {point: new BMap.Point(120.313057, 36.317885), content: "覆盖物2的文本内容"},
+            // 在这里继续添加更多的覆盖物坐标和文本内容
+        ];
+
+        // 循环创建自定义覆盖物
+        for (var i = 0; i < overlays.length; i++) {
+            (function(index) {
+                var overlay = overlays[index];
+
+                // 创建自定义覆盖物
+                var customOverlay = new ComplexCustomOverlay(new BMap.Point(overlay.longitude, overlay.latitude), overlay.content);
+                map.addOverlay(customOverlay);
+            })(i);
+        }
+    }
+
+    function deviceListByDeviceCoord(myUrl,deviceCoord){
+        $('#table').bootstrapTable('destroy');
+        $('#table').bootstrapTable({
+            method: "get",
+            striped: true,
+            singleSelect: false,
+            url: myUrl+deviceCoord,
+            dataType: "json",
+            pagination: true, //分页
+            pageSize: 10,
+            pageNumber: 1,
+            search: false, //显示搜索框
+            contentType: "application/x-www-form-urlencoded",
+            queryParams:null,
+            columns: [
+                {
+                    checkbox: "true",
+                    field: 'check',
+                    align: 'center',
+
+                    valign: 'middle'
+                }
+                ,
+                {
+                    title: "序号",
+                    field: 'deviceId',
+                    align: 'center',
+                    width: 40,
+                    valign: 'middle'
+                },
+                {
+                    title: "物理地址",
+                    field: 'deviceMac',
+                    align: 'center',
+                    width: 120,
+                    valign: 'middle'
+                },
+                {
+                    title: '网络地址',
+                    field: 'deviceShort',
+                    align: 'center',
+                    width: 70,
+                    valign: 'middle'
+                },
+                {
+                    title: '设备标签',
+                    field: 'deviceSerial',
+                    align: 'center',
+                    width: 70,
+                    valign: 'middle'
+                },
+                {
+                    title: '在线状态',
+                    field: 'deviceStatus',
+                    width: 70,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        if (cellval == 0 ){
+                            return '<div  style="color:red"> 离线</div>';
+                        } else  if (cellval == 1){
+                            return '<div  style="color:green"> 在线 </div>';
+                        }else {
+                            return cellval;
+                        }}
+                },
+                {
+                    title: '开关状态',
+                    field: 'deviceLight',
+                    width: 70,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        if (cellval == 1){
+                            return '<div  style="color:teal"> 打开 </div>';
+                        } else  if (cellval == 2){
+                            return '<div  style="color:gray"> 关闭 </div>';
+                        }else {
+                            return cellval;
+                        }}
+                },
+
+                {
+                    title: '模式',
+                    field: 'deviceModel',
+                    width: 70,
+                    align: 'center',
+                    formatter: function (cellval, row) {
+                        if (cellval == 0){
+                            return '<div  style="color:teal"> 普通模式 </div>';
+                        } else  if (cellval == 1){
+                            return '<div  style="color:gray"> 雷达模式 </div>';
+                        }else {
+                            return '<div  style="color:gray"> 光敏模式 </div>';;
+                        }}
+                },
+                {
+                    title: '网关编号',
+                    field: 'deviceCoord',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+                {
+                    title: '设备类型',
+                    field: 'deviceType',
+                    align: 'center',
+                    width: 80,
+                    valign: 'middle'
+                },
+
+                {
+                    title: '设备详情',
+                    field: 'person',
+                    width: 160,
+                    align: 'center',
+                    formatter: function (cellval, row ,index) {
+
+                        var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                        var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                        return  e+d;
+                    }
+                },
+
+            ]
+        });
+
+    }
+
+
 
 </script>
 

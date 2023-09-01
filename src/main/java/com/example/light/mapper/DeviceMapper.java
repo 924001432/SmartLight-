@@ -7,4 +7,5 @@ import com.example.light.entity.Device;
  * 设备Mapper
  */
 public interface DeviceMapper extends BaseMapper<Device> {
+    void updateOnlineStatus(Integer deviceId, int status);
 }

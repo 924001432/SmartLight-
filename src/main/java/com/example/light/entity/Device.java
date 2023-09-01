@@ -46,5 +46,13 @@ public class Device implements Serializable {
     @TableField(value = "device_hearttime")
     private String deviceHearttime;
 
+//    @TableField(value = "device_longitude")
+//    private Double deviceLongitude;
+//
+//    @TableField(value = "device_latitude")
+//    private Double deviceLatitude;
+
+
+
 
 }

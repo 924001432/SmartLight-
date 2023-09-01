@@ -17,4 +17,10 @@ public interface DeviceService extends IService<Device> {
     public void insertDevice(Device device);
 
     public void updateDeviceHearttime(Device device);
+
+    public List<Device> deviceListByIsOnline(Integer deviceCoord);
+
+    public void updateOnlineStatus(Integer deviceId ,int status);
+
+    public List<Device> deviceListByIsNotOnline(Integer deviceCoord);
 }

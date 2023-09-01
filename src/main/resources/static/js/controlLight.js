@@ -3,6 +3,7 @@ var timer;
 var isRefresh;
 var curPage = 0;
 var curUrl;
+
 var curDeviceCoord;
 var curDeviceSerial;
 $(document).ready(function(){
@@ -62,8 +63,6 @@ $(document).ready(function(){
             clearInterval(timer);
         }
     });
-
-
 
 });
 
