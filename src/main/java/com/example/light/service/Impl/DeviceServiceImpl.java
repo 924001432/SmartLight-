@@ -30,7 +30,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         return deviceMapper.selectList(null);
     }
     @Override
-    public List<Device> deviceListByDeviceCoord(Integer deviceCoord) {
+    public List<Device> deviceListByDeviceCoord(String deviceCoord) {
 
         QueryWrapper<Device> wrapper = new QueryWrapper<>();
         wrapper.eq("device_coord",deviceCoord);
@@ -42,6 +42,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     public void insertDevice(Device device){
 
         QueryWrapper<Device> wrapper = new QueryWrapper<>();
+        //应该改成同时确定网络标签和设备标签两个条件
         wrapper.eq("device_serial",device.getDeviceSerial());
 
         if(deviceMapper.selectOne(wrapper)!=null){

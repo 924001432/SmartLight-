@@ -33,10 +33,10 @@
     </div>
 <!--                            查找功能，未实现！                         -->
     <div class="notice_check">
-        <label class="">用户名：</label> <input type="text" class="find_input">
-        <button class="check_btn">查询</button>
-        <label class="">用户角色：</label> <input type="text" class="find_input">
-        <button class="check_btn">查询</button>
+        <label class="">用户名：</label> <input id="userName" type="text" class="find_input">
+        <button class="check_btn" onclick="queryUserByUserName()">查询</button>
+<!--        <label class="">用户角色：</label> <input id="userRole" type="text" class="find_input">-->
+<!--        <button class="check_btn">查询</button>-->
 
 
         <div class="notice_nav r_right paddingBotme">
@@ -74,13 +74,36 @@
 
                 }
         })
-        console.log(userArea);
 
+        userList("/userListByuserArg/","-1&",-1);
+
+    });
+
+    function queryUserByUserName(){
+
+        //获取查询参数
+        var e =$("#userName").val();
+
+        //调用查询方法，判空
+        if(e == ""){
+            userList("/userListByuserArg/","-1&",-1);
+<!--            $('#table').bootstrapTable('refresh');-->
+        }else{
+            userList("/userListByuserArg/","1&", e );
+
+        }
+
+    }
+
+
+
+    function userList(myUrl,type,arg){
+        $('#table').bootstrapTable('destroy');
         $('#table').bootstrapTable({
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/userListByuserArea/"+userArea,
+            url: myUrl + type + arg,
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
@@ -150,13 +173,14 @@
 
                         //ajax异步请求数据不执行，async属性为false，为同步请求，true为异步请求，可能会跳过。
                         $.ajax({
-                            url: '/areaListByareaId/'+cellval,
+                            url: '/areaListByareaId/'+cellval,//传递值为list，选取第一位在取值
                             dataType:'json',
                             type:'GET',
                             cache:false,
                             async:false,                            //!!!!!
                             success:function (data) {
-                                 e = data.areaName
+<!--                                console.log(data);-->
+                                e = data[0].areaName
 
                             }
                         });
@@ -222,7 +246,7 @@
 
             ]
         });
-    });
+    }
 
     function editUserInfo(userId){
 
@@ -302,48 +326,7 @@
         });
     }
 
-<!--formatter: function (cellval, row) {-->
-<!--                        var e;-->
-<!--                            $.ajax({-->
-<!--                                url: '/roleList',-->
-<!--                                dataType:'json',-->
-<!--                                type:'GET',-->
-<!--                                cache:false,-->
-<!--                                success:function (data) {-->
 
-<!--                                    //上级区域值比较多，需要清空列表，重新渲染-->
-
-
-<!--                                    for(var i=0; i<data.length; i++){-->
-<!--                                        var d = data[i];-->
-<!--                                        var id = d['roleId'];-->
-<!--                                        var name = d['roleName'];-->
-<!--                                        //选中行上级编号和获取到数据的编号一致，赋该值-->
-<!--                                        console.log("id:"+id);-->
-<!--                                        console.log("cellval:"+cellval);-->
-<!--                                        if( id == cellval) {-->
-<!--                                            console.log('<div  style="color:green"> '+name+ '</div>');-->
-<!--&lt;!&ndash;                                            return '<div  style="color:green"> '+name+ '</div>';&ndash;&gt;-->
-<!--                                            return '<div  style="color:red"> 离线</div>';-->
-<!--                                        }else{-->
-<!--                                             return cellval;-->
-<!--                                        }-->
-
-<!--                                    }-->
-
-<!--                                }-->
-<!--                            });-->
-<!--&lt;!&ndash;                        if (cellval == 0 ){&ndash;&gt;-->
-<!--&lt;!&ndash;                                return '<div  style="color:red"> 离线</div>';&ndash;&gt;-->
-<!--&lt;!&ndash;                            } else  if (cellval == 1){&ndash;&gt;-->
-<!--&lt;!&ndash;                                return '<div  style="color:green"> 在线 </div>';&ndash;&gt;-->
-<!--&lt;!&ndash;                            }else {&ndash;&gt;-->
-<!--&lt;!&ndash;                                return cellval;&ndash;&gt;-->
-<!--&lt;!&ndash;                            }&ndash;&gt;-->
-
-
-
-<!--                    }-->
 
 
 </script>

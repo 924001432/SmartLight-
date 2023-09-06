@@ -31,6 +31,7 @@
 
         </ul>
     </div>
+
 <!--                            查找功能，未实现！                         -->
 <!--    <div class="notice_check">-->
 <!--        <label class="">数据编号：</label> <input type="text" class="find_input">-->
@@ -42,6 +43,9 @@
 
 <!--    </div>-->
     <div class="notice_check">
+        <label class="">角色名称：</label> <input id="roleName" type="text" class="find_input">
+        <button class="check_btn" onclick="queryUserByRoleName()">查询</button>
+
         <div class="notice_nav r_right paddingBotme">
 
             <a class="btn btn-default" onclick="addRole()"><span class="glyphicon glyphicon-plus"></span>新增</a>
@@ -61,11 +65,32 @@
 
 <script>
     $(function () {
+        roleList("/roleList","");
+<!--        roleList(myUrl,arg);-->
+    });
+
+    function queryUserByRoleName(){
+
+        //获取查询参数
+        var e =$("#roleName").val();
+
+        //调用查询方法，判空
+        if(e == ""){
+            roleList("/roleList", "");
+        }else{
+            roleList("/queryRoleByRoleName/", e );
+            console.log("/queryRoleByRoleName/"+e);
+        }
+
+    }
+
+    function roleList(myUrl,arg){
+        $('#table').bootstrapTable('destroy');
         $('#table').bootstrapTable({
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/roleList",
+            url: myUrl + arg,
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
@@ -78,14 +103,6 @@
                     checkbox: "true",
                     field: 'check',
                     align: 'center',
-                    valign: 'middle'
-                }
-                ,
-                {
-                    title: "序号",
-                    field: 'roleId',
-                    align: 'center',
-                    width: 40,
                     valign: 'middle'
                 },
                 {
@@ -144,7 +161,7 @@
 
             ]
         });
-    });
+    }
 
     function editRoleInfo(roleId){
 
@@ -184,8 +201,10 @@
         $.ajax({
               url: '/roleDelete/'+roleId,
               type: 'post',
-              dataType: 'text',
-              success: function (result) {
+              dataType: 'json',
+              success: function (str) {
+
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
                     $("#table").bootstrapTable('refresh');
               }
           })

@@ -26,7 +26,7 @@ public interface RoleService extends IService<Role> {
 
     public void addRole(Role role);
 
-    public void deleteRole(Integer roleId);
+    public Integer deleteRole(Integer roleId);
 
 
 

@@ -28,19 +28,7 @@ function getMenuTree() {
 }
 
 function initMenuDatas(areaId){
-//	$.ajax({
-//		type : 'get',
-//		url : '/permissions?roleId=' + areaId,
-//		success : function(data) {
-//			var length = data.length;
-//			var ids = [];
-//			for(var i=0; i<length; i++){
-//				ids.push(data[i]['id']);
-//			}
-//
-//			initMenuCheck(ids);
-//		}
-//	});
+
 
 	var ids = [];
 	ids.push(areaId);
@@ -76,7 +64,9 @@ function getCheckedMenuIds(){
 	for(var i=0; i<length; i++){
 		var n = nodes[i];
 		var id = n['id'];
+		var level = n['level'];
 		ids.push(id);
+		ids.push(level);
 	}
 
 	return ids;
@@ -86,6 +76,7 @@ function createNode(d) {
 	var id = d['areaId'];
 	var pId = d['parentId'];
 	var name = d['areaName'];
+	var level = d['areaLevel'];
 	var net = d['areaNet'];
 	var child = d['child'];
 
@@ -93,6 +84,7 @@ function createNode(d) {
 		open : true,
 		id : id,
 		name : name,
+		level : level,
 		pId : pId,
 		net : net,
 	};

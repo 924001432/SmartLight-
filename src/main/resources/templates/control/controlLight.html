@@ -99,7 +99,7 @@
             method: "get",
             striped: true,
             singleSelect: false,
-<!--            url: "/deviceList",-->
+            url: "/deviceList",
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
@@ -115,32 +115,53 @@
                         align: 'center',
                         valign: 'middle'
                     },
-                    {
-                        title: "序号",
-                        field: 'deviceId',
-                        align: 'center',
-                        width: 80,
-                        valign: 'middle'
-                    },
+<!--                    {-->
+<!--                        title: "序号",-->
+<!--                        field: 'deviceId',-->
+<!--                        align: 'center',-->
+<!--                        width: 80,-->
+<!--                        valign: 'middle'-->
+<!--                    },-->
                     {
                         title: "物理地址",
                         field: 'deviceMac',
                         align: 'center',
-                        width: 120,
+                        width: 80,
                         valign: 'middle'
                     },
                     {
                         title: '网络地址',
                         field: 'deviceShort',
                         align: 'center',
-                        width: 120,
+                        width: 80,
                         valign: 'middle'
                     },
                     {
                         title: '设备标签',
                         field: 'deviceSerial',
                         align: 'center',
-                        width: 120,
+                        width: 60,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '网关编号',
+                        field: 'deviceCoord',
+                        align: 'center',
+                        width: 60,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '经度',
+                        field: 'deviceLon',
+                        align: 'center',
+                        width: 100,
+                        valign: 'middle'
+                    },
+                    {
+                        title: '纬度',
+                        field: 'deviceLat',
+                        align: 'center',
+                        width: 100,
                         valign: 'middle'
                     },
                     {
@@ -185,18 +206,12 @@
                                 return '<div  style="color:gray"> 光敏模式 </div>';;
                             }}
                     },
-                    {
-                        title: '网关编号',
-                        field: 'deviceCoord',
-                        align: 'center',
-                        width: 80,
-                        valign: 'middle'
-                    },
+
                     {
                         title: '设备类型',
                         field: 'deviceType',
                         align: 'center',
-                        width: 80,
+                        width: 70,
                         valign: 'middle'
                     },
 
@@ -206,8 +221,8 @@
                         width: 160,
                         align: 'center',
                         formatter: function (cellval, row ,index) {
-                            var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListByDeviceSerial('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据流</a>'
-                            var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListBydeviceSerial('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 故障报警</a>'
+                            var e = '<a style="margin: 2;width:65" class="btn btn-xs btn-success"  onclick="infoListByDeviceSerial('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据流</a>'
+                            var d = '<a style="margin: 2;width:75" class="btn btn-xs btn-success"  onclick="alarmListBydeviceSerial('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 故障报警</a>'
                             return  e+d;
                         }
                     },

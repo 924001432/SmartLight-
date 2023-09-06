@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -56,6 +58,27 @@ public class roleController {
 
 
         return role;
+    }
+
+    /**
+     *
+     * @param roleName
+     * @return
+     */
+    @RequestMapping("/queryRoleByRoleName/{roleName}")
+    @ResponseBody
+    public Object queryRoleByRoleName(@PathVariable(name = "roleName",required = true)String roleName){
+
+        Role role = roleService.queryRoleByName(roleName);
+        List<Role> list = new ArrayList<>();
+
+        if(role != null){
+            list.add(role);
+            return list;
+        }else {
+            return null;
+        }
+
     }
 
     /**
@@ -140,9 +163,30 @@ public class roleController {
      */
     @RequestMapping("/roleDelete/{roleId}")
     @ResponseBody
-    public void roleDelete(@PathVariable(name = "roleId",required = true)Integer roleId){
+    public Object roleDelete(@PathVariable(name = "roleId",required = true)Integer roleId){
 
-        roleService.deleteRole(roleId);
+        try{
+            int i = roleService.deleteRole(roleId);
+
+            if(i == -1){//已经分配角色给用户
+                HashMap<String,Object> resultMap = new HashMap<>();
+
+                resultMap.put("msg","已有用户使用该角色，请先解绑再删除");
+                resultMap.put("code",1);
+                resultMap.put("icon",5);
+                resultMap.put("anim",6);
+                return resultMap;
+
+            }else {
+                return ResultMapUtil.getHashMapSave(i);
+            }
+
+
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
+
 
     }
 

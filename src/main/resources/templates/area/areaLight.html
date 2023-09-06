@@ -56,15 +56,7 @@
 <!--        </div>-->
         <div class="clear"></div>
 
-        <div class="notice_check">
-            <div class="notice_nav r_right paddingBotme">
 
-                <a class="btn btn-default" onclick="plus()"><span class="glyphicon glyphicon-plus"></span>新增</a>
-
-
-
-            </div>
-        </div>
             <div class="clear"></div>
 
         <ul class="news_table department_table">
@@ -150,43 +142,8 @@
         });
     });
 
-    function plus(){
-        layer.open({
-            type: 2,
-            title: '新增区域',
-            content: '/testAddPage',
-            shade:[0.8,'#393d49'],
-            area:['500px','430px'],
-            btn:['确定','取消'],
-            yes:function (index,layero) {
-                var iframeWindow = window['layui-layer-iframe'+index];
-                var submit = layero.find('iframe').contents().find("#LAY-front-submit");
-                //监听提交
-                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
-                    var field = data.field;
-                    $.ajax({
-                        url: '/areaAdd',
-                        data: field,
-                        async: false,
-                        cache: false,
-                        success: function (str) {
-                            if(str.code === 0){
-                                console.log(1111);
-                            }
-                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                        }
-                    });
-                    layer.close(index);     //关闭弹层
-                    $("#table").bootstrapTable('refresh');
-                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
-                });
-                submit.trigger('click');
-            },
-            success:function (layero,index) {
 
-            }
-        });
-    }
+
 
 
 

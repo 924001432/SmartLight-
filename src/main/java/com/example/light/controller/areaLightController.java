@@ -40,8 +40,8 @@ public class areaLightController {
         return "/area/areaAddPage";
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "新增区域")
+//    @LogAnnotation
+//    @ApiOperation(value = "新增区域")
     @RequestMapping("/areaAdd")
     @ResponseBody
     public Object areaAdd(Area area) {
@@ -56,6 +56,33 @@ public class areaLightController {
 
 
     }
+
+    @RequestMapping("/areaEditPage/{areaId}")
+    public Object areaEditPage(@PathVariable(name = "areaId", required = true) Integer areaId, Model model) {
+        Area area = areaService.getById(areaId);
+        model.addAttribute("obj", area);
+
+        return "/area/areaEditPage";
+    }
+
+
+//    @LogAnnotation // 标记日志注解，用于记录日志信息
+//    @ApiOperation(value = "编辑区域") // 接口文档的注解，表示该方法是用来编辑区域的
+    @RequestMapping("/areaEdit") // 定义请求的URL路径
+    @ResponseBody // 返回结果会被转换为JSON格式
+
+    public Object areaEdit(Area area) {
+
+        System.out.println(area.toString());
+
+        try {
+            int i = areaService.areaEdit(area); // 调用具体的区域编辑逻辑
+            return ResultMapUtil.getHashMapSave(i); // 返回编辑结果
+        } catch (Exception e) {
+            return ResultMapUtil.getHashMapException(e); // 返回异常信息
+        }
+    }
+
 
     @RequestMapping("/testAddPage")
     public Object testAddPage(){

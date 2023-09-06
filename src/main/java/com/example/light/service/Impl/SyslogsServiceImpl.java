@@ -30,6 +30,29 @@ public class SyslogsServiceImpl extends ServiceImpl<SyslogsMapper, SysLogs> impl
 
     }
 
+    @Override
+    public List<SysLogs> queryLogByUserName(String userName) {
+        QueryWrapper<SysLogs> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_name",userName).orderBy(true,false,"logs_createtime");
+
+        return syslogsMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<SysLogs> queryLogByModule(String module) {
+        QueryWrapper<SysLogs> wrapper = new QueryWrapper<>();
+        wrapper.eq("logs_module",module).orderBy(true,false,"logs_createtime");
+
+        return syslogsMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<SysLogs> queryLogByUpTime(String upTime) {
+        QueryWrapper<SysLogs> wrapper = new QueryWrapper<>();
+        wrapper.like("logs_createtime",upTime).orderBy(true,false,"logs_createtime");
+
+        return syslogsMapper.selectList(wrapper);
+    }
 
 
 }

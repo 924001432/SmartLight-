@@ -22,14 +22,22 @@ public class Device implements Serializable {
     @TableField(value = "device_short")
     private String deviceShort;
 
+    @TableField(value = "device_coord")
+    private String deviceCoord;
+
     @TableField(value = "device_serial")
     private String deviceSerial;
+
+    @TableField(value = "device_lon")
+    private String deviceLon;
+
+    @TableField(value = "device_lat")
+    private String deviceLat;
 
     @TableField(value = "device_type")
     private Integer deviceType;
 
-    @TableField(value = "device_coord")
-    private String deviceCoord;
+
 
     @TableField(value = "device_light")
     private Integer deviceLight;

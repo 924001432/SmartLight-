@@ -237,7 +237,7 @@ function initAreaList(myUrl,areaId){
                     formatter: function (cellval, row) {
 
                         var  e = '<button  id="add" data-id="98" class="btn btn-xs btn-success" onclick="addArea('+row.areaId+','+row.areaLevel+')">添加子区域</button> ';
-                        var  f = '<button  id="add" data-id="98" class="btn btn-xs btn-warning" >编辑</button> ';
+                        var  f = '<button  id="add" data-id="98" class="btn btn-xs btn-warning" onclick="editArea('+row.areaId+')">编辑</button> ';
                         var  d = '<button  id="add" data-id="98" class="btn btn-xs btn-danger" >删除</button> ';
                         return  e + f + d;
                     }
@@ -282,7 +282,7 @@ function addArea( areaId,areaLevel){
                             if(str.code === 0){
                                 console.log(1111);
                             }
-//                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
                         }
                     });
 
@@ -299,6 +299,54 @@ function addArea( areaId,areaLevel){
         });
     }
 
+
+}
+
+function editArea( areaId ){
+
+    console.log("areaId:"+areaId);
+
+    layer.open({
+        type: 2,
+        title: '编辑区域',
+        content: '/areaEditPage/' + areaId,
+        shade:[0.8,'#393d49'],
+        area:['500px','450px'],
+        btn:['确定','取消'],
+        yes:function (index,layero) {
+            var iframeWindow = window['layui-layer-iframe'+index];
+            var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+            //监听提交
+            iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                var field = data.field;
+
+                console.log(field);
+
+//                $.ajax({
+//                    url: '/areaEdit',
+//                    data: field,
+//                    dataType:'json',
+//                    async: false,
+//                    cache: false,
+//                    success: function (str) {
+//                        if(str.code === 0){
+//                            console.log(1111);
+//                        }
+//                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+//                    }
+//                });
+
+
+                layer.close(index);     //关闭弹层
+                $("#table").bootstrapTable('refresh');
+                $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+            });
+            submit.trigger('click');
+        },
+        success:function (layero,index) {
+
+        }
+    });
 
 }
 

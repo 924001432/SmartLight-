@@ -73,7 +73,7 @@ public class contolLightController {
 //    @ApiOperation(value = "查看某区域的所有设备信息")
     @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
     @ResponseBody
-    public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
+    public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)String deviceCoord) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
 
@@ -85,11 +85,11 @@ public class contolLightController {
             if (cal_time(device.getDeviceHearttime())){
                 device.setDeviceStatus(1);
                 deviceService.updateOnlineStatus(device.getDeviceId(),1);
-                System.out.println("更新为在线");
+//                System.out.println("更新为在线");
             }else {
                 device.setDeviceStatus(0);
                 deviceService.updateOnlineStatus(device.getDeviceId(),0);
-                System.out.println("更新为离线");
+//                System.out.println("更新为离线");
             }
         }
 
@@ -131,13 +131,13 @@ public class contolLightController {
 
     @RequestMapping("/deviceListByDeviceCoordList/{deviceCoordList}")
     @ResponseBody
-    public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList) throws ParseException {
+    public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
         List<Device> deviceList = new ArrayList<>();
 
-        for (Integer integer : deviceCoordList) {
-            deviceList.addAll(deviceService.deviceListByDeviceCoord(integer));
+        for (String str : deviceCoordList) {
+            deviceList.addAll(deviceService.deviceListByDeviceCoord(str));
 
         }
 

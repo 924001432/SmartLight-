@@ -128,8 +128,8 @@ public class alarmLightController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看某区域的所有报警信息")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看某区域的所有报警信息")
     @RequestMapping("/alarmListByArea/{deviceCoord}")
     @ResponseBody
     public Object alarmListByArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
@@ -145,8 +145,8 @@ public class alarmLightController {
 
     }
 
-    @LogAnnotation
-    @ApiOperation(value = "查看某区域的所有报警信息按状态查看")
+//    @LogAnnotation
+//    @ApiOperation(value = "查看某区域的所有报警信息按状态查看")
     @RequestMapping("/alarmListByalarmArea/{deviceCoord}/{alarmStatus}")
     @ResponseBody
     public Object alarmListByalarmArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){

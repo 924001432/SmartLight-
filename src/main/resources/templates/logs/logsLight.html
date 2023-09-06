@@ -33,19 +33,20 @@
     </div>
 <!--                            查找功能，未实现！                         -->
     <div class="notice_check">
-        <label class="">用户名：</label> <input type="text" class="find_input">
-        <button class="check_btn">查询</button>
+        <label class="">用户名：</label> <input id="userName" type="text" class="find_input">
+        <button class="check_btn" onclick="queryLogByUserName()">查询</button>
 
-        <label class="">模块：</label> <input type="text" class="find_input">
-        <button class="check_btn">查询</button>
+        <label class="">模块：</label> <input id="module" type="text" class="find_input">
+        <button class="check_btn" onclick="queryLogByModule()">查询</button>
 
-        <label class="">上传时间：</label> <input type="date" class="find_input">
+        <label class="">上传时间：</label> <input id="upTime" type="date" class="find_input">
 
-        <button class="check_btn">查询</button>
+        <button class="check_btn" onclick="queryLogByUpTime()">查询</button>
         <div class="notice_nav r_right">
-            <a class="btn btn-default"><span class="glyphicon glyphicon-export"></span>导出</a>
-<!--            <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span>打印</a>-->
 
+            <a class="btn btn-default"  onclick="logExport(1)"><span class="glyphicon glyphicon-export"></span>导出</a>
+<!--            a标签中的onclick方法中的函数名可能会影响函数的执行-->
+<!--            <a class="btn btn-default"><span class="glyphicon glyphicon-print"></span>打印</a>-->
 
         </div>
 
@@ -60,12 +61,122 @@
 <script src="static/js/layer_v2.1/layer/layer.js"></script>
 
 <script>
+    var queryUrl;
     $(function () {
+        //查询当前登录用户的操作日志，所以url也要重写，把url作为一个全局变量
+        logList("/logsList", "");
+    });
+
+
+
+    function queryLogByUserName(){
+        //获取查询参数
+        var e =$("#userName").val();
+
+        //调用查询方法，判空
+        if(e == ""){
+
+            logList("/logsList", "");
+
+        }else{
+            logList("/logListByUserName/", e );
+
+        }
+    }
+    function queryLogByModule(){
+        //获取查询参数
+        var e =$("#module").val();
+
+        //调用查询方法，判空
+        if(e == ""){
+            logList("/logsList", "");
+
+        }else{
+            logList("/logListByModule/", e );
+
+        }
+
+    }
+    function queryLogByUpTime(){
+        //获取查询参数
+        var e =$("#upTime").val();
+        console.log(e);
+
+        //调用查询方法，判空
+        if(e == ""){
+            logList("/logsList", "");
+
+        }else{
+            logList("/logListByUpTime/", e );
+
+        }
+
+    }
+
+<!--    function download() {-->
+<!--        console.log("download");-->
+<!--        $.ajax({-->
+<!--            type : 'GET',-->
+<!--            url : '/logExport',-->
+<!--            contentType: "application/json; charset=utf-8",-->
+<!--            success : function(data) {-->
+
+<!--            }-->
+<!--        });-->
+
+<!--    }-->
+<!--window.download = function () {-->
+<!--    var studentName = 1;-->
+<!--    var form = document.createElement('form');-->
+<!--    form.id = 'form';-->
+<!--    form.name = 'form';-->
+<!--    //把这个form放在body里面-->
+<!--    document.body.appendChild(form);-->
+<!--    //给form里面创建一个input框，隐藏掉，来存参数-->
+<!--    var input = document.createElement('input');-->
+<!--    input.type = 'hidden';-->
+<!--    input.name = 'studentName';-->
+<!--    input.value = studentName;-->
+<!--    //把input放在form里面-->
+<!--    form.appendChild(input);-->
+<!--    form.method = "GET" //请求方式-->
+<!--    form.action = '/logExport';-->
+<!--    form.submit();-->
+<!--    //删掉form-->
+<!--    document.body.removeChild(form)-->
+<!--}-->
+
+function logExport(type) {
+
+    var studentName = type;
+    var form = document.createElement('form');
+    form.id = 'form';
+    form.name = 'form';
+    //把这个form放在body里面
+    document.body.appendChild(form);
+    //给form里面创建一个input框，隐藏掉，来存参数
+    var input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'studentName';
+    input.value = studentName;
+    //把input放在form里面
+    form.appendChild(input);
+    form.method = "GET" //请求方式
+    form.action = '/logExport';
+    form.submit();
+    //删掉form
+    document.body.removeChild(form)
+}
+
+
+
+    function logList( myUrl , arg ){
+        $('#table').bootstrapTable('destroy');
         $('#table').bootstrapTable({
             method: "get",
             striped: true,
             singleSelect: false,
-            url: "/logsList",
+            url: myUrl + arg,
             dataType: "json",
             pagination: true, //分页
             pageSize: 10,
@@ -132,12 +243,10 @@
                     valign: 'middle'
                 }
 
-
-
-
             ]
         });
-    });
+    }
+
 
 
 

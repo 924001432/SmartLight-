@@ -1,6 +1,8 @@
 package com.example.light.advice;
 
 import com.example.light.annotation.LogAnnotation;
+import com.example.light.common.UserUtil;
+import com.example.light.dto.curUserDto;
 import com.example.light.entity.SysLogs;
 import com.example.light.service.SyslogsService;
 
@@ -55,10 +57,9 @@ public class LogAdvice {
 		try {
 			Object object = joinPoint.proceed();
 
-			Session session = SecurityUtils.getSubject().getSession();
-			String username = (String) session.getAttribute("username");
+			curUserDto curUser = UserUtil.getCurrentUser();
 
-			sysLogs.setUserName(username);
+			sysLogs.setUserName(curUser.getUserName());
 
 			sysLogs.setLogsFlag(1);
 
@@ -75,10 +76,9 @@ public class LogAdvice {
 
 			return object;
 		} catch (Exception e) {
-			Session session = SecurityUtils.getSubject().getSession();
-			String username = (String) session.getAttribute("username");
+			curUserDto curUser = UserUtil.getCurrentUser();
 
-			sysLogs.setUserName(username);
+			sysLogs.setUserName(curUser.getUserName());
 
 			sysLogs.setLogsFlag(0);
 			sysLogs.setLogsRemark(e.getMessage());

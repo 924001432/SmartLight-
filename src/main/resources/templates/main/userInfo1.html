@@ -1,119 +1,249 @@
-
-
+<!DOCTYPE html>
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html"; charset="utf-8" />
-    <title></title>
-    <link href="static/js/bstable/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-    <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
-    <link href="static/css/table.css" rel="stylesheet" type="text/css" />
-    <style>
-        .department_main{padding: 10px 10px 10px 10px}
-        .department_main span{
-            display: none;
-        }
-        .department_main label{width: 20%;text-align: right;font-size: 12px;display: inline-block}
-        .department_main input{width: 78%;margin-right: 1%;height: 30px;border: 1px #ccc solid;background-color: #fff;border-radius: 4px;}
-        .department_main select{width: 78%;margin-right: 1%;height: 30px;border: 1px #ccc solid;background-color: #fff;border-radius: 4px;}
-        .department_main textarea{resize: none;border: 1px #ccc solid;width: 78%;height: 150px;background-color: #fff;border-radius: 4px}
-
-        .departments_btn{width: 60px;margin: 20px auto 0 auto;display: none}
-        .departments_btn button{width: 58px;height: 28px;line-height: 28px;border: none; background-color: #5cb85c;color: #fff;border-radius: 4px;  }
-        .department_top{position: absolute;top:30px;right: 10px}
-        .department_top button{height: 28px;line-height: 28px;border: none; background-color: #5cb85c;color: #fff;border-radius: 4px;padding: 0 6px}
-        .wh{
-            width: 60%;
-            border: 3px
-        }
-
-        .whDiv{
-            width: 100%;
-            margin-left: 1%;
-            float: left;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/ztree/zTreeStyle/zTreeStyle.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/css/ztree/demo.css}" media="all">
 </head>
-<body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;overflow: auto"onload="init()">
-<div class="notice_main">
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="" id="form">
+                <input name="userId" th:value="${obj?.userId}" class="layui-input layui-hide"/>
 
 
-    <div class="">
-        <h5>个人信息界面</h5>
-        <div style="border-bottom: 1px #ccc solid;padding-bottom: 8px;">
-            <p style="line-height: 24px;font-size: 14px;padding: 4px 0 0 36px ;color:#bb8940;background-repeat: no-repeat;background-position: 10px 8px;font-weight: bold">温馨提示</p>
-            <ul class="ts">
-                <li><span>*</span>该页面主要显示的是当前用户个人信息内容。</li>
-            </ul>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名称：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userName" th:value="${obj?.userName}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户电话：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userPhone" th:value="${obj?.userPhone}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户邮箱：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="userEmail" th:value="${obj?.userEmail}" lay-verify="required"  autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户角色：</label>
+                    <div class="layui-input-block">
+                        <input id="userRole" name="userRole"  lay-verify="required"  autocomplete="off" class="layui-input" disabled>
+
+<!--                        <select id="userRole" name="userRole" lay-search lay-filter="demo"></select>-->
+                    </div>
+                </div>
+
+<!--                <input id="userArea" name="userArea" th:value="${obj?.userArea}" class="layui-input layui-hide"/>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">负责区域：</label>
+                    <div class="layui-input-block">
+                        <input id="userArea" name="userArea" th:value="${obj?.userArea}" lay-verify="required"  autocomplete="off" class="layui-input" disabled>
+
+<!--                        <ul id="treeDemo" class="ztree" name="userArea1"  ></ul>-->
+                    </div>
+                </div>
+
+                <div class="layui-form-item " style="margin-left:110px">
+                    <button type="button" class="layui-btn layui-btn-normal" onclick="editUserInfo()">确认</button>
+                    <button type="button" class="layui-btn layui-btn-danger" onclick="editUserPsw()" href="">修改密码</button>
+<!--                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">-->
+                </div>
+            </form>
         </div>
-        <div class="whDiv">
-            <div class="l_left wh">
-
-                <div class="department_main">
-                    <label>用户名：</label>
-                    <input type="text" name="username" th:value="${obj?.userName}"  placeholder="用户名" autocomplete="off" disabled>
-                    <span  id="partSpan"></span>
-                </div>
-                <div class="department_main">
-
-                    <label>密码：</label>
-                    <input type="text" name="password" th:value="${obj?.userPassword}"  placeholder="密码" autocomplete="off" disabled>
-
-                </div>
-                <div class="department_main">
-
-                    <label>电话：</label>
-                    <input type="text" name="phone" value="123"  placeholder="密码" autocomplete="off" disabled>
-
-                </div>
-
-                <div class="department_main">
-
-                    <label>邮箱：</label>
-                    <input type="text" name="phone" value="123@cc.aa"  placeholder="密码" autocomplete="off" disabled>
-
-                </div>
-
-<!--                <div class="department_main">-->
-
-                    <div class="departments_btn01"><button class="blueBg" onclick="">修改</button></div>
-<!--                    <button class="blueBg" onclick="">修改</button>-->
-
-<!--                </div>-->
-
-            </div>
-
-        </div>
-
-
-
-
     </div>
-    <div class="clear"></div>
-
-
 </div>
-<script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
-<script type="text/javascript" src="static/js/ztree/jquery.ztree.core-3.5.js"></script>
-<script type="text/javascript" src="static/js/ztree/jquery.ztree.excheck-3.5.js"></script>
-<script type="text/javascript" src="static/js/ztree/jquery.ztree.exedit-3.5.js"></script>
-<script src="static/js/localLight.js"></script>
-
-<script>
-    $(".department_top").click(function(){
-        $(".departments_btn").show();
-        $(".departments_btn01").hide();
-        $(".department_main input").attr("disabled",false);
-        $(".department_main textarea").attr("disabled",false);
-
-    })
-
-
-
-
-</script>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
 <script>
 
-</script>
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+            //获取角色列表
+            $.ajax({
+                url: '/roleList',
+                dataType:'json',
+                type:'GET',
+                cache:false,
+                success:function (data) {
+
+                    //获取要渲染的数据
+                    var userRole = '[[${obj?.userRole}]]';
+
+
+                    //上级区域值比较多，需要清空列表，重新渲染
+                    var select = $("#userRole");
+
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var id = d['roleId'];
+                        var name = d['roleName'];
+                        //选中行上级编号和获取到数据的编号一致，赋该值
+                        if( id == userRole) {
+                            $("#userRole").val(name);
+                        } else {
+
+                        }
+
+                    }
+                    layui.form.render("select");          //下拉列表渲染，把内容加载进去
+                }
+            });
+
+            var userArea = '[[${obj?.userArea}]]';
+
+            //获取角色列表
+            $.ajax({
+                url: '/areaListByareaId/' + userArea,
+                dataType:'json',
+                type:'GET',
+                cache:false,
+                success:function (data) {
+
+                    //获取要渲染的数据
+                    var userRole = '[[${obj?.userRole}]]';
+
+
+                    //上级区域值比较多，需要清空列表，重新渲染
+                    var select = $("#userRole");
+
+                    for(var i=0; i<data.length; i++){
+                        var d = data[i];
+                        var id = d['areaId'];
+                        var name = d['areaName'];
+                        //选中行上级编号和获取到数据的编号一致，赋该值
+                        if( id == userArea) {
+                            $("#userArea").val(name);
+                        } else {
+
+                        }
+
+                    }
+                    layui.form.render("select");          //下拉列表渲染，把内容加载进去
+                }
+            });
+
+
+        });
+
+        function editUserInfo() {
+            //保存用户信息的同时保存负责区域信息
+
+            var user = $("#form").serializeObject();
+            console.log(user);
+
+            $.ajax({
+				type : 'GET',
+				url : '/userEdit',
+				dataType: 'json',
+				data : user,
+				async: false,
+                success: function (str) {
+                    if(str.code === 0){
+                        console.log("succ");
+                    }
+                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                }
+			});
+		}
+
+		function editUserPsw() {
+            //保存用户信息的同时保存负责区域信息
+
+            layer.open({
+                type: 2,
+                title: '修改密码',
+                content: '/pswEditPage',
+                shade:[0.8,'#393d49'],
+                area:['500px','400px'],
+                btn:['确定','取消'],
+                yes:function (index,layero) {
+                    var iframeWindow = window['layui-layer-iframe'+index];
+                    var submit = layero.find('iframe').contents().find("#LAY-front-submit");
+                    //监听提交
+                    iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                        var field = data.field;
+                        $.ajax({
+                            url: '/stockEdit',
+                            data: field,
+                            async: false,
+                            cache: false,
+                            success: function (str) {
+                                if(str.code === 0){
+                                    console.log(1111);
+                                }
+                                layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            }
+                        });
+                        layer.close(index);     //关闭弹层
+                        $("#table").bootstrapTable('refresh');
+                        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    });
+                    submit.trigger('click');
+                },
+                success:function (layero,index) {
+
+                }
+            });
+		}
+
+
+        //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
+		$.fn.serializeObject = function()
+        {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+             if (o[this.name]) {
+              if (!o[this.name].push) {
+               o[this.name] = [o[this.name]];
+              }
+              o[this.name].push(this.value || '');
+             } else {
+              o[this.name] = this.value || '';
+             }
+            });
+            return o;
+        };
+
+
+
+    </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

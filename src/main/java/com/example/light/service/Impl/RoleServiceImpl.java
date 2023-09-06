@@ -7,6 +7,7 @@ import com.example.light.entity.Role;
 import com.example.light.entity.User;
 import com.example.light.mapper.PermissionMapper;
 import com.example.light.mapper.RoleMapper;
+import com.example.light.mapper.UserMapper;
 import com.example.light.service.PermissionService;
 import com.example.light.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Autowired
     private RoleMapper roleMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Override
@@ -76,8 +80,25 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
-    public void deleteRole(Integer roleId){
-        roleMapper.deleteById(roleId);
+    public Integer deleteRole(Integer roleId){
+
+        //查询是否已分配角色给用户，如果是就不能删除
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_role",roleId);
+
+        System.out.println(userMapper.selectList(wrapper).isEmpty());
+
+        if(userMapper.selectList(wrapper).isEmpty()){//没有元素返回true，才能删除
+
+            return roleMapper.deleteById(roleId);
+
+        }else {
+
+            return -1;
+
+        }
+
+
     }
 
 

@@ -168,3 +168,6 @@ td{border: none !important;}
 }
 .check_btn{height: 26px;font-size: 14px;border: none;margin-left: 5px;width: 95px;border-radius: 4px;background-color: #337ab7;color: #fff;padding-left: 18px;
     background-image: url(../img/1_03.png);background-repeat: no-repeat;background-position: 11px 8px}
+
+.export_btn{height: 26px;font-size: 14px;border: none;margin-left: 5px;width: 95px;border-radius: 4px;background-color: #337ab7;color: #fff;padding-left: 18px;
+    background-image: url(../img/page.png);background-repeat: no-repeat;background-position: 11px 8px}

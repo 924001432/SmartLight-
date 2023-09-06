@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户</title>
+    <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-card">
+        <div class="layui-card-body" style="padding: 15px;">
+            <form class="layui-form layui-form-pane" action="">
+                <input name="userId" th:value="${obj?.userId}" class="layui-input layui-hide"/>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">原密码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="oldPassword" name="oldPassword" lay-verify="required"   class="layui-input" onblur="checkOldPsw(this.value)">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">新密码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="userPassword" name="userPassword"  lay-verify="required"  class="layui-input" onblur="checkNewPsw(this.value)">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码：</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="confirmPassword" name="confirmPassword" lay-verify="required"  class="layui-input" onblur="confirmPsw(this.value)">
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-hide">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/layui/layui.js}"></script>
+<script>
+
+    layui.use(['form','laydate'],function () {
+            var $ = layui.$;
+            var laydate = layui.laydate;
+            var form = layui.form;
+
+        });
+
+        function checkOldPsw(value){
+            if(value.length <= 0){
+<!--                console.log("value.length <= 0");-->
+
+            }else{
+                //model中的原密码匹配
+                var oldPassword = '[[${obj?.userPassword}]]';
+                if(value == oldPassword){
+<!--                    console.log("原密码正确");-->
+                    layer.msg("原密码正确",{icon:1,anim:4});
+                }else{
+<!--                    console.log("原密码错误");-->
+                    layer.msg("原密码错误，请重新输入",{icon:5,anim:6});
+                    document.getElementById("oldPassword").focus();;
+                }
+
+
+            }
+        }
+
+        //正则表达式去校验新密码
+        function checkNewPsw(value) {
+            //使用正则表达式校验
+            //1. 编写一个正则表达式，要求密码长度为6-18位，包含大小写字母和数字。
+            var reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\s\S]{6,18}$/;
+            //2. 使用正则表达式取校验
+            if(value.length <= 0){
+<!--                console.log("value.length <= 0");-->
+
+            }else {
+                if (reg.test(value)) {
+
+                    layer.msg("新密码合法",{icon:1,anim:4});
+
+                }else {
+                    layer.msg("新密码不合法，请重新输入",{icon:5,anim:6});
+                    document.getElementById("userPassword").focus();
+                }
+            }
+        }
+
+        function confirmPsw(value) {
+
+            var userPsw = $("#userPassword").val();
+            var confirmPsw = $("#confirmPassword").val();
+
+<!--            console.log(userPsw);-->
+<!--            console.log(confirmPsw);-->
+
+            if(value.length <= 0){
+<!--                console.log("value.length <= 0");-->
+
+            }else {
+                if (userPsw == confirmPsw) {
+
+                    layer.msg("确认成功",{icon:1,anim:4});
+
+                }else {
+
+                    layer.msg("两次输入不一致，请重新输入",{icon:5,anim:6});
+                    document.getElementById("confirmPassword").focus();;
+                }
+            }
+        }
+
+
+
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

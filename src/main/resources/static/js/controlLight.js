@@ -301,34 +301,47 @@ function deviceListByDeviceCoord(myUrl,deviceCoord){
                                 align: 'center',
 
                                 valign: 'middle'
-                            }
-                            ,
-                            {
-                                title: "序号",
-                                field: 'deviceId',
-                                align: 'center',
-                                width: 40,
-                                valign: 'middle'
                             },
                             {
                                 title: "物理地址",
                                 field: 'deviceMac',
                                 align: 'center',
-                                width: 120,
+                                width: 80,
                                 valign: 'middle'
                             },
                             {
                                 title: '网络地址',
                                 field: 'deviceShort',
                                 align: 'center',
-                                width: 70,
+                                width: 80,
                                 valign: 'middle'
                             },
                             {
                                 title: '设备标签',
                                 field: 'deviceSerial',
                                 align: 'center',
-                                width: 70,
+                                width: 60,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '网关编号',
+                                field: 'deviceCoord',
+                                align: 'center',
+                                width: 60,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '经度',
+                                field: 'deviceLon',
+                                align: 'center',
+                                width: 100,
+                                valign: 'middle'
+                            },
+                            {
+                                title: '纬度',
+                                field: 'deviceLat',
+                                align: 'center',
+                                width: 100,
                                 valign: 'middle'
                             },
                             {
@@ -374,18 +387,12 @@ function deviceListByDeviceCoord(myUrl,deviceCoord){
                                         return '<div  style="color:gray"> 光敏模式 </div>';;
                                     }}
                             },
-                            {
-                                title: '网关编号',
-                                field: 'deviceCoord',
-                                align: 'center',
-                                width: 80,
-                                valign: 'middle'
-                            },
+
                             {
                                 title: '设备类型',
                                 field: 'deviceType',
                                 align: 'center',
-                                width: 80,
+                                width: 70,
                                 valign: 'middle'
                             },
 
@@ -396,8 +403,8 @@ function deviceListByDeviceCoord(myUrl,deviceCoord){
                                 align: 'center',
                                 formatter: function (cellval, row ,index) {
 
-                                    var e = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
-                                    var d = '<a style="margin: 2;width:80" class="btn btn-xs btn-success"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
+                                    var e = '<a style="margin: 2;width:75" class="btn btn-xs btn-success"  onclick="infoListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-stats"></span> 数据信息 </a>'
+                                    var d = '<a style="margin: 2;width:75" class="btn btn-xs btn-warning"  onclick="alarmListTimer('+row.deviceSerial+')"><span class="glyphicon glyphicon-warning-sign"></span> 报警信息 </a>'
                                     return  e+d;
                                 }
                             },

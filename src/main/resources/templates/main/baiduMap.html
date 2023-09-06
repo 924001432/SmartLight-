@@ -19,7 +19,7 @@
         .tcdPageCode span.current{display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;color: #fff;background-color: #428bca;	border: 1px solid #428bca;border-radius: 4px;vertical-align: middle;}
         .tcdPageCode span.disabled{	display: inline-block;height: 25px;line-height: 25px;padding: 0 10px;margin: 0 2px;	color: #bfbfbf;background: #f2f2f2;border: 1px solid #bfbfbf;border-radius: 4px;vertical-align: middle;}
         .top {
-            height: 80%;
+            height: 100%;
 
         }
 
@@ -56,47 +56,47 @@
                 <p id="weather"></p>
             </div>
         </div>
-        <div class="bottom">
-            <!-- 模态框 -->
-            <div class="modal fade" id="myModal">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">详情</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <table id="modalTable" class="table"></table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container">
-                <div class="statistic">
-                    <h3>设备总数</h3>
-                    <p id = "total">0</p>
-                    <button id="details-button-1">详情</button>
-                </div>
-                <div class="statistic">
-                    <div  style="background-color: green; color: white;" ><h3>在线数</h3></div>
-                    <p id = "theOnline">0</p>
-                    <button id="details-button-2">详情</button>
-                </div>
-                <div class="statistic">
-                    <div  style="background-color: #bce8f1; color: black;" ><h3>离线数</h3></div>
-                    <p id = "notOnline">0</p>
-                    <button id="details-button-3">详情</button>
-                </div>
-                <div class="statistic">
-                    <div  style="background-color: red; color: black;" ><h3>警报数</h3></div>
-                    <p id = "alarm">0</p>
-                    <button id="details-button-4">详情</button>
-                </div>
-            </div>
-        </div>
+<!--        <div class="bottom">-->
+<!--            &lt;!&ndash; 模态框 &ndash;&gt;-->
+<!--            <div class="modal fade" id="myModal">-->
+<!--                <div class="modal-dialog modal-lg">-->
+<!--                    <div class="modal-content">-->
+<!--                        <div class="modal-header">-->
+<!--                            <h4 class="modal-title">详情</h4>-->
+<!--                            <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                        </div>-->
+<!--                        <div class="modal-body">-->
+<!--                            <table id="modalTable" class="table"></table>-->
+<!--                        </div>-->
+<!--                        <div class="modal-footer">-->
+<!--                            <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="container">&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="statistic">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <h3>设备总数</h3>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <p id = "total">0</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button id="details-button-1">详情</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="statistic">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div  style="background-color: green; color: white;" ><h3>在线数</h3></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <p id = "theOnline">0</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button id="details-button-2">详情</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="statistic">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div  style="background-color: #bce8f1; color: black;" ><h3>离线数</h3></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <p id = "notOnline">0</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button id="details-button-3">详情</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;                <div class="statistic">&ndash;&gt;-->
+<!--&lt;!&ndash;                    <div  style="background-color: red; color: black;" ><h3>警报数</h3></div>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <p id = "alarm">0</p>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <button id="details-button-4">详情</button>&ndash;&gt;-->
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--        </div>-->
     </div>
 
     <div class="myMap_right l_left">
@@ -126,7 +126,7 @@
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.core-3.5.js"></script>
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.excheck-3.5.js"></script>
 <script type="text/javascript" src="static/js/ztree/jquery.ztree.exedit-3.5.js"></script>
-<script src="static/js/listTree.js"></script>
+<!--<script src="static/js/listTree.js"></script>-->
 <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=5ieMMexWmzB9jivTq6oCRX9j"></script>
 <script type="text/javascript"
         src="https://api.map.baidu.com/library/AreaRestriction/1.2/src/AreaRestriction_min.js"></script>
@@ -1053,15 +1053,19 @@
                         // 根据设备状态创建不同的图标
                         var iconUrl;
                         if (status === 1) {
-                            iconUrl = '../../../static/img/ludeng.svg';
+                            iconUrl = '../../../static/img/deng2.svg';
                         } else if (status === 0) {
-                            iconUrl = '../../../static/img/lixian.svg';
+                            iconUrl = '../../../static/img/deng1.svg';
                         }
                         console.log(iconUrl);
                         // 创建图标对象
                         var icon = new BMap.Icon(iconUrl, new BMap.Size(50, 50));
                         // 创建覆盖物
                         var marker = new BMap.Marker(point, { icon: icon });
+
+                        point
+                        marker.setZoom(map.getZoom());
+
                         console.log(marker);
                         // 将覆盖物添加到地图上
                         // 使用闭包保存每个覆盖物的索引数据

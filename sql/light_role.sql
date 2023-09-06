@@ -29,7 +29,7 @@ CREATE TABLE `role` (
   `role_createtime` varchar(50) NOT NULL,
   `role_updatetime` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'超级管理员','超级管理员，唯一','2023-08-17 14:39:36','2023-08-28 17:33:51'),(2,'USER','用户','2023-08-17 14:39:36','2023-08-18 14:57:14'),(3,'ces','测试','2023-08-17 22:49:32','2023-08-24 14:47:59'),(8,'系统管理员','系统管理员','2023-08-18 15:16:25','2023-08-28 17:34:05'),(10,'省级管理员','管理省级以下用户，数据，信息，区域','2023-08-26 22:41:45',NULL),(11,'市级管理员','管理市','2023-08-26 22:44:45','2023-08-26 22:46:37'),(12,'区县级管理员','管理区县','2023-08-26 22:46:21',NULL),(13,'乡镇管理员','管理乡镇','2023-08-26 22:48:00',NULL);
+INSERT INTO `role` VALUES (1,'超级管理员','超级管理员，唯一','2023-08-17 14:39:36','2023-08-30 17:14:39'),(3,'ces','测试','2023-08-17 22:49:32','2023-08-24 14:47:59'),(8,'系统管理员','系统管理员','2023-08-18 15:16:25','2023-08-28 17:34:05'),(10,'省级管理员','管理省级以下用户，数据，信息，区域','2023-08-26 22:41:45',NULL),(11,'市级管理员','管理市','2023-08-26 22:44:45','2023-08-26 22:46:37'),(12,'区县级管理员','管理区县','2023-08-26 22:46:21',NULL),(13,'乡镇管理员','管理乡镇','2023-08-26 22:48:00',NULL);
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-29 22:33:19
+-- Dump completed on 2023-09-06 10:57:23

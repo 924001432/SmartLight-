@@ -18,5 +18,12 @@ public interface SyslogsService extends IService<SysLogs> {
 
     public List<SysLogs> queryLogList();
 
+    public List<SysLogs> queryLogByUserName(String userName);
+
+    public List<SysLogs> queryLogByModule(String module);
+
+    public List<SysLogs> queryLogByUpTime(String upTime);
+
+
 
 }

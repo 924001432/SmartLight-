@@ -132,6 +132,7 @@ public class UserController {
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return "redirect:/login";
+//        return "/Login";
     }
 
 
@@ -142,15 +143,34 @@ public class UserController {
 //    @LogAnnotation
 //    @ApiOperation(value = "查看用户的信息")
     @RequestMapping("/curUserInfo")
-    public Object userInfo(Model model){
-        Session session = SecurityUtils.getSubject().getSession();
+    public Object userInfo( Model model ){
 
-        User user = userService.queryUserByName((String) session.getAttribute("username"));
+        curUserDto curUser = UserUtil.getCurrentUser();
+
+        User user = userService.queryUserById(curUser.getUserId());
 
         model.addAttribute("obj",user);
 
         return "/main/userInfo1";
     }
+
+    /**
+     * 修改密码
+     */
+    @RequestMapping("/pswEditPage")
+    public Object userEditPage( Model model ){
+
+        curUserDto curUser = UserUtil.getCurrentUser();
+
+        User user = userService.queryUserById(curUser.getUserId());
+
+        model.addAttribute("obj",user);
+
+
+        return "/main/pswEditPage";
+    }
+
+
 
     /**
      * 获取当前用户信息
@@ -250,10 +270,14 @@ public class UserController {
      * @par
      * @return
      */
-    @GetMapping("/userListByuserArea/{userArea}")
+    @GetMapping("/userListByuserArg/{type}&{userArg}")
     @ResponseBody
-    public List<User> userListByuserArea(@PathVariable(name = "userArea",required = true)Integer userArea){
+    public List<User> userListByuserArea(@PathVariable(name = "type",required = true)Integer type,
+                                         @PathVariable(name = "userArg",required = true)Object userArg){
         //获取基本信息，角色ID，区域ID，创建人ID；获取数据填充到VO中，
+
+        curUserDto curUser = UserUtil.getCurrentUser();
+        Integer userArea = curUser.getUserArea();
 
         List<Area> areaList = areaService.areaList();
 
@@ -266,8 +290,26 @@ public class UserController {
             userList.addAll(userService.queryUserByuserArea(area.getAreaId()));
         }
 
+        if(type == -1){//默认全部列表
+            return userList;
+        }else if( type == 1){//用户名查询
+            User u = userList.stream().filter(user -> user.getUserName().equals(userArg)).findAny().orElse(null);
+//            System.out.println(u.toString());
 
-        return userList;
+            userList.clear();
+            if(u != null){
+                userList.add(u);
+                return userList;
+            }else {
+                return null;
+            }
+
+        }else{//用户角色查询
+            return null;
+        }
+
+
+//        return userList;
     }
 
     private void setAreaList(Integer pId, List<Area> areaListAll, List<Area> list) {

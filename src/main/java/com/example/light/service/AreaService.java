@@ -23,5 +23,7 @@ public interface AreaService extends IService<Area> {
 
     public Integer areaAdd(Area area);
 
+    public Integer areaEdit(Area area);
+
 
 }
