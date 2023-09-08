@@ -220,11 +220,20 @@ function getSettting() {
 }
 
 function zTreeOnCheck(event, treeId, treeNode) {
-    roadName = treeNode.name;
+    var parentNodes = getPath(treeNode);
+    var pathNames = [];
+    // 打印所有父节点的id和name
+    for (var i = 0; i < parentNodes.length; i++) {
+        if(parentNodes[i].name === "所有区域"){
+            continue;
+        }
+        pathNames.push(parentNodes[i].name);
+    }
+    pathNames.push(treeNode.name);
+    var pathName = pathNames.join("");
+    console.log(pathName);
+    document.getElementById("road").innerText  = "灯箱实时监控：" + pathName;//修改~·#
 
-    console.log(treeNode.net);
-
-    document.getElementById("road").innerText  = "灯箱实时监控：" + roadName;//修改~·#
 
     if(!treeNode.isParent){//到达最底层，路段信息
         //点击路段，不是父节点，查询设备表，得到所有该路段的设备
@@ -257,6 +266,17 @@ function zTreeOnCheck(event, treeId, treeNode) {
         }
 
     }
+}
+
+function getPath(treeNode) {
+    // 获取子节点的所有父节点
+    var parentNodes = [];
+    var parentNode = treeNode.getParentNode();
+    while (parentNode !== null) {
+        parentNodes.unshift(parentNode);//在数组的开头添加一个或多个元素
+        parentNode = parentNode.getParentNode();
+    }
+    return parentNodes;
 }
 
 function deviceListTimer(myUrl,deviceCoord){

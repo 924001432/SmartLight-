@@ -63,7 +63,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     @Override
-    public List<Device> deviceListByIsOnline(Integer deviceCoord) {
+    public List<Device> deviceListByIsOnline(String deviceCoord) {
         QueryWrapper<Device> wrapper = new QueryWrapper<>();
         wrapper.eq("device_coord",deviceCoord);
         wrapper.eq("device_status",1);
@@ -77,7 +77,7 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
     }
 
     @Override
-    public List<Device> deviceListByIsNotOnline(Integer deviceCoord) {
+    public List<Device> deviceListByIsNotOnline(String deviceCoord) {
         QueryWrapper<Device> wrapper = new QueryWrapper<>();
         wrapper.eq("device_coord",deviceCoord);
         wrapper.eq("device_status",0);

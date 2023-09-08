@@ -37,8 +37,6 @@ public class Device implements Serializable {
     @TableField(value = "device_type")
     private Integer deviceType;
 
-
-
     @TableField(value = "device_light")
     private Integer deviceLight;
 
@@ -53,13 +51,6 @@ public class Device implements Serializable {
 
     @TableField(value = "device_hearttime")
     private String deviceHearttime;
-
-//    @TableField(value = "device_longitude")
-//    private Double deviceLongitude;
-//
-//    @TableField(value = "device_latitude")
-//    private Double deviceLatitude;
-
 
 
 

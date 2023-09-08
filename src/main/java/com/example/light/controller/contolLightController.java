@@ -9,10 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import com.example.light.common.ResultMapUtil;
 
 import java.text.ParseException;
@@ -69,8 +66,12 @@ public class contolLightController {
 
 
 
-//    @LogAnnotation
-//    @ApiOperation(value = "查看某区域的所有设备信息")
+    /**
+     * 查看某最低区域的所有设备信息
+     * @param deviceCoord
+     * @return
+     * @throws ParseException
+     */
     @RequestMapping("/deviceListByDeviceCoord/{deviceCoord}")
     @ResponseBody
     public Object deviceListByDeviceCoord(@PathVariable(name = "deviceCoord",required = true)String deviceCoord) throws ParseException {
@@ -85,11 +86,11 @@ public class contolLightController {
             if (cal_time(device.getDeviceHearttime())){
                 device.setDeviceStatus(1);
                 deviceService.updateOnlineStatus(device.getDeviceId(),1);
-//                System.out.println("更新为在线");
+                System.out.println("更新为在线");
             }else {
                 device.setDeviceStatus(0);
                 deviceService.updateOnlineStatus(device.getDeviceId(),0);
-//                System.out.println("更新为离线");
+                System.out.println("更新为离线");
             }
         }
 
@@ -97,9 +98,15 @@ public class contolLightController {
 
     }
 
+    /**
+     * 查看某最低区域的在线设备信息
+     * @param deviceCoord
+     * @return
+     * @throws ParseException
+     */
     @RequestMapping("/deviceListByIsOnline/{deviceCoord}")
     @ResponseBody
-    public Object deviceListByIsOnline(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
+    public Object deviceListByIsOnline(@PathVariable(name = "deviceCoord",required = true)String deviceCoord) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
 
@@ -112,9 +119,15 @@ public class contolLightController {
 
     }
 
+    /**
+     * 查看某最低区域的离线设备信息
+     * @param deviceCoord
+     * @return
+     * @throws ParseException
+     */
     @RequestMapping("/deviceListByIsNotOnline/{deviceCoord}")
     @ResponseBody
-    public Object deviceListByIsNotOnline(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord) throws ParseException {
+    public Object deviceListByIsNotOnline(@PathVariable(name = "deviceCoord",required = true)String deviceCoord) throws ParseException {
 
 //        System.out.println("deviceCoord: " + deviceCoord);
 
@@ -128,21 +141,24 @@ public class contolLightController {
     }
 
 
-
+    /**
+     * 查看某非最低区域的所有设备信息
+     * @param deviceCoordList
+     * @return
+     * @throws ParseException
+     */
     @RequestMapping("/deviceListByDeviceCoordList/{deviceCoordList}")
     @ResponseBody
     public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList) throws ParseException {
 
-//        System.out.println("deviceCoord: " + deviceCoord);
+        System.out.println("deviceCoordList: " + deviceCoordList);
         List<Device> deviceList = new ArrayList<>();
 
-        for (String str : deviceCoordList) {
-            deviceList.addAll(deviceService.deviceListByDeviceCoord(str));
+        for (String s : deviceCoordList) {
+            deviceList.addAll(deviceService.deviceListByDeviceCoord(s));
 
         }
 
-        //遍历列表，获得当前时间，二者做差，如果大于比如20s，更新数据库为离线
-        //插入代码
         for (Device device : deviceList) {
             if (cal_time(device.getDeviceHearttime())){
                 device.setDeviceStatus(1);//在线
@@ -150,7 +166,46 @@ public class contolLightController {
                 device.setDeviceStatus(0);
             }
         }
+        return ResultMapUtil.getHashMapList(deviceList);
+    }
 
+    /**
+     * 查看某非最低区域的在线设备信息
+     * @param deviceCoordList
+     * @return
+     * @throws ParseException
+     */
+    @RequestMapping("/deviceListByIsOnlineList/{deviceCoordList}")
+    @ResponseBody
+    public Object deviceListByIsOnlineList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList) throws ParseException {
+
+        List<Device> deviceList = new ArrayList<>();
+
+        for (String s : deviceCoordList) {
+            deviceList.addAll(deviceService.deviceListByIsOnline(s));
+
+        }
+        return ResultMapUtil.getHashMapList(deviceList);
+
+    }
+
+    /**
+     * 查看某非最低区域的离线设备信息
+     * @param deviceCoordList
+     * @return
+     * @throws ParseException
+     */
+    @RequestMapping("/deviceListByIsNotOnlineList/{deviceCoordList}")
+    @ResponseBody
+    public Object deviceListByIsNotOnlineList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList) throws ParseException {
+
+
+        List<Device> deviceList = new ArrayList<>();
+
+        for (String s : deviceCoordList) {
+            deviceList.addAll(deviceService.deviceListByIsNotOnline(s));
+
+        }
         return ResultMapUtil.getHashMapList(deviceList);
 
     }
@@ -266,4 +321,15 @@ public class contolLightController {
         return ((diffMinutes * 60) + diffSeconds) <= 60;
     }
 
+    /**
+     * 更新设备数据
+     * @param updatedDevice
+     */
+    @PostMapping("/updateDevice")
+    @ResponseBody
+    public Object updateDevice(@RequestBody Device updatedDevice) {
+        deviceService.insertDevice(updatedDevice);
+        System.out.println("设备数据已成功更新");
+        return ResultMapUtil.getHashMapSave(1);
+    }
 }

@@ -1,63 +1,58 @@
--- MySQL dump 10.13  Distrib 8.0.32, for Win64 (x86_64)
---
--- Host: localhost    Database: light
--- ------------------------------------------------------
--- Server version	8.0.32
+/*
+ Navicat Premium Data Transfer
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+ Source Server         : localhost_3306
+ Source Server Type    : MySQL
+ Source Server Version : 50724
+ Source Host           : localhost:3306
+ Source Schema         : roadlight
 
---
--- Table structure for table `device`
---
+ Target Server Type    : MySQL
+ Target Server Version : 50724
+ File Encoding         : 65001
 
+ Date: 08/09/2023 20:37:22
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for device
+-- ----------------------------
 DROP TABLE IF EXISTS `device`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `device` (
-  `device_id` int NOT NULL AUTO_INCREMENT,
-  `device_mac` varchar(45) DEFAULT NULL,
-  `device_short` varchar(45) DEFAULT NULL,
-  `device_coord` varchar(45) DEFAULT '0',
-  `device_serial` varchar(45) DEFAULT NULL,
-  `device_lon` varchar(20) DEFAULT NULL COMMENT '经度',
-  `device_lat` varchar(20) DEFAULT NULL COMMENT '纬度',
-  `device_type` int DEFAULT '0',
-  `device_light` int DEFAULT '2' COMMENT '设备开关灯状态',
-  `device_model` int DEFAULT NULL COMMENT '模式',
-  `device_status` int DEFAULT '0' COMMENT '设备在线状态',
-  `device_updatetime` varchar(45) DEFAULT NULL,
-  `device_hearttime` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`device_id`),
-  UNIQUE KEY `device_serial_UNIQUE` (`device_serial`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `device`  (
+  `device_id` int(11) NOT NULL AUTO_INCREMENT,
+  `device_mac` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `device_short` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `device_serial` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `device_type` int(11) NULL DEFAULT 0,
+  `device_coord` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0',
+  `device_light` int(11) NULL DEFAULT 2 COMMENT '设备开关灯状态',
+  `device_model` int(11) NULL DEFAULT NULL COMMENT '模式',
+  `device_status` int(11) NULL DEFAULT 0 COMMENT '设备在线状态',
+  `device_updatetime` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `device_hearttime` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `device_lon` double(7, 4) NULL DEFAULT NULL COMMENT '设备经度',
+  `device_lat` double(7, 4) NULL DEFAULT NULL COMMENT '设备纬度',
+  PRIMARY KEY (`device_id`) USING BTREE,
+  UNIQUE INDEX `device_serial_UNIQUE`(`device_serial`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
---
--- Dumping data for table `device`
---
+-- ----------------------------
+-- Records of device
+-- ----------------------------
+INSERT INTO `device` VALUES (1, '3030303035113030', '9243', '1000', 2, '0001', 1, 1, 0, '123', '2023-06-20 15:23:51', 120.3115, 36.3188);
+INSERT INTO `device` VALUES (2, '0300505F0902004B', 'D4ED', '1001', 0, '1101', 2, 0, 0, NULL, '2023-06-20 15:23:51', NULL, NULL);
+INSERT INTO `device` VALUES (7, '0300505F0902004B', 'D4ED', '1002', 0, '0001', 2, 0, 0, NULL, '2023-06-20 15:23:51', 120.3153, 36.3188);
+INSERT INTO `device` VALUES (8, '0300505F0902004B', 'EDD4', '1003', 0, '0001', 2, 0, 0, NULL, '2023-06-20 15:23:51', 120.3195, 36.3188);
+INSERT INTO `device` VALUES (9, '505F0902004B1200', 'FAD5', '0001', 0, '0001', 1, 1, 0, NULL, '2023-08-29 10:34:34', 120.3230, 36.3188);
+INSERT INTO `device` VALUES (10, 'F0EA0525004B1200', 'AF15', '0002', 0, '0001', 1, 0, 0, '2023-08-29 10:58:12', '2023-08-29 10:58:12', NULL, NULL);
+INSERT INTO `device` VALUES (11, '84916702004B1200', '7466', '0003', 0, '0001', 1, 0, 0, NULL, '2023-06-20 15:23:51', NULL, NULL);
+INSERT INTO `device` VALUES (12, '505F0902004B1200', 'EDD4', '0004', 0, '1101', 2, 0, 0, NULL, '2023-06-20 15:38:00', NULL, NULL);
+INSERT INTO `device` VALUES (13, '505F0902004B1200', 'EDD4', '0005', 0, '0002', 1, 2, 0, NULL, '2023-06-20 15:39:30', NULL, NULL);
+INSERT INTO `device` VALUES (14, '505F0902004B1200', 'EDD4', '0006', 0, '0002', 2, 0, 0, NULL, '2023-06-20 15:39:30', NULL, NULL);
+INSERT INTO `device` VALUES (15, '505F0902004B1200', 'EDD4', '0007', 0, '0002', 2, 0, 0, NULL, '2023-08-29 10:30:34', NULL, NULL);
+INSERT INTO `device` VALUES (16, '0000000000000000', '0000', '0000', 0, '1101', 0, 0, 0, '2023-07-18 14:16:10', '2023-08-29 10:22:30', NULL, NULL);
 
-LOCK TABLES `device` WRITE;
-/*!40000 ALTER TABLE `device` DISABLE KEYS */;
-INSERT INTO `device` VALUES (1,'3030303035113030','9243','0001','1000',NULL,NULL,2,1,1,0,'123','2023-06-20 15:23:51'),(2,'0300505F0902004B','D4ED','1101','1001',NULL,NULL,0,2,0,0,NULL,'2023-06-20 15:23:51'),(7,'0300505F0902004B','D4ED','0001','1002',NULL,NULL,0,2,0,0,NULL,'2023-06-20 15:23:51'),(8,'0300505F0902004B','EDD4','0001','1003',NULL,NULL,0,2,0,0,NULL,'2023-06-20 15:23:51'),(9,'505F0902004B1200','FAD5','0001','0001',NULL,NULL,0,1,1,0,NULL,'2023-08-29 10:34:34'),(10,'F0EA0525004B1200','AF15','0001','0002','1','1',0,1,0,0,'2023-08-29 10:58:12','2023-08-29 10:58:12'),(11,'84916702004B1200','7466','0001','0003',NULL,NULL,0,1,0,0,NULL,'2023-06-20 15:23:51'),(12,'505F0902004B1200','EDD4','1101','0004',NULL,NULL,0,2,0,0,NULL,'2023-06-20 15:38:00'),(13,'505F0902004B1200','EDD4','0002','0005',NULL,NULL,0,1,2,0,NULL,'2023-06-20 15:39:30'),(14,'505F0902004B1200','EDD4','0002','0006',NULL,NULL,0,2,0,0,NULL,'2023-06-20 15:39:30'),(15,'505F0902004B1200','EDD4','0002','0007',NULL,NULL,0,2,0,0,NULL,'2023-08-29 10:30:34'),(16,'0000000000000000','0000','1101','0000',NULL,NULL,0,0,0,0,'2023-07-18 14:16:10','2023-08-29 10:22:30'),(17,'F0EA0525004B1200','AF15','000B','0','1',NULL,0,1,0,0,'2023-08-29 10:58:12','2023-08-29 10:58:12');
-/*!40000 ALTER TABLE `device` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2023-09-06 10:57:23
+SET FOREIGN_KEY_CHECKS = 1;
