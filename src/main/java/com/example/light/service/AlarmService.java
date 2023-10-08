@@ -17,7 +17,7 @@ public interface AlarmService extends IService<Alarm> {
 
     public List<Alarm> alarmListByalarmStatus(Integer alarmStatus);
 
-    public List<Alarm> alarmListBydeviceSerial(Integer deviceSerial);
+    public List<Alarm> alarmListBydeviceSerial(String deviceSerial);
 
     public void insertAlarm(Alarm alarm);
 
@@ -25,7 +25,7 @@ public interface AlarmService extends IService<Alarm> {
 
     public Integer repairAlarm(Integer alarmId);
 
-    List<Alarm> alarmListByDeviceCoord(Integer deviceCoord, Integer alarmStatus);
+    List<Alarm> alarmListByDeviceCoord(String deviceCoord, Integer alarmStatus);
 
-    List<Alarm> alarmListByArea(Integer deviceCoord);
+    List<Alarm> alarmListByArea(String deviceCoord);
 }

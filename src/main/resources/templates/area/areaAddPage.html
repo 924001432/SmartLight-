@@ -23,9 +23,10 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">上级区域：</label>
                     <div class="layui-input-block">
-                        <input type="text"  th:value="${obj?.areaName}" lay-verify="required"  autocomplete="off" class="layui-input" disabled>
+                        <input type="text"  name="parentName" th:value="${obj?.areaName}" lay-verify="required"  autocomplete="off" class="layui-input" disabled>
                     </div>
                 </div>
+
                 <input name="areaLevel" th:value="${obj?.areaLevel+1}" class="layui-input layui-hide"/>
                 <div class="layui-form-item">
                     <label class="layui-form-label">区域级别：</label>
@@ -35,7 +36,23 @@
                     </div>
                 </div>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">经度：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="areaLon" lay-verify="required" placeholder="请输入区域经度" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
 
+                <div class="layui-form-item">
+                    <label class="layui-form-label">纬度：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="areaLat" lay-verify="required" placeholder="请输入区域纬度" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <input type="button"  lay-filter="getLocation" id="getLocation" value="获取经纬度">
+                </div>
 
                 <div class="layui-form-item layui-hide">
                     <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
@@ -77,9 +94,48 @@
                 default:
                     break;
             }
-
-
         });
+    /**
+     * 获取新添加区域的经纬度
+     */
+    $('#getLocation').on('click', function() {
+        // 获取输入框的值
+        var areaName = $('input[name="areaName"]').val();
+        var parentName = $('input[name="parentName"]').val();
+        var pathName = parentName + areaName;
+        console.log("经纬度请求获取："+pathName);
+        var apiUrl = "http://api.map.baidu.com/geocoding/v3/";
+        var apiKey = "5IoEK2HdiSizcKZ9l7Wr49ycDEPCGiIk"
+        var requestUrl = apiUrl + "?address=" + encodeURIComponent(pathName) + "&output=json&ak=" + apiKey;
+        // 发送JSONP请求
+        $.ajax({
+            url: requestUrl,
+            dataType: 'jsonp',
+            success: function(data) {
+                // 解析 API 返回结果，提取经纬度信息
+                var status = data.status;
+                if (status === 0) {
+                    var result = data.result;
+                    var location = result.location;
+                    var longitude = location.lng;//经度
+                    longitude = longitude.toFixed(4);
+                    var latitude = location.lat;//纬度
+                    latitude = latitude.toFixed(4);
+                    console.log("经度为"+longitude);
+                    console.log("纬度为"+latitude);
+                    $('input[name="areaLon"]').val(longitude);
+                    $('input[name="areaLat"]').val(latitude);
+                } else {
+                    console.log("地理编码失败");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log("请求地理编码服务出错:", textStatus, errorThrown);
+            }
+        });
+    });
+
+
     </script>
 </body>
 </html>

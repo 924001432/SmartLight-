@@ -33,5 +33,11 @@ public class Area {
     @TableField(value = "area_net")
     String areaNet;
 
+    @TableField(value = "area_lon")
+    String areaLon;
+
+    @TableField(value = "area_lat")
+    String areaLat;
+
 
 }

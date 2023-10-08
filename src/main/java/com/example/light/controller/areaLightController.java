@@ -60,8 +60,9 @@ public class areaLightController {
     @RequestMapping("/areaEditPage/{areaId}")
     public Object areaEditPage(@PathVariable(name = "areaId", required = true) Integer areaId, Model model) {
         Area area = areaService.getById(areaId);
+        String parentName = areaService.getById(area.getParentId()).getAreaName();
         model.addAttribute("obj", area);
-
+        model.addAttribute("parentName", parentName);
         return "/area/areaEditPage";
     }
 

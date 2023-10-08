@@ -18,9 +18,11 @@ public interface DeviceService extends IService<Device> {
 
     public void updateDeviceHearttime(Device device);
 
-    public List<Device> deviceListByIsOnline(Integer deviceCoord);
+    public List<Device> deviceListByIsOnline(String deviceCoord);
 
     public void updateOnlineStatus(Integer deviceId ,int status);
 
-    public List<Device> deviceListByIsNotOnline(Integer deviceCoord);
+    public List<Device> deviceListByIsNotOnline(String deviceCoord);
+
+
 }

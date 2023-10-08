@@ -59,11 +59,14 @@ public class alarmLightController {
 
     }
 
-//    @LogAnnotation
-//    @ApiOperation(value = "查看某设备的报警数据信息")
+    /**
+     * 查看某设备的未处理报警信息
+     * @param deviceSerial
+     * @return
+     */
     @RequestMapping("/alarmListBydeviceSerial/{deviceSerial}")
     @ResponseBody
-    public Object alarmListBydeviceSerial(@PathVariable(name = "deviceSerial",required = true)Integer deviceSerial){
+    public Object alarmListBydeviceSerial(@PathVariable(name = "deviceSerial",required = true)String deviceSerial){
 
         List<Alarm> alarmList = alarmService.alarmListBydeviceSerial(deviceSerial);
         return ResultMapUtil.getHashMapList(alarmList);
@@ -132,7 +135,7 @@ public class alarmLightController {
 //    @ApiOperation(value = "查看某区域的所有报警信息")
     @RequestMapping("/alarmListByArea/{deviceCoord}")
     @ResponseBody
-    public Object alarmListByArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord){
+    public Object alarmListByArea(@PathVariable(name = "deviceCoord",required = true)String deviceCoord){
 
         System.out.println("deviceCoord: " + deviceCoord);
 
@@ -149,7 +152,7 @@ public class alarmLightController {
 //    @ApiOperation(value = "查看某区域的所有报警信息按状态查看")
     @RequestMapping("/alarmListByalarmArea/{deviceCoord}/{alarmStatus}")
     @ResponseBody
-    public Object alarmListByalarmArea(@PathVariable(name = "deviceCoord",required = true)Integer deviceCoord, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
+    public Object alarmListByalarmArea(@PathVariable(name = "deviceCoord",required = true)String deviceCoord, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
 
         System.out.println("deviceCoord: " + deviceCoord);
 
@@ -164,12 +167,12 @@ public class alarmLightController {
 
     @RequestMapping("/alarmListByDeviceCoordList/{deviceCoordList}/{alarmStatus}")
     @ResponseBody
-    public Object alarmListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<Integer> deviceCoordList, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
+    public Object alarmListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
 
         List<Alarm> alarmList = new ArrayList<>();
 
-        for (Integer integer : deviceCoordList) {
-            alarmList.addAll(alarmService.alarmListByDeviceCoord(integer,alarmStatus));
+        for (String s : deviceCoordList) {
+            alarmList.addAll(alarmService.alarmListByDeviceCoord(s,alarmStatus));
 
         }
 

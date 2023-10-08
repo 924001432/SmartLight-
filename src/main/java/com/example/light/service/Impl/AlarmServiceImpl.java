@@ -59,7 +59,7 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     @Override
-    public List<Alarm> alarmListBydeviceSerial(Integer deviceSerial){
+    public List<Alarm> alarmListBydeviceSerial(String deviceSerial){
 
         QueryWrapper<Alarm> wrapper = new QueryWrapper<>();
         wrapper.eq("device_serial",deviceSerial)
@@ -128,13 +128,13 @@ public class AlarmServiceImpl extends ServiceImpl<AlarmMapper, Alarm> implements
     }
 
     @Override
-    public List<Alarm> alarmListByDeviceCoord(Integer deviceCoord , Integer alarmStatus) {
+    public List<Alarm> alarmListByDeviceCoord(String deviceCoord , Integer alarmStatus) {
 
         return alarmMapper.alarmByAreaAndStatus(deviceCoord,alarmStatus);
     }
 
     @Override
-    public List<Alarm> alarmListByArea(Integer deviceCoord) {
+    public List<Alarm> alarmListByArea(String deviceCoord) {
         return alarmMapper.alarmByArea(deviceCoord);
     }
 }
