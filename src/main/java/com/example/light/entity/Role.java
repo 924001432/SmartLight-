@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.models.auth.In;
 import lombok.Data;
 
 import java.util.List;
@@ -28,5 +29,7 @@ public class Role {
     @TableField(value = "role_updatetime")
     private String roleUpdatetime;
 
+    @TableField(value = "role_level")
+    private Integer roleLevel;
 
 }

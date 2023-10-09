@@ -2,7 +2,6 @@ package com.example.light.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.light.entity.Alarm;
 import com.example.light.entity.User;
 import com.example.light.mapper.UserMapper;
 import com.example.light.service.UserService;
@@ -39,10 +38,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public User queryUserByName(String username) {
+    public List<User> queryUserByName(String username) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
+//        wrapper.apply("CONCAT('%',name,'%')like{0}",username);
+        wrapper.like("user_name",username);
+        return userMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<User> querySingleUserByName(String username) {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+
         wrapper.eq("user_name",username);
-        return userMapper.selectOne(wrapper);
+        return userMapper.selectList(wrapper);
     }
 
     @Override

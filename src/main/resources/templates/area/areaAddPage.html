@@ -61,7 +61,7 @@
         </div>
     </div>
 </div>
-<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/jquery/jQuery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
 <script>
@@ -105,7 +105,7 @@
         var pathName = parentName + areaName;
         console.log("经纬度请求获取："+pathName);
         var apiUrl = "http://api.map.baidu.com/geocoding/v3/";
-        var apiKey = "5IoEK2HdiSizcKZ9l7Wr49ycDEPCGiIk"
+        var apiKey = "iduvzqDgfsZnhN1vi9HqaIbFgFqY84sT"
         var requestUrl = apiUrl + "?address=" + encodeURIComponent(pathName) + "&output=json&ak=" + apiKey;
         // 发送JSONP请求
         $.ajax({

@@ -51,26 +51,24 @@ public class UserRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String username = token.getUsername();
-//        User queryUser = new User();
-//        queryUser.setUserName(username);
 
         //根据用户名查询用户是否存在
-        User user = userService.queryUserByName(username);
-
-
+        List<User> list = userService.queryUserByName(username);
 
         //用户不存在
-        if(user==null){
+        if(list==null){
             return null;
         }
         //密码错误
         //状态无效
-
-
+        User user = list.get(0);
 
         curUserDto curUser = new curUserDto(user);
 
         UserUtil.setUserSession(curUser);
+        System.out.println(curUser.toString());
+        //User(userId=2, userName=11, userPassword=null, userPhone=null, userEmail=null, userRole=1, userArea=0, userBuilder=null, userCreatetime=null, userUpdatetime=null)
+        curUser = UserUtil.getCurrentUser();
         System.out.println(curUser.toString());
 
 

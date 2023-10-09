@@ -100,7 +100,7 @@
     <script src="static/js/jquery/jQuery-2.2.0.min.js"></script>
     <script src="static/js/bootstrap/js/bootstrap.min.js"></script>
     <script src="static/js/layer_v2.1/layer/layer.js"></script>
-    <script src="static/js/index.js"></script>
+    <script src="static/js/light/main/index.js"></script>
     <script>
 
         <!--        获取用户信息    -->
@@ -109,11 +109,10 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (result) {
-
-                        console.log(result);
-                        document.getElementById("cur_userName").innerText  = result.userName ;//修改
-                        document.getElementById("cur_userRole").innerText  = "【 "+result.userRoleName+" 】" ;//修改
-                        document.getElementById("cur_userArea").innerText  = "【 "+result.userAreaName+" 】" ;//修改
+                        //替换
+                        $("#cur_userName").text( result.userName );
+                        $("#cur_userRole").text( "【 "+result.userRoleName+" 】" );
+                        $("#cur_userArea").text( "【 "+result.userAreaName+" 】" );
 
 
                     }

@@ -29,7 +29,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
     @Override
     public List<Role> queryRoleList() {
-        return roleMapper.selectList(null);
+        QueryWrapper<Role> wrapper = new QueryWrapper<>();
+        wrapper.orderBy(true,true,"role_level");
+        return roleMapper.selectList(wrapper);
     }
 
     @Override
@@ -41,10 +43,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
 
 
     @Override
-    public Role queryRoleByName(String roleName) {
+    public List<Role> queryRoleByName(String roleName) {
         QueryWrapper<Role> wrapper = new QueryWrapper<>();
-        wrapper.eq("role_name",roleName);
-        return roleMapper.selectOne(wrapper);
+        wrapper.like("role_name",roleName);
+        return roleMapper.selectList(wrapper);
     }
 
     @Override

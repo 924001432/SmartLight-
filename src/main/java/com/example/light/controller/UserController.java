@@ -27,9 +27,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -94,13 +96,37 @@ public class UserController {
             return ResultMapUtil.getHashMapLogin("密码错误","2");
         }
 
-//        Session session = SecurityUtils.getSubject().getSession();
-                              //默认30min
-//        User user = userService.queryUserByName(username);
-//        //可以放在UserUtil中，创建userDto
-//        session.setAttribute("username",username);
-//        session.setAttribute("userRole",user.getUserRole());
-//        session.setAttribute("userArea",user.getUserArea());
+
+        return ResultMapUtil.getHashMapLogin("验证成功","1");
+
+    }
+
+
+    /**
+     * 微信登录
+     * @return
+     */
+    @RequestMapping("/LoginByWxAccount")
+    @ResponseBody
+    public Object LoginByWxAccount(@RequestBody HashMap<String,String> map){
+
+        String username = map.get("username") ;
+        String password = map.get("password");
+
+        if(username==null||password==null){
+            return ResultMapUtil.getHashMapLogin("用户名密码不能为空","2");
+        }
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+        try{
+            subject.login(token);
+
+        }catch (UnknownAccountException e){
+            return ResultMapUtil.getHashMapLogin("用户名不存在","2");
+        }catch (IncorrectCredentialsException e){
+            return ResultMapUtil.getHashMapLogin("密码错误","2");
+        }
+
 
         return ResultMapUtil.getHashMapLogin("验证成功","1");
 
@@ -116,6 +142,10 @@ public class UserController {
         return "/main/index";
     }
 
+    /**
+     * 地图
+     * @return
+     */
     @RequestMapping("/baiduMap")
     public Object baiduMap(){
         return "/main/baiduMap";
@@ -193,6 +223,30 @@ public class UserController {
      * 获取当前用户信息
      * @return
      */
+    @RequestMapping("/querySingleUserByName/{userName}")
+    @ResponseBody
+    public Integer querySingleUserByName(@PathVariable(name = "userName",required = true)String userName){
+
+//        System.out.println("userName:" + userName);
+//        List<User> list = userService.querySingleUserByName(userName);
+//        for (User user : list) {
+//            System.out.println(user);
+//        }
+
+        if(!userService.querySingleUserByName(userName).isEmpty()){
+//            System.out.println("已存在");
+
+            return -1;
+        }
+
+        return 1;
+
+    }
+
+    /**
+     * 获取当前用户信息
+     * @return
+     */
     @RequestMapping("/queryUserById/{userId}")
     @ResponseBody
     public Object queryUserById(@PathVariable(name = "userId",required = true)Integer userId){
@@ -220,6 +274,7 @@ public class UserController {
 
         Role role = roleService.queryRoleById(user.getUserRole());
         user.setUserRoleName(role.getRoleName());
+        user.setUserRoleLevel(role.getRoleLevel());
 
         Area area = areaService.getById(user.getUserArea());
         user.setUserAreaName(area.getAreaName());
@@ -273,45 +328,53 @@ public class UserController {
     @GetMapping("/userListByuserArg/{type}&{userArg}")
     @ResponseBody
     public List<User> userListByuserArea(@PathVariable(name = "type",required = true)Integer type,
-                                         @PathVariable(name = "userArg",required = true)Object userArg){
+                                         @PathVariable(name = "userArg",required = true)String userArg){
         //获取基本信息，角色ID，区域ID，创建人ID；获取数据填充到VO中，
-
+        //获取当前用户的区域ID
         curUserDto curUser = UserUtil.getCurrentUser();
         Integer userArea = curUser.getUserArea();
+        //获取当前用户的角色级别
+        Integer userRoleLevel = curUser.getUserRoleLevel();
 
         List<Area> areaList = areaService.areaList();
 
-        List<Area> list = Lists.newArrayList();//满足条件的所有区域ID
-        setAreaList(userArea,areaList,list);
-        List<User> userList = Lists.newArrayList();
-        for (Area area : list) {
-//            System.out.println(area.getAreaId());//正确
-            //遍历，构造用户集合
-            userList.addAll(userService.queryUserByuserArea(area.getAreaId()));
+        List<Area> matchingAreas = new ArrayList<>();
+        //获取当前用户的区域下的所有区域
+        setAreaList(userArea, areaList, matchingAreas);
+
+        List<User> userList = new ArrayList<>();
+        //遍历，构造用户集合，包含了该区域下的所有用户，通过用户的角色编号来确定角色级别，把级别低的用户加入到集合中
+        for (Area area : matchingAreas) {
+//            userList.addAll(userService.queryUserByuserArea(area.getAreaId()));
+            List<User> users = userService.queryUserByuserArea(area.getAreaId());
+
+            for (User user : users) {
+                if(roleService.queryRoleById( user.getUserRole() ).getRoleLevel() > userRoleLevel){
+                    userList.add(user);
+                }
+            }
+
         }
 
-        if(type == -1){//默认全部列表
+        if(type == -1){//默认全部列表，该列表包含了该区域下的所有用户，通过用户的角色编号来确定角色级别，把级别低的用户加入到集合中
+//            System.out.println("userList:" + userList);
             return userList;
-        }else if( type == 1){//用户名查询
-            User u = userList.stream().filter(user -> user.getUserName().equals(userArg)).findAny().orElse(null);
-//            System.out.println(u.toString());
 
-            userList.clear();
-            if(u != null){
-                userList.add(u);
-                return userList;
-            }else {
-                return null;
-            }
+        }else if( type == 1){//用户名查询
+
+
+            return userList.stream()
+                    .filter(user -> user.getUserName().contains(userArg))
+                    .collect(Collectors.toList());
+
 
         }else{//用户角色查询
             return null;
         }
 
-
-//        return userList;
     }
 
+    //递归获取区域列表
     private void setAreaList(Integer pId, List<Area> areaListAll, List<Area> list) {
         for (Area area : areaListAll) {
             if (area.getParentId().equals(pId)) {
@@ -324,7 +387,7 @@ public class UserController {
     }
 
     /**
-     * 新增用户界面
+     * 新增用户信息页面
      * @return
      */
     @RequestMapping("/userAddPage")

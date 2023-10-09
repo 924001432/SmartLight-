@@ -22,47 +22,12 @@
                     </div>
                 </div>
 
-                <!--                <div class="layui-form-item">-->
-                <!--                    <label class="layui-form-label">用户密码：</label>-->
-                <!--                    <div class="layui-input-block">-->
-                <!--                        <input type="text" name="userPassword" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">-->
-                <!--                    </div>-->
-                <!--                </div>-->
-
-                <!--                <div class="layui-form-item">-->
-                <!--                    <label class="layui-form-label">确认密码：</label>-->
-                <!--                    <div class="layui-input-block">-->
-                <!--                        <input type="text" name="confirmPassword" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">-->
-                <!--                    </div>-->
-                <!--                </div>-->
-
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">用户电话：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="userPhone" name="userPhone" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserPhone(this.value)">-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">用户邮箱：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="userEmail" name="userEmail" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)" >-->
-<!--                    </div>-->
-<!--                </div>-->
-
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户角色：</label>
                     <div class="layui-input-block">
                         <select id="parentId" name="userRole" lay-search lay-filter="demo"></select>
                     </div>
                 </div>
-
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">负责区域：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="userArea" name="userArea" th:value="${obj?.userArea}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)" >-->
-<!--                    </div>-->
-<!--                </div>-->
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">负责区域</label>
@@ -79,7 +44,7 @@
     </div>
 </div>
 <script th:src="@{/static/js/light/user/areaZtree.js}"></script>
-<script th:src="@{/static/js/jquery-2.2.0.min.js}"></script>
+<script th:src="@{/static/js/jquery/jQuery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
@@ -93,7 +58,24 @@
             var laydate = layui.laydate;
             var form = layui.form;
 
-            //获取角色列表
+            //获取角色列表，应该是不包括自身角色，首先获取自身角色，然后获取其他角色
+            var userRoleLevel;
+            $.ajax({
+                url: '/getUser',
+                type: 'GET',
+                dataType: 'json',
+                //开启同步可赋值
+                async:false,
+                success: function (result) {
+
+                        console.log(result);
+                        userRoleLevel  = result.userRoleLevel ;//修改
+
+
+                    }
+            })
+
+
             $.ajax({
                 url: '/roleList',
                 dataType:'json',
@@ -109,9 +91,12 @@
                     for(var i=0; i<data.length; i++){
                         var d = data[i];
                         var id = d['roleId'];
+                        var level = d['roleLevel'];
                         var name = d['roleName'];
 
-                        select.append("<option value='"+ id +"'>" +name+"</option>");
+                        if( level > userRoleLevel ){//填充级别低于当前用户角色等级的角色
+                            select.append("<option value='"+id+"' >"+name+"</option>");
+                        }
                     }
                     layui.form.render("select");          //下拉列表渲染，把内容加载进去
                 }
@@ -180,11 +165,14 @@
 
                     //查询用户名是否已使用
                     $.ajax({
-                        url: '/queryUserByName/' + value,
+                        //准确查找
+                        url: '/querySingleUserByName/' + value,
 
                         async: false,
                         cache: false,
                         success: function (str) {
+
+                            console.log("str" + str);
 
                             if(str == -1){//找到重复的
                                 layer.msg("用户名已被使用",{icon:5,anim:6});
@@ -194,8 +182,6 @@
 
                         }
                     });
-
-
 
                 }else {
                     layer.msg("用户名不合法，请重新输入",{icon:5,anim:6});

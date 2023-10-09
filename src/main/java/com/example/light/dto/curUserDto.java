@@ -16,6 +16,8 @@ public class curUserDto extends User {
 
     private String userAreaName;
 
+    private Integer userRoleLevel;
+
 
     public String getUserRoleName() {
         return userRoleName;
@@ -31,5 +33,13 @@ public class curUserDto extends User {
 
     public void setUserAreaName(String userAreaName) {
         this.userAreaName = userAreaName;
+    }
+
+    public Integer getUserRoleLevel() {
+        return userRoleLevel;
+    }
+
+    public void setUserRoleLevel(Integer userRoleLevel) {
+        this.userRoleLevel = userRoleLevel;
     }
 }

@@ -39,7 +39,7 @@ public class roleController {
     }
 
     /**
-     * 获取全部的用户信息
+     * 获取全部的角色信息
      * @return
      */
     @GetMapping("/roleList")
@@ -69,15 +69,17 @@ public class roleController {
     @ResponseBody
     public Object queryRoleByRoleName(@PathVariable(name = "roleName",required = true)String roleName){
 
-        Role role = roleService.queryRoleByName(roleName);
-        List<Role> list = new ArrayList<>();
+//        Role role =
+        List<Role> list = roleService.queryRoleByName(roleName);
 
-        if(role != null){
-            list.add(role);
-            return list;
-        }else {
-            return null;
-        }
+//        if(role != null){
+//            list.add(role);
+//            return list;
+//        }else {
+//            return null;
+//        }
+
+        return list;
 
     }
 
@@ -132,8 +134,8 @@ public class roleController {
             roleService.updateRole(role,role.getRoleId());
 
         } else {// 新增
-            Role r = roleService.queryRoleByName(role.getRoleName());
-            if (r != null) {
+            List<Role> list = roleService.queryRoleByName(role.getRoleName());
+            if (list != null) {
                 throw new IllegalArgumentException(role.getRoleName() + "已存在");
             }
 

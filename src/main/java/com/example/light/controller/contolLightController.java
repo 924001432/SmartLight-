@@ -318,7 +318,7 @@ public class contolLightController {
         long diffSeconds = diff / 1000 % 60;
 
         //小于20s，在线
-        return ((diffMinutes * 60) + diffSeconds) <= 60;
+        return ((diffMinutes * 60) + diffSeconds) <= 20;
     }
 
     /**

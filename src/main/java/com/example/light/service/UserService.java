@@ -17,7 +17,9 @@ public interface UserService extends IService<User> {
      */
     public User queryUserById(Integer userId);
 
-    public User queryUserByName(String username);
+    public List<User> queryUserByName(String username);
+
+    public List<User> querySingleUserByName(String username);
 
     public List<User> queryUserByuserArea(Integer userArea);
 
@@ -34,11 +36,3 @@ public interface UserService extends IService<User> {
 
 
 }
-/**
- * for(i=0,j=0,i<re_len;i++){
- *         if(result[i] between A-Z) {//统计
- *             nterm[j] = result[i];
- *             j++;
- *         }
- *     }
- */

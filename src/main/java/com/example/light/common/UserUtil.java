@@ -13,17 +13,6 @@ import java.util.List;
 
 public class UserUtil {
 
-//	public static User getCurrentUser() {
-////		User user = (User) getSession().getAttribute(UserConstants.LOGIN_USER);
-//		User user = (User) getSession().getAttribute(UserConstants.LOGIN_USER);
-//
-//		return user;
-//	}
-
-//	public static void setUserSession(User user) {
-//		//user包含userId,userName,userArea,还需要添加userRoleName，userAreaName
-//		getSession().setAttribute(UserConstants.LOGIN_USER, user);
-//	}
 
 	public static curUserDto getCurrentUser() {
 //		User user = (User) getSession().getAttribute(UserConstants.LOGIN_USER);

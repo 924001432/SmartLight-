@@ -234,6 +234,9 @@ body{
 .head {
 	position: absolute;
 	top:-15%;
+
+	/*居中*/
+
 	left: 36%;
 }
 .head img {
