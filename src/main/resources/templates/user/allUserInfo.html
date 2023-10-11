@@ -125,20 +125,6 @@
                     width: 50,
                     valign: 'middle'
                 },
-<!--                {-->
-<!--                    title: '电话',-->
-<!--                    field: 'userPhone',-->
-<!--                    align: 'center',-->
-<!--                    width: 80,-->
-<!--                    valign: 'middle'-->
-<!--                },-->
-<!--                {-->
-<!--                    title: '邮箱',-->
-<!--                    field: 'userEmail',-->
-<!--                    align: 'center',-->
-<!--                    width: 80,-->
-<!--                    valign: 'middle'-->
-<!--                },-->
                 {
                     title: '用户角色',
                     field: 'userRole',
@@ -265,9 +251,17 @@
                 iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
                     var field = data.field;
 
-                    layer.close(index);     //关闭弹层
-                    $("#table").bootstrapTable('refresh');
-                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    if(field.userArea == null || field.userArea == undefined || field.userArea == ""){
+                        layer.msg("请填写负责区域信息",{icon:1,anim:6});
+
+                    }else if( field.userArea == -1){
+                        layer.msg("用户角色和负责区域不匹配",{icon:2,anim:6});
+                    }else{
+                        layer.close(index);     //关闭弹层
+                        $("#table").bootstrapTable('refresh');
+                        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    }
+
                 });
                 submit.trigger('click');
             },
@@ -309,14 +303,23 @@
                 var iframeWindow = window['layui-layer-iframe'+index];
                 var submit = layero.find('iframe').contents().find("#LAY-front-submit");
                 //监听提交
-                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {//data接收到的是form表单的数据，是不包含额外数据的。
                     var field = data.field;
 
                     console.log(field);
 
-                    layer.close(index);     //关闭弹层
-                    $("#table").bootstrapTable('refresh');
-                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    if(field.userArea == null || field.userArea == undefined || field.userArea == ""){
+                        layer.msg("请填写负责区域信息",{icon:0,anim:6});
+
+                    }else if( field.userArea == -1){
+                        layer.msg("用户角色和负责区域不匹配",{icon:2,anim:6});
+                    }else{
+                        layer.close(index);     //关闭弹层
+                        $("#table").bootstrapTable('refresh');
+                        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    }
+
+
                 });
                 submit.trigger('click');
             },

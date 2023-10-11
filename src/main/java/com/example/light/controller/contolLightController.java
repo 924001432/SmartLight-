@@ -86,11 +86,11 @@ public class contolLightController {
             if (cal_time(device.getDeviceHearttime())){
                 device.setDeviceStatus(1);
                 deviceService.updateOnlineStatus(device.getDeviceId(),1);
-                System.out.println("更新为在线");
+//                System.out.println("更新为在线");
             }else {
                 device.setDeviceStatus(0);
                 deviceService.updateOnlineStatus(device.getDeviceId(),0);
-                System.out.println("更新为离线");
+//                System.out.println("更新为离线");
             }
         }
 
@@ -151,7 +151,7 @@ public class contolLightController {
     @ResponseBody
     public Object deviceListByDeviceCoordList(@PathVariable(name = "deviceCoordList",required = true)List<String> deviceCoordList) throws ParseException {
 
-        System.out.println("deviceCoordList: " + deviceCoordList);
+
         List<Device> deviceList = new ArrayList<>();
 
         for (String s : deviceCoordList) {

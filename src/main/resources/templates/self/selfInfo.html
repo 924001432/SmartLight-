@@ -2,7 +2,7 @@
 <html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>编辑用户</title>
+    <title>个人信息</title>
     <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
     <link rel="stylesheet" th:href="@{/static/css/ztree/zTreeStyle/zTreeStyle.css}" media="all">
     <link rel="stylesheet" th:href="@{/static/css/ztree/demo.css}" media="all">
@@ -18,21 +18,21 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户名称：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userName" th:value="${obj?.userName}" lay-verify="required"  autocomplete="off" class="layui-input">
+                        <input type="text" id="userName" name="userName" th:value="${obj?.userName}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserName(this.value)">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户电话：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userPhone" th:value="${obj?.userPhone}" lay-verify="required"  autocomplete="off" class="layui-input">
+                        <input type="text" id="userPhone" name="userPhone" th:value="${obj?.userPhone}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserPhone(this.value)" >
                     </div>
                 </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户邮箱：</label>
                     <div class="layui-input-block">
-                        <input type="text" name="userEmail" th:value="${obj?.userEmail}" lay-verify="required"  autocomplete="off" class="layui-input">
+                        <input type="text" id="userEmail" name="userEmail" th:value="${obj?.userEmail}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)">
                     </div>
                 </div>
 
@@ -51,7 +51,7 @@
                     <div class="layui-input-block">
                         <input id="userArea" name="userArea" th:value="${obj?.userArea}" lay-verify="required"  autocomplete="off" class="layui-input" disabled>
 
-<!--                        <ul id="treeDemo" class="ztree" name="userArea1"  ></ul>-->
+
                     </div>
                 </div>
 
@@ -72,6 +72,8 @@
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
+
+<script th:src="@{/static/js/common/userInfoCheck.js}"></script>
 <script>
 
     layui.use(['form','laydate'],function () {
@@ -152,19 +154,30 @@
             var user = $("#form").serializeObject();
             console.log(user);
 
-            $.ajax({
-				type : 'GET',
-				url : '/userEdit',
-				dataType: 'json',
-				data : user,
-				async: false,
-                success: function (str) {
-                    if(str.code === 0){
-                        console.log("succ");
+            //判断用户名，用户手机号，用户邮箱是否为空
+            if(user.userName == null || user.userName == "" || user.userPhone == null || user.userPhone == "" || user.userEmail == null || user.userEmail == ""){
+
+            }else{
+            	$.ajax({
+                    type : 'GET',
+                    url : '/userEdit',
+                    dataType: 'json',
+                    data : user,
+                    async: false,
+                    success: function (str) {
+                        if(str.code === 0){
+                            console.log("succ");
+                        }
+                        layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+
+                        //刷新页面
+<!--                        setTimeout(function () {-->
+<!--                            window.location.href = "/Logout";-->
+<!--                        },1000);-->
                     }
-                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                }
-			});
+                });
+            }
+
 		}
 
 		function editUserPsw() {
@@ -175,7 +188,7 @@
                 title: '修改密码',
                 content: '/pswEditPage',
                 shade:[0.8,'#393d49'],
-                area:['500px','400px'],
+                area:['400px','300px'],
                 btn:['确定','取消'],
                 yes:function (index,layero) {
                     var iframeWindow = window['layui-layer-iframe'+index];
@@ -183,8 +196,10 @@
                     //监听提交
                     iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
                         var field = data.field;
+                        console.log(field);
+                        console.log(field.userPassword);
                         $.ajax({
-                            url: '/stockEdit',
+                            url: '/passwordEdit/'+field.userPassword,
                             data: field,
                             async: false,
                             cache: false,

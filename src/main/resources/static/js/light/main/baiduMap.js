@@ -851,7 +851,7 @@ function createNode(d) {
     var lat = d['areaLat'];
 
     var node = {
-        open : true,
+        open : false,
         id : id,
         name : name,
         pId : pId,

@@ -201,7 +201,8 @@ body, html, #allmap {
 .myMap_right {
     width: 19.5%;
     height: 100%;
-    background-color: #fff
+    background-color: #fff;
+    overflow: auto;
 }
 
 .myMapNav ul li {

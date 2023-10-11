@@ -21,7 +21,7 @@ public interface StockService extends IService<Stock> {
 
     public Integer stockEdit(Stock stock);
 
-    public Integer stockOut(Integer stockId);
+    public Integer stockOut(Integer stockId, Integer stockOperator);
 
     public Integer stockDelete(Integer stockId);
 

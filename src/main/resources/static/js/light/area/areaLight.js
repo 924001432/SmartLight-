@@ -1,5 +1,7 @@
 var zTree, rMenu;
 $(document).ready(function(){
+
+
             $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
 
             zTree = $.fn.zTree.getZTreeObj("treeDemo");
@@ -15,6 +17,7 @@ function getMenuTree() {
 
 	$.ajax({
 		type : 'get',
+//		'/areaListByuserArea/'+userArea
 		url : '/area/all',
 		contentType : "application/json; charset=utf-8",
 		async : false,
@@ -90,7 +93,7 @@ function createNode(d) {
 	var child = d['child'];
 
 	var node = {
-		open : true,
+		open : false,
 		id : id,
 		name : name,
 		level : level,

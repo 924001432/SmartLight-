@@ -5,6 +5,17 @@
     <title>编辑用户</title>
     <link rel="stylesheet" th:href="@{/static/layui/css/layui.css}" media="all">
     <link rel="stylesheet" th:href="@{/static/admin/style.css}" media="all">
+    <style>
+        .layui-form-item {
+            margin-bottom: 0px;
+        }
+        @media screen and (max-width: 450px){
+            .layui-form-item .layui-inline{
+                margin-bottom: 0px;
+            }
+        }
+
+    </style>
 </head>
 <body>
 <div class="layui-fluid">
@@ -13,27 +24,57 @@
             <form class="layui-form layui-form-pane" action="">
                 <input name="userId" th:value="${obj?.userId}" class="layui-input layui-hide"/>
 
-
                 <div class="layui-form-item">
-                    <label class="layui-form-label">原密码：</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="oldPassword" name="oldPassword" lay-verify="required"   class="layui-input" onblur="checkOldPsw(this.value)">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">原密码：</label>
+                        <div class="layui-input-inline" >
+
+                            <input type="password" name="oldPassword" id="oldPassword" required lay-verify="required||password" placeholder="请输入密码" autocomplete="off" class="layui-input" onblur="checkOldPsw(this.value)">
+
+                        </div>
+                        <!--<div class="layui-form-mid">-</div>-->
+                        <div class="layui-input-inline" style="width: 20px;margin-top:10px ">
+                            <a href="javascript:void(0);"  style="text-decoration:none;"><i class="iconfont iconyanjing_bi"  ></i></a>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">新密码：</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="userPassword" name="userPassword"  lay-verify="required"  class="layui-input" onblur="checkNewPsw(this.value)">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">新密码：</label>
+                        <div class="layui-input-inline" >
+
+                            <input type="password" name="userPassword" id="userPassword" required lay-verify="required||password" placeholder="请输入密码" autocomplete="off" class="layui-input" onblur="checkNewPsw(this.value)">
+
+                        </div>
+                        <!--<div class="layui-form-mid">-</div>-->
+                        <div class="layui-input-inline" style="width: 20px;margin-top:10px ">
+                            <a href="javascript:void(0);"  style="text-decoration:none;"><i class="iconfont iconyanjing_bi" ></i></a>
+                        </div>
+
                     </div>
                 </div>
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">确认密码：</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="confirmPassword" name="confirmPassword" lay-verify="required"  class="layui-input" onblur="confirmPsw(this.value)">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">确认密码：</label>
+                        <div class="layui-input-inline" >
+
+                            <input type="password" name="confirmPassword" id="confirmPassword" required lay-verify="required||password" placeholder="请输入密码" autocomplete="off" class="layui-input" onblur="confirmPsw(this.value)">
+
+                        </div>
+                        <!--<div class="layui-form-mid">-</div>-->
+                        <div class="layui-input-inline" style="width: 20px;margin-top:10px ">
+                            <a href="javascript:void(0);" id="show" style="text-decoration:none;"><i class="iconfont iconyanjing_bi"  id="iconyanjing_bi" ></i></a>
+                        </div>
+
                     </div>
                 </div>
+
 
                 <div class="layui-form-item layui-hide">
                     <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
@@ -118,6 +159,17 @@
                 }
             }
         }
+
+        $("#show").on("click", ".iconyanjing_bi", function () {
+            $(this).removeClass("iconyanjing_bi").addClass("iconyanjing");
+            $("#password").attr("type", "text");
+        });
+
+        $("#show").on("click", ".iconyanjing", function () {
+            $(this).removeClass("iconyanjing").addClass("iconyanjing_bi");
+            $("#password").attr("type", "password");
+        });
+
 
 
 

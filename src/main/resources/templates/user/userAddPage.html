@@ -25,16 +25,18 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户角色：</label>
                     <div class="layui-input-block">
-                        <select id="parentId" name="userRole" lay-search lay-filter="demo"></select>
+                        <select id="userRole" name="userRole" lay-search lay-filter="demo"></select>
                     </div>
                 </div>
 
-                <div class="layui-form-item">
+                <div class="layui-form-item" id="area" >
                     <label class="layui-form-label">负责区域</label>
-                    <div class="col-md-10">
-                        <ul id="treeDemo" class="ztree" name="userArea"  ></ul>
+                    <div class="col-md-10" >
+                        <ul id="treeDemo" class="ztree"   ></ul>
                     </div>
                 </div>
+
+                <input id="userArea" name="userArea" class="layui-input layui-hide"/>
 
                 <div class="layui-form-item layui-hide">
                     <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
@@ -43,7 +45,7 @@
         </div>
     </div>
 </div>
-<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
+
 <script th:src="@{/static/js/jquery/jQuery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
@@ -51,6 +53,8 @@
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
+<!-- 自定义函数 -->
+<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
 <script>
 
     layui.use(['form','laydate'],function () {
@@ -68,14 +72,18 @@
                 async:false,
                 success: function (result) {
 
-                        console.log(result);
                         userRoleLevel  = result.userRoleLevel ;//修改
+                        //如果是系统管理员，不显示区域列表
+                        if( userRoleLevel < 3 ){//如果是管理员，显示区域列表
+                            $("#area").hide();
+                        }else {
+                            $("#area").show();
+                        }
 
-
-                    }
+                }
             })
 
-
+            //获取角色列表
             $.ajax({
                 url: '/roleList',
                 dataType:'json',
@@ -83,10 +91,8 @@
                 cache:false,
                 success:function (data) {
 
-                    console.log(data);
                     //清空列表
-                    var select = $("#parentId");
-
+                    var select = $("#userRole");
 
                     for(var i=0; i<data.length; i++){
                         var d = data[i];
@@ -101,35 +107,91 @@
                     layui.form.render("select");          //下拉列表渲染，把内容加载进去
                 }
             });
+
+            //监听下拉列表，获取角色等级，如果是管理员，不显示区域列表
+            form.on('select(demo)', function(data){
+                var roleId = $("#userRole").val(); //得到被选中的值
+
+                //根据角色等级获取区域列表
+                roleLevel = getRoleLevel(roleId);
+
+                if(roleLevel <= 2){
+                    $("#area").hide();
+                }else{
+                    $("#area").show();
+                    //初始化区域树，按照角色等级获取区域等级，然后减去2，就是区域树的等级
+                    initMenuTree(roleLevel-2);
+                }
+
+            });
+
+            //初始化区域树，根据当前用户角色等级获取区域等级，然后减去1，就是区域树的最大等级
+            initMenuTree(userRoleLevel-1);
         });
 
-        //构造区域目录树形结构
-        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
-
+        //新增用户
         function add() {
             //保存用户信息的同时保存负责区域信息
 
             var user = $("#form").serializeObject();
-            user.userArea = getCheckedMenuIds();
-            console.log("user:" + user.userArea);
+            user.userArea = getCheckedMenuIds()[0];
 
 
+            //对user进行空值判断
+            if(user.userName == null || user.userName == "" || user.userArea == null || user.userArea == ""){
 
-            $.ajax({
-				type : 'GET',
-				url : '/userAdd',
-				dataType: 'text',
-				data : user,
-				async: false,
-                success: function (str) {
-                    if(str.code === 0){
+            }else{
+                roleLevel = getRoleLevel(user.userRole);
 
-                    }
-                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                user.userAreaLevel = getCheckedMenuIds()[1];
+
+                //对用户角色和负责区域比较
+                if((roleLevel-3) != user.userAreaLevel){//如果角色和区域不匹配
+
+                    $("#userArea").val(-1);
+
+                } else {//如果角色和区域匹配
+                    //设置关闭弹窗信息
+                    $("#userArea").val(0);
+                    //提交表单,保存用户信息
+                    $.ajax({
+                        type : 'GET',
+                        url : '/userAdd',
+                        dataType: 'json',
+                        data : user,
+                        async: false,
+                        success: function (str) {
+                            if(str.code === 0){
+
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
                 }
-			});
+
+
+            }
+
+
 		}
 
+		function getRoleLevel(roleId){
+		    var roleLevel;
+		    $.ajax({
+                url: '/queryRoleById/'+roleId,
+                type: 'GET',
+                dataType: 'json',
+                //开启同步可赋值
+                async:false,
+                success: function (result) {
+                    roleLevel  = result.roleLevel;//修改
+                }
+            })
+            return roleLevel;
+
+		}
+
+        //解决表单提交序列化问题，
         //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
 		$.fn.serializeObject = function()
         {
@@ -148,7 +210,7 @@
             return o;
         };
 
-
+        //校验用户名
         function checkUserName(value) {
             //使用正则表达式校验用户名
             //只能由英文字母和数字组成，长度为4～16个字符，并且以英文字母开头
@@ -175,22 +237,23 @@
                             console.log("str" + str);
 
                             if(str == -1){//找到重复的
-                                layer.msg("用户名已被使用",{icon:5,anim:6});
+                                layer.msg("用户名已被使用",{icon:0,anim:6});
+                                document.getElementById("userName").focus();
                             }else{
-                                layer.msg("用户名合法",{icon:1,anim:4});
+                                layer.msg("用户名合法",{icon:6,anim:4});
                             }
 
                         }
                     });
 
                 }else {
-                    layer.msg("用户名不合法，请重新输入",{icon:5,anim:6});
-                    document.getElementById("userName").focus();;
+                    layer.msg("用户名不合法，请重新输入",{icon:2,anim:6});
+                    document.getElementById("userName").focus();
                 }
             }
 
         }
-
+        //校验手机号码
         function checkUserPhone(value) {
             //使用正则表达式校验
             //11位数字，以1开头。
@@ -203,15 +266,15 @@
             }else {
                 if (reg.test(value)) {
 
-                    layer.msg("手机号码合法",{icon:1,anim:4});
+                    layer.msg("手机号码合法",{icon:6,anim:4});
 
                 }else {
-                    layer.msg("手机号码不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("手机号码不合法，请重新输入",{icon:2,anim:6});
                     document.getElementById("userPhone").focus();;
                 }
             }
         }
-
+        //校验邮箱
         function checkUserEmail(value) {
             //使用正则表达式校验
             //姑且把邮箱地址分成“第一部分@第二部分”这样。第一部分：由字母、数字、下划线、短线“-”、点号“.”组成；第二部分：为一个域名，域名由字母、数字、
@@ -226,10 +289,10 @@
             }else {
                 if (reg.test(value)) {
 
-                    layer.msg("邮箱合法",{icon:1,anim:4});
+                    layer.msg("邮箱合法",{icon:6,anim:4});
 
                 }else {
-                    layer.msg("邮箱不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("邮箱不合法，请重新输入",{icon:2,anim:6});
                     document.getElementById("userEmail").focus();;
                 }
             }

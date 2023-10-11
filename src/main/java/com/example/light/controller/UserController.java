@@ -181,14 +181,14 @@ public class UserController {
 
         model.addAttribute("obj",user);
 
-        return "/main/userInfo1";
+        return "/self/selfInfo";
     }
 
     /**
-     * 修改密码
+     * 修改密码界面
      */
     @RequestMapping("/pswEditPage")
-    public Object userEditPage( Model model ){
+    public Object pswEditPage( Model model ){
 
         curUserDto curUser = UserUtil.getCurrentUser();
 
@@ -197,7 +197,26 @@ public class UserController {
         model.addAttribute("obj",user);
 
 
-        return "/main/pswEditPage";
+        return "/self/pswEditPage";
+    }
+
+    /**
+     * 修改密码
+     */
+    @RequestMapping("/passwordEdit/{userPassword}")
+    @ResponseBody
+    public Object pswEdit( @PathVariable(name = "userPassword",required = true)String userPassword){
+
+
+        curUserDto curUser = UserUtil.getCurrentUser();
+
+        try{
+            int i = userService.passwordEdit(curUser.getUserId(),userPassword);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
     }
 
 

@@ -1,11 +1,15 @@
 package com.example.light.controller;
 
 import com.example.light.common.ResultMapUtil;
+import com.example.light.common.UserUtil;
+import com.example.light.dto.StockDto;
+import com.example.light.dto.curUserDto;
 import com.example.light.entity.Alarm;
 import com.example.light.entity.Stock;
 import com.example.light.entity.User;
 import com.example.light.service.DeviceService;
 import com.example.light.service.StockService;
+import com.example.light.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +25,9 @@ public class stockLightController {
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/stockLight")
     public Object stockLight(){
@@ -39,6 +46,10 @@ public class stockLightController {
     @ResponseBody
     public Object stockAdd(Stock stock){
 
+        //获取当前用户，设置为入库的操作员，存入数据库，方便后续查询
+        curUserDto curUser = UserUtil.getCurrentUser();
+        stock.setStockOperator(curUser.getUserId());
+
         try{
             int i = stockService.stockAdd(stock);
             return ResultMapUtil.getHashMapSave(i);
@@ -46,6 +57,17 @@ public class stockLightController {
             return ResultMapUtil.getHashMapException(e);
         }
 
+    }
+
+    @RequestMapping("/stockInfoPage/{stockId}")
+    public Object stockInfoPage(@PathVariable(name = "stockId",required = true)Integer stockId, Model model){
+
+
+        Stock stock = stockService.queryStockBystockId(stockId);
+        model.addAttribute("obj",stock);
+
+
+        return "/stock/stockInfoPage";
     }
 
     @RequestMapping("/stockEditPage/{stockId}")
@@ -83,8 +105,12 @@ public class stockLightController {
     @ResponseBody
     public Object stockOut(@PathVariable(name = "stockId",required = true)Integer stockId){
 
+        //获取当前用户，设置为出库的操作员，存入数据库，方便后续查询
+        curUserDto curUser = UserUtil.getCurrentUser();
+
+
         try{
-            int i = stockService.stockOut(stockId);
+            int i = stockService.stockOut(stockId, curUser.getUserId());
             return ResultMapUtil.getHashMapSave(i);
         } catch (Exception e){
             return ResultMapUtil.getHashMapException(e);
@@ -107,11 +133,22 @@ public class stockLightController {
 
     @RequestMapping("/queryStockBystockStatus/{stockStatus}")
     @ResponseBody
-    public List<Stock> queryStockBystockStatus(@PathVariable(name = "stockStatus",required = true)Integer stockStatus){
+    public List<StockDto> queryStockBystockStatus(@PathVariable(name = "stockStatus",required = true)Integer stockStatus){
+
+        List<StockDto> stockDtoList = new java.util.ArrayList<>();
 
 
+        for (Stock stock : stockService.queryStockBystockStatus(stockStatus)) {
+            userService.queryUserById(stock.getStockOperator());
+            User user = userService.queryUserById(stock.getStockOperator());
+            StockDto stockDto = new StockDto(stock);
+            stockDto.setStockOperatorName(user.getUserName());
+            stockDtoList.add(stockDto);
 
-        return stockService.queryStockBystockStatus(stockStatus);
+
+        }
+
+        return stockDtoList;
 
     }
 

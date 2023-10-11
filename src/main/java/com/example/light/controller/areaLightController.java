@@ -143,6 +143,25 @@ public class areaLightController {
         return array;
     }
 
+    /**
+     * 根据用户负责区域构造区域目录
+     * @return
+     */
+    @RequestMapping("/areaListByAreaLevel/{userArea}/{areaLevel}")
+    @ResponseBody
+    public JSONArray areaListByAreaLevel(@PathVariable(name = "userArea",required = true)Integer userArea,
+                                         @PathVariable(name = "areaLevel",required = true)Integer areaLevel) {
+
+        List<Area> areaAll = areaService.areaListByAreaLevel(areaLevel);
+
+        JSONArray array = new JSONArray();
+        setPermissionsTree(userArea, areaAll, array);
+
+//        System.out.println(array);
+//[{"areaId":1,"areaLat":"36.6749","areaName":"山东省","areaRank":5,"areaSerial":"05000000","areaLevel":1,"parentId":0,"areaLon":"117.0274","child":[]},{"areaId":68,"areaLat":"34.2758","areaName":"陕西省","areaRank":6,"areaSerial":"06000000","areaLevel":1,"parentId":0,"areaLon":"108.9604","child":[]},{"areaId":87,"areaLat":"37.8798","areaName":"山西省","areaRank":7,"areaSerial":"07000000","areaLevel":1,"parentId":0,"areaLon":"112.5694","child":[]},{"areaId":88,"areaName":"甘肃省","areaRank":4,"areaLevel":1,"parentId":0,"child":[]}]
+        return array;
+    }
+
     private void setPermissionsTree(Integer pId, List<Area> permissionsAll, JSONArray array) {
         for (Area per : permissionsAll) {
 

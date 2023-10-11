@@ -4,11 +4,12 @@
 var curOptions = 0;
 $(document).ready(function() {
         tableLoad("/queryStockBystockStatus/0",function (cellval, row) {
-                                                          var  e = '<button  id="add" data-id="98" style="outline:none;width:30%" class="btn btn-xs btn-warning" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
-                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:30%" class="btn btn-xs btn-success" onclick="outStock(\'' + row.stockId + '\')">出库</button> ';
-                                                          var  f = '<button  id="add" data-id="100" style="outline:none;width:30%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
+                                                          var  c = '<button  id="add" data-id="98" style="outline:none;width:22%" class="btn btn-xs btn-info" onclick="infoStock(\'' + row.stockId + '\')">详情</button> ';
+                                                          var  e = '<button  id="add" data-id="98" style="outline:none;width:22%" class="btn btn-xs btn-success" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
+                                                          var  d = '<button  id="add" data-id="99" style="outline:none;width:22%" class="btn btn-xs btn-warning" onclick="outStock(\'' + row.stockId + '\')">出库</button> ';
+                                                          var  f = '<button  id="add" data-id="100" style="outline:none;width:22%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
 
-                                                          return  e + d + f;
+                                                          return  c + e + d + f;
                                                       });
 
         $("[name='inlineRadioOptions']").change(function() {
@@ -57,7 +58,7 @@ function tableLoad(myUrl,myFuc){
             {
                 title: '库存编号',
                 field: 'stockId',
-                width: 40,
+                width: 20,
                 align: 'center',
                 valign: 'middle'
             },
@@ -96,41 +97,41 @@ function tableLoad(myUrl,myFuc){
                 width: 70,
                 valign: 'middle'
             },
-            {
-                title: '设备型号',
-                field: 'deviceModel',
-                align: 'center',
-                width: 70,
-                valign: 'middle'
-            },
-            {
-                title: '设备品牌',
-                field: 'deviceBrand',
-                align: 'center',
-                width: 70,
-                valign: 'middle'
-            },
-            {
-                title: '批次',
-                field: 'stockBatch',
-                align: 'center',
-                width: 80,
-                valign: 'middle'
-            },
-            {
-                title: '领用人',
-                field: 'stockUser',
-                align: 'center',
-                width: 100,
-                valign: 'middle'
-            },
-            {
-                title: '生产时间',
-                field: 'deviceProducetime',
-                align: 'center',
-                width: 100,
-                valign: 'middle'
-            },
+//            {
+//                title: '设备型号',
+//                field: 'deviceModel',
+//                align: 'center',
+//                width: 70,
+//                valign: 'middle'
+//            },
+//            {
+//                title: '设备品牌',
+//                field: 'deviceBrand',
+//                align: 'center',
+//                width: 70,
+//                valign: 'middle'
+//            },
+//            {
+//                title: '批次',
+//                field: 'stockBatch',
+//                align: 'center',
+//                width: 80,
+//                valign: 'middle'
+//            },
+//            {
+//                title: '领用人',
+//                field: 'stockUser',
+//                align: 'center',
+//                width: 100,
+//                valign: 'middle'
+//            },
+//            {
+//                title: '生产时间',
+//                field: 'deviceProducetime',
+//                align: 'center',
+//                width: 100,
+//                valign: 'middle'
+//            },
             {
                 title: '入库时间',
                 field: 'stockIntime',
@@ -168,9 +169,16 @@ function tableLoad(myUrl,myFuc){
                     }
                 }
             },
+//            {
+//                title: '维修次数',
+//                field: 'deviceRepairnum',
+//                align: 'center',
+//                width: 40,
+//                valign: 'middle'
+//            },
             {
-                title: '维修次数',
-                field: 'deviceRepairnum',
+                title: '操作用户',
+                field: 'stockOperatorName',
                 align: 'center',
                 width: 40,
                 valign: 'middle'
@@ -226,6 +234,19 @@ function inStock(){
 
         }
     });
+}
+//库存详情页面
+function infoStock(stockId){
+
+    console.log(stockId);
+    layer.open({
+        type: 2,
+        title: '设备详情',
+        content: '/stockInfoPage/' + stockId,
+        shade:[0.8,'#393d49'],
+        area:['500px','350px'],
+    });
+
 }
 //库存设备编辑
 function editStock(stockId){
@@ -289,16 +310,24 @@ function outStock(stockId) {
 }
 //库存设备删除
 function deleteStock(stockId) {
-    $.ajax({
-        url: '/stockDelete/'+stockId,
-        type: 'post',
-        dataType: 'json',
-        success: function (str) {
 
-            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-            $("#table").bootstrapTable('refresh');
-        }
-    })
+    layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+        //do something
+        $.ajax({
+            url: '/stockDelete/'+stockId,
+            type: 'post',
+            dataType: 'json',
+            success: function (str) {
+
+                layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                $("#table").bootstrapTable('refresh');
+            }
+        })
+
+
+        layer.close(index);
+    });
+
 
 }
 
@@ -309,21 +338,27 @@ function makeList(curOptions,arg){
 
         $('#table').bootstrapTable('destroy');
         tableLoad(arg,function (cellval, row) {
-                        var  e = '<button  id="add" data-id="98" style="outline:none;width:30%" class="btn btn-xs btn-warning" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
-                        var  d = '<button  id="add" data-id="99" style="outline:none;width:30%" class="btn btn-xs btn-success" onclick="outStock(\'' + row.stockId + '\')">出库</button> ';
-                        var  f = '<button  id="add" data-id="100" style="outline:none;width:30%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
+            var  c = '<button  id="add" data-id="98" style="outline:none;width:22%" class="btn btn-xs btn-info" onclick="infoStock(\'' + row.stockId + '\')">详情</button> ';
+            var  e = '<button  id="add" data-id="98" style="outline:none;width:22%" class="btn btn-xs btn-success" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
+            var  d = '<button  id="add" data-id="99" style="outline:none;width:22%" class="btn btn-xs btn-warning" onclick="outStock(\'' + row.stockId + '\')">出库</button> ';
+            var  f = '<button  id="add" data-id="100" style="outline:none;width:22%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
 
-                        return  e + d + f;
+            return  c + e + d + f;
                       });
     } else if( curOptions == 1 ){//已出库
 
         $('#table').bootstrapTable('destroy');
         tableLoad(arg,function (cellval, row) {
-                          var  e = '<button  id="repair2" data-id="100" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
-                          var  d = '<button  id="repair2" data-id="100" style="outline:none;width:40%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
+                          var  c = '<button  id="add" data-id="98" style="outline:none;width:30%" class="btn btn-xs btn-info" onclick="infoStock(\'' + row.stockId + '\')">详情</button> ';
+                          var  e = '<button  id="repair2" data-id="100" style="outline:none;width:30%" class="btn btn-xs btn-success" onclick="editStock(\'' + row.stockId + '\')">编辑</button> ';
+                          var  d = '<button  id="repair2" data-id="100" style="outline:none;width:30%" class="btn btn-xs btn-danger" onclick="deleteStock(\'' + row.stockId + '\')">删除</button> ';
 
-                          return  e + d;
+                          return  c + e + d;
                       });
     }
+
+
+    //
 }
 
+//写一个抢票脚本

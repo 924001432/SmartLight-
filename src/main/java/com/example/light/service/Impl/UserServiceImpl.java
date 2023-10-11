@@ -109,5 +109,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.deleteById(userId);
     }
 
+    @Override
+    public Integer passwordEdit(Integer userId,String password){
+
+            QueryWrapper<User> wrapper = new QueryWrapper<>();
+            wrapper.eq("user_id",userId);
+
+            User user = new User();
+            user.setUserPassword(password);
+
+            return userMapper.update(user , wrapper);
+    }
+
 
 }

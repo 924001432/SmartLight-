@@ -19,6 +19,8 @@ public interface AreaService extends IService<Area> {
 
     public List<Area> areaList();
 
+    public List<Area> areaListByAreaLevel(Integer areaLevel);
+
     public List<Area> parentList(Integer areaLevel);
 
     public Integer areaAdd(Area area);

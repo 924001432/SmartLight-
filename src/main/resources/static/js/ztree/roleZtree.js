@@ -12,8 +12,6 @@ function getMenuTree() {
 		async : false,
 		success : function(data) {
 
-
-
 			var length = data.length;
 			var children = [];
 			for (var i = 0; i < length; i++) {

@@ -116,7 +116,7 @@ public class alarmLightController {
         //存在问题：页面转换数据时，替换原来的int型为string导致数据库存储出现问题
 
 
-        System.out.println(alarm.toString());
+//        System.out.println(alarm.toString());
 
         //将状态改为  “待维修”
 
@@ -137,7 +137,7 @@ public class alarmLightController {
     @ResponseBody
     public Object alarmListByArea(@PathVariable(name = "deviceCoord",required = true)String deviceCoord){
 
-        System.out.println("deviceCoord: " + deviceCoord);
+//        System.out.println("deviceCoord: " + deviceCoord);
 
         List<Alarm> alarmList = alarmService.alarmListByArea(deviceCoord);
 
@@ -154,7 +154,7 @@ public class alarmLightController {
     @ResponseBody
     public Object alarmListByalarmArea(@PathVariable(name = "deviceCoord",required = true)String deviceCoord, @PathVariable(name = "alarmStatus",required = true)Integer alarmStatus){
 
-        System.out.println("deviceCoord: " + deviceCoord);
+//        System.out.println("deviceCoord: " + deviceCoord);
 
         List<Alarm> alarmList = alarmService.alarmListByDeviceCoord(deviceCoord,alarmStatus);
 

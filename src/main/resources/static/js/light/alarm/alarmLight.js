@@ -1,6 +1,3 @@
-/**
- * Created by Administrator on 2017/6/12.
- */
 var currentID,zTree, rMenu;
 var timer;
 var isRefresh;
@@ -33,7 +30,7 @@ $(document).ready(function() {
 
     tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
         var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-        var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+        var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
         return  e + d;
     });
@@ -47,7 +44,7 @@ $(document).ready(function() {
 
                     tableLoad("/alarmListByalarmStatus/0", function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                         return e + d;
                     });
@@ -56,7 +53,7 @@ $(document).ready(function() {
                     myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                         return e + d;
                     });
@@ -65,41 +62,41 @@ $(document).ready(function() {
                     myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                         return e + d;
                     });
                 }
 
-            } else if( val == 1 ){
+            } else if( val == 1 ){//已消警
 
                 if(globalDeviceCoord === undefined && globalDeviceCoordList === undefined){
 
                     $('#table').bootstrapTable('destroy');
 
                     tableLoad("/alarmListByalarmStatus/1", function (cellval, row) {
-                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+//                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
-                        return e + d;
+                        return  d;
                     });
                 }else if(globalDeviceCoord !== undefined && globalDeviceCoordList === undefined){
                     $('#table').bootstrapTable('destroy');
                     myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
-                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+//                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
-                        return e + d;
+                        return  d;
                     });
                 }else if(globalDeviceCoord === undefined && globalDeviceCoordList !== undefined){
                     $('#table').bootstrapTable('destroy');
                     myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
-                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+//                        var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
-                        return e + d;
+                        return  d;
                     });
                 }
 
@@ -111,7 +108,7 @@ $(document).ready(function() {
 
                     tableLoad("/alarmListByalarmStatus/2", function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="cancelRepair(\'' + row.alarmId + '\')">撤销</button> ';
 
                         return e + d;
                     });
@@ -120,7 +117,7 @@ $(document).ready(function() {
                     myUrl = "alarmListByalarmArea/"+globalDeviceCoord+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="cancelRepair(\'' + row.alarmId + '\')">撤销</button> ';
 
                         return e + d;
                     });
@@ -129,7 +126,7 @@ $(document).ready(function() {
                     myUrl = "/alarmListByDeviceCoordList/"+globalDeviceCoordList+"/"+val;
                     tableLoad(myUrl, function (cellval, row) {
                         var e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                        var d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="cancelRepair(\'' + row.alarmId + '\')">撤销</button> ';
 
                         return e + d;
                     });
@@ -173,7 +170,7 @@ function tableLoad(myUrl,myFuc){
                 title: '设备编号',
                 field: 'deviceSerial',
                 align: 'center',
-                width: 100,
+                width: 50,
                 valign: 'middle'
             },
             {
@@ -222,7 +219,7 @@ function tableLoad(myUrl,myFuc){
                     if (cellval == 0){
                         return '<div  style="color:red"> 未处理 </div>';
                     } else  if (cellval == 1){
-                        return '<div  style="color:green"> 已处理 </div>';
+                        return '<div  style="color:green"> 待处理 </div>';
                     }else  if (cellval == 2){
                         return '<div  style="color:grey"> 已报修 </div>';
                     }else {
@@ -253,7 +250,7 @@ function tableLoad(myUrl,myFuc){
             {
                 title: '操作',
                 field: 'person',
-                width: 120,
+                width: 150,
                 align: 'center',
                 formatter: myFuc
             }
@@ -281,47 +278,22 @@ function removeAlarm(alarmId) {
     });
 }
 
-//未完成
-function repairAlarm(alarmId) {
-
-
-    $.ajax({
-        url: '/removeAlarm/'+alarmId,
-        type: 'post',
-        dataType: 'text',
-        success: function (result) {
-            $('#table').bootstrapTable('destroy');
-            tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
-                                                                      var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                                                                      var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
-
-                                                                      return  e + d;
-                                                                  });
-
-
-        }
-    })
-}
-
-
 //撤销报修操作，撤销之后的状态是什么呢
 function cancelRepair() {
-//    $.ajax({
-//        url: '/removeAlarm/'+alarmId,
-//        type: 'post',
-//        dataType: 'text',
-//        success: function (result) {
-//            $('#table').bootstrapTable('destroy');
-//            tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
-//                                                                      var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-//                                                                      var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
-//
-//                                                                      return  e + d;
-//                                                                  });
-//
-//
-//        }
-//    })
+    layer.confirm('确认撤销报修?', {icon: 3, title:'提示'}, function(index){
+    //do something
+    $.ajax({
+          url: '/cancelRepair/'+alarmId,
+          type: 'post',
+          dataType: 'text',
+          success: function (result) {
+                $("#table").bootstrapTable('refresh');
+          }
+      })
+
+
+    layer.close(index);
+    });
     console.log("cancel repair");
 }
 
@@ -450,11 +422,12 @@ function createNode(d) {
     var id = d['areaId'];
     var pId = d['parentId'];
     var name = d['areaName'];
+    var level = d['areaLevel'];
     var net = d['areaNet'];
     var child = d['child'];
 
     var node = {
-        open : true,
+        open : false,
         id : id,
         name : name,
         pId : pId,
@@ -558,7 +531,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
 
             tableLoad("/alarmListByalarmStatus/0",function (cellval, row) {
                 var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                 return  e + d;
             });
@@ -629,7 +602,7 @@ function alarmListByDeviceCoord(myUrl,deviceCoord,alarmStatus){
                 title: '设备编号',
                 field: 'deviceSerial',
                 align: 'center',
-                width: 100,
+                width: 50,
                 valign: 'middle'
             },
             {
@@ -678,7 +651,7 @@ function alarmListByDeviceCoord(myUrl,deviceCoord,alarmStatus){
                     if (cellval == 0){
                         return '<div  style="color:red"> 未处理 </div>';
                     } else  if (cellval == 1){
-                        return '<div  style="color:green"> 已处理 </div>';
+                        return '<div  style="color:green"> 待处理 </div>';
                     }else  if (cellval == 2){
                         return '<div  style="color:grey"> 已报修 </div>';
                     }else {
@@ -709,11 +682,11 @@ function alarmListByDeviceCoord(myUrl,deviceCoord,alarmStatus){
             {
                 title: '操作',
                 field: 'person',
-                width: 120,
+                width: 150,
                 align: 'center',
                 formatter: function (cellval, row) {
                     var  e = '<button  id="add" data-id="98" style="outline:none;width:40%" class="btn btn-xs btn-warning" onclick="removeAlarm(\'' + row.alarmId + '\')">消除警报</button> ';
-                    var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="dataLead(\'' + row.alarmId + '\')">报修</button> ';
+                    var  d = '<button  id="add" data-id="99" style="outline:none;width:40%" class="btn btn-xs btn-success" onclick="repairAlarm(\'' + row.alarmId + '\')">报修</button> ';
 
                     return  e + d;
                 }

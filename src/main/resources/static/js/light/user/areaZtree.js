@@ -1,13 +1,45 @@
-function getMenuTree() {
+var zTree, rMenu;
+var userArea=0;
+var userAreaName="";
+$(document).ready(function(){
+
+
+    //ajax——"/getArea"
+    $.ajax({
+        url: '/getUserArea',
+        type: 'GET',
+        dataType: 'json',
+        //开启同步可赋值
+        success: function (result) {
+
+            console.log(result);
+            userArea  = result.userArea ;//修改
+            userAreaName  = result.userAreaName ;//修改
+
+
+        }
+    })
+
+});
+//根据用户区域，用户区域名称，区域等级初始化树
+function initMenuTree(areaLevel) {
+    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree(userArea,userAreaName,areaLevel));
+    zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    rMenu = $("#rMenu");
+}
+
+function getMenuTree(userArea,userAreaName,areaLevel) {
 	var root = {
-		id : 0,
-		name : "所有区域",
+		id : userArea,
+		name : userAreaName,
 		open : true,
 	};
 
 	$.ajax({
 		type : 'get',
-		url : '/area/all',
+//		url : '/areaListByuserArea/'+userArea,
+        url : '/areaListByAreaLevel/'+userArea+ '/'+ areaLevel,
+//		url : '/area/all',
 		contentType : "application/json; charset=utf-8",
 		async : false,
 		success : function(data) {
@@ -98,6 +130,10 @@ function createNode(d) {
 			}
 
 			node.children = children;
+
+			if(node.level == 1){
+                node.open = false;
+            }
 		}
 
 	}

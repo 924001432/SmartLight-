@@ -57,6 +57,16 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
     }
 
     @Override
+    public List<Area> areaListByAreaLevel( Integer areaLevel ){
+        //查找小于等于areaLevel的所有区域
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.le("area_level",areaLevel);
+        return areaMapper.selectList(wrapper);
+
+
+    }
+
+    @Override
     public List<Area> parentList(Integer areaLevel){
         QueryWrapper<Area> wrapper = new QueryWrapper<>();
         wrapper.eq("area_level",areaLevel);

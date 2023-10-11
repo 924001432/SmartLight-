@@ -39,14 +39,14 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户电话：</label>
                     <div class="layui-input-block">
-                        <input type="text" id="userPhone" name="userPhone" th:value="${obj?.userPhone}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserPhone(this.value)">
+                        <input type="text" id="userPhone" name="userPhone" th:value="${obj?.userPhone}"   autocomplete="off" class="layui-input" onblur="checkUserPhone(this.value)">
                     </div>
                 </div>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户邮箱：</label>
                     <div class="layui-input-block">
-                        <input type="text" id="userEmail" name="userEmail" th:value="${obj?.userEmail}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)">
+                        <input type="text" id="userEmail" name="userEmail" th:value="${obj?.userEmail}"   autocomplete="off" class="layui-input" onblur="checkUserEmail(this.value)">
                     </div>
                 </div>
 
@@ -57,13 +57,15 @@
                     </div>
                 </div>
 
-                <input id="userArea" name="userArea" th:value="${obj?.userArea}" class="layui-input layui-hide"/>
-                <div class="layui-form-item">
+                <input id="userArea" name="userArea"  class="layui-input layui-hide"/>
+                <div class="layui-form-item" id="area">
                     <label class="layui-form-label">负责区域</label>
                     <div class="col-md-10">
                         <ul id="treeDemo" class="ztree" name="userArea1"  ></ul>
                     </div>
                 </div>
+
+
 
                 <div class="layui-form-item layui-hide">
                     <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
@@ -75,11 +77,13 @@
 <script th:src="@{/static/js/jquery/jQuery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
-<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
+
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/bootstrap/bootstrapValidator.min.js}"></script>
+
+<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
 <script>
 
     layui.use(['form','laydate'],function () {
@@ -89,6 +93,8 @@
 
             //获取角色列表，应该是不包括自身角色，首先获取自身角色，然后获取其他角色
             var userRoleLevel;
+            var userArea=0;
+            var userAreaName="";
             $.ajax({
                 url: '/getUser',
                 type: 'GET',
@@ -99,6 +105,8 @@
 
                         console.log(result);
                         userRoleLevel  = result.userRoleLevel ;//修改
+                        userArea  = result.userArea ;//修改
+                        userAreaName  = result.userAreaName ;//修改
 
 
                     }
@@ -139,17 +147,57 @@
                 }
             });
 
+            form.on('select(demo)', function(data){
+                var roleId = $("#userRole").val();
+                console.log(roleId); //得到被选中的值
+                //根据角色等级获取区域列表
+                $.ajax({
+                    url: '/queryRoleById/'+roleId,
+                    type: 'GET',
+                    dataType: 'json',
+                    //开启同步可赋值
+                    async:false,
+                    success: function (result) {
 
+                        console.log(result);
+                        roleLevel  = result.roleLevel ;//修改
+                        if(roleLevel <= 2){
+                            $("#area").hide();
+                        }else{
+                            $("#area").show();
+                            initMenuTree(roleLevel-2);//按照角色等级获取区域等级，然后减去2，就是区域树的等级
+                        }
+
+                    }
+                })
+
+            });
+
+            //初始化区域树
+            var id = $("#userArea").val();
+
+            var userArea = '[[${obj?.userArea}]]';
+            var userRole = '[[${obj?.userRole}]]';
+            $.ajax({
+                url: '/queryRoleById/'+userRole,
+                type: 'GET',
+                dataType: 'json',
+                //开启同步可赋值
+                async:false,
+                success: function (result) {
+
+                    console.log(result);
+                    roleLevel  = result.roleLevel ;//修改
+
+                    initMenuTree(roleLevel-2);//按照角色等级获取区域等级，然后减去2，就是区域树的等级
+
+
+                }
+            })
+
+            initMenuDatas(userArea);
         });
 
-
-        //构造区域目录树形结构
-        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
-
-        var id = $("#userArea").val();
-        console.log(id);
-
-        initMenuDatas(id);
 
         function add() {
             //保存用户信息的同时保存负责区域信息
@@ -159,20 +207,53 @@
             console.log("user:" + user.userArea);
 
 
+            if(user.userName == null || user.userName == "" || user.userArea == null || user.userArea == "" || user.userPassword == null || user.userPassword == ""){
 
-            $.ajax({
-				type : 'GET',
-				url : '/userEdit',
-				dataType: 'text',
-				data : user,
-				async: false,
-                success: function (str) {
-                    if(str.code === 0){
+                return;
+            }else{
+                roleLevel = getRoleLevel(user.userRole);
 
-                    }
-                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                user.userAreaLevel = getCheckedMenuIds()[1];
+
+                if((roleLevel-3) != user.userAreaLevel){//如果角色和区域不匹配
+
+                    $("#userArea").val(-1);
+
+                }else {//如果角色和区域匹配
+                    //设置关闭弹窗信息
+                    $("#userArea").val(0);
+                    $.ajax({
+                        type : 'GET',
+                        url : '/userEdit',
+                        dataType: 'text',
+                        data : user,
+                        async: false,
+                        success: function (str) {
+                            if(str.code === 0){
+
+                            }
+                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                        }
+                    });
                 }
-			});
+            }
+
+		}
+
+		function getRoleLevel(roleId){
+		    var roleLevel;
+		    $.ajax({
+                url: '/queryRoleById/'+roleId,
+                type: 'GET',
+                dataType: 'json',
+                //开启同步可赋值
+                async:false,
+                success: function (result) {
+                    roleLevel  = result.roleLevel;//修改
+                }
+            })
+            return roleLevel;
+
 		}
 
         //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
@@ -222,7 +303,7 @@
                             if(str == -1){//找到重复的
                                 layer.msg("用户名已被使用",{icon:5,anim:6});
                             }else{
-                                layer.msg("用户名合法",{icon:1,anim:4});
+                                layer.msg("用户名合法",{icon:6,anim:4});
                             }
 
                         }
@@ -233,7 +314,7 @@
                     console.log("userName == value");
 
                 }else if(!reg.test(value)){
-                    layer.msg("用户名不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("用户名不合法，请重新输入",{icon:2,anim:6});
                     document.getElementById("userName").focus();;
                 }
             }
@@ -256,7 +337,7 @@
                     layer.msg("密码合法",{icon:1,anim:4});
 
                 }else {
-                    layer.msg("密码不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("密码不合法，请重新输入",{icon:2,anim:6});
 <!--                    document.getElementById("userPassword").focus();;-->
                 }
             }
@@ -274,10 +355,10 @@
             }else {
                 if (reg.test(value)) {
 
-                    layer.msg("手机号码合法",{icon:1,anim:4});
+                    layer.msg("手机号码合法",{icon:6,anim:4});
 
                 }else {
-                    layer.msg("手机号码不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("手机号码不合法，请重新输入",{icon:2,anim:6});
                     document.getElementById("userPhone").focus();;
                 }
             }
@@ -297,10 +378,10 @@
             }else {
                 if (reg.test(value)) {
 
-                    layer.msg("邮箱合法",{icon:1,anim:4});
+                    layer.msg("邮箱合法",{icon:6,anim:4});
 
                 }else {
-                    layer.msg("邮箱不合法，请重新输入",{icon:5,anim:6});
+                    layer.msg("邮箱不合法，请重新输入",{icon:2,anim:6});
                     document.getElementById("userEmail").focus();;
                 }
             }

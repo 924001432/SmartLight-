@@ -33,6 +33,6 @@ public interface UserService extends IService<User> {
 
     public Integer userDelete(Integer userId);
 
-
+    public Integer passwordEdit(Integer userId,String password);
 
 }

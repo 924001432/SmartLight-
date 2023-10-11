@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.light.entity.Stock;
 import com.example.light.entity.SysLogs;
+import com.example.light.entity.User;
 import com.example.light.mapper.StockMapper;
 import com.example.light.mapper.SyslogsMapper;
 import com.example.light.service.StockService;
@@ -60,7 +61,7 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
     }
 
     @Override
-    public Integer stockOut(Integer stockId){
+    public Integer stockOut(Integer stockId, Integer stockOperator){
 
         QueryWrapper<Stock> wrapper = new QueryWrapper<>();
         wrapper.eq("stock_id",stockId);
@@ -90,6 +91,8 @@ public class StockServiceImpl extends ServiceImpl<StockMapper, Stock> implements
         //未出库的按照出库时间来查询
         QueryWrapper<Stock> wrapper = new QueryWrapper<>();
         wrapper.eq("stock_status",stockStatus).orderBy(true,true,"stock_intime");
+
+
 
         return stockMapper.selectList(wrapper);
     }

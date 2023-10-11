@@ -56,6 +56,11 @@ public class Stock implements Serializable {
     @TableField(value = "device_repairnum")
     private Integer deviceRepairnum;
 
+    @TableField(value = "stock_operator")
+    private Integer stockOperator;
+
+
+
 
 
 }
