@@ -16,7 +16,7 @@
 
 
                 <div class="layui-form-item">
-                    <label class="layui-form-label">用户名称：</label>
+                    <label class="layui-form-label">测试用户名称：</label>
                     <div class="layui-input-block">
                         <input type="text" id="userName" name="userName" th:value="${obj?.userName}" lay-verify="required"  autocomplete="off" class="layui-input" onblur="checkUserName(this.value)">
                     </div>
@@ -29,12 +29,12 @@
                     </div>
                 </div>
 
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">确认密码：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="userPassword1" name="userPassword1" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="layui-form-item">-->
+                <!--                    <label class="layui-form-label">确认密码：</label>-->
+                <!--                    <div class="layui-input-block">-->
+                <!--                        <input type="text" id="userPassword1" name="userPassword1" th:value="${obj?.userPassword}" lay-verify="required"  autocomplete="off" class="layui-input">-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户电话：</label>
@@ -57,7 +57,9 @@
                     </div>
                 </div>
 
-                <input id="userArea" name="userArea"  class="layui-input layui-hide"/>
+                <input id="userArea" name="userArea" class="layui-input layui-hide"/>
+                <input id="userAreaLevel" name="userAreaLevel" class="layui-input layui-hide"/>
+
                 <div class="layui-form-item" id="area">
                     <label class="layui-form-label">负责区域</label>
                     <div class="col-md-10">
@@ -68,7 +70,7 @@
 
 
                 <div class="layui-form-item layui-hide">
-                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" value="确认">
                 </div>
             </form>
         </div>
@@ -163,6 +165,8 @@
                         roleLevel  = result.roleLevel ;//修改
                         if(roleLevel <= 2){
                             $("#area").hide();
+                            $("#userArea").val(0);
+                            $("#userAreaLevel").val(0);
                         }else{
                             $("#area").show();
                             initMenuTree(roleLevel-2);//按照角色等级获取区域等级，然后减去2，就是区域树的等级
@@ -174,7 +178,7 @@
             });
 
             //初始化区域树
-            var id = $("#userArea").val();
+
 
             var userArea = '[[${obj?.userArea}]]';
             var userRole = '[[${obj?.userRole}]]';
@@ -196,49 +200,26 @@
             })
 
             initMenuDatas(userArea);
+            $("#userArea").val(getCheckedMenuIds()[0]);
+            $("#userAreaLevel").val(getCheckedMenuIds()[1]);
         });
 
+        function zTreeOnCheck(event, treeId, treeNode) {
+        //到达
+            var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+	        var nodes = treeObj.getCheckedNodes(true);
 
-        function add() {
-            //保存用户信息的同时保存负责区域信息
-
+            console.log("zTreeOnCheck");
             var user = $("#form").serializeObject();
-            user.userArea = getCheckedMenuIds();
-            console.log("user:" + user.userArea);
+
+            $("#userArea").val(getCheckedMenuIds()[0]);
+            $("#userAreaLevel").val(getCheckedMenuIds()[1]);
 
 
-            if(user.userName == null || user.userName == "" || user.userArea == null || user.userArea == "" || user.userPassword == null || user.userPassword == ""){
+        }
 
-                return;
-            }else{
-                roleLevel = getRoleLevel(user.userRole);
 
-                user.userAreaLevel = getCheckedMenuIds()[1];
 
-                if((roleLevel-3) != user.userAreaLevel){//如果角色和区域不匹配
-
-                    $("#userArea").val(-1);
-
-                }else {//如果角色和区域匹配
-                    //设置关闭弹窗信息
-                    $("#userArea").val(0);
-                    $.ajax({
-                        type : 'GET',
-                        url : '/userEdit',
-                        dataType: 'text',
-                        data : user,
-                        async: false,
-                        success: function (str) {
-                            if(str.code === 0){
-
-                            }
-                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                        }
-                    });
-                }
-            }
-
-		}
 
 		function getRoleLevel(roleId){
 		    var roleLevel;

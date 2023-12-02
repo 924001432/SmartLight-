@@ -27,5 +27,9 @@ public interface AreaService extends IService<Area> {
 
     public Integer areaEdit(Area area);
 
+    public Integer areaDelete(Integer areaId);
+
+    public Area queryAreaById(Integer areaId);
+
 
 }

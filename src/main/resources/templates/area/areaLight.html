@@ -9,29 +9,12 @@
     <link href="static/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
     <link href="static/css/table.css" rel="stylesheet" type="text/css" />
     <style>
-        div#rMenu {
-            position:absolute;
-            visibility:hidden;
-            top:0;
-            text-align: left;
-            padding:4px;
-            z-index:999;
-        }
-        div#rMenu a{
-            padding: 3px 15px 3px 15px;
-            background-color:#cad4e6;
-            vertical-align:middle;
-            text-decoration:none;
-        }
+
     </style>
 </head>
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;overflow: auto">
 <div class="news_main">
-    <div id="rMenu" style="display: none">
-        <a href="#" class="rMenuA" onclick="addNode();">增加</a>
-        <a href="#" class="rMenuA" onclick="delNode();">删除</a>
-        <a href="#" class="rMenuA" onclick="updNode();">修改</a>
-    </div>
+
     <div class="l_left news_left">
 
         <h6>区域目录</h6>
@@ -43,17 +26,7 @@
     </div>
     <div class="l_left news_right">
         <h5>区域管理</h5>
-<!--        <div class="notice_check">-->
-<!--&lt;!&ndash;                           查找功能，未实现                         &ndash;&gt;-->
-<!--&lt;!&ndash;              <p>&ndash;&gt;-->
 
-<!--&lt;!&ndash;                  <label>策略名称：</label><input type="text" class="find_input">&ndash;&gt;-->
-<!--&lt;!&ndash;                  <label>启用状态：</label><select class="find_input"></select>&ndash;&gt;-->
-<!--&lt;!&ndash;                  <button class="check_btn">查询</button>&ndash;&gt;-->
-<!--&lt;!&ndash;              </p>&ndash;&gt;-->
-
-
-<!--        </div>-->
         <div class="clear"></div>
 
 
@@ -141,6 +114,10 @@
             ]
         });
     });
+
+    function zTreeOnCheck(){
+
+    }
 
 
 

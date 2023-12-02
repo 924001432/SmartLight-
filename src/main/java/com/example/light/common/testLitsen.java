@@ -30,13 +30,13 @@ public class testLitsen {
         log.info("{} 接收到消息: {}", "1号", msg);
     }
 
-//    @JmsListener(destination = "newsTopic")
-//    public void receive2(byte[] message) {
-//
-//        System.out.println(new String(message));
-//
-//
-//    }
+    @JmsListener(destination = "DHT11")
+    public void receive2(byte[] message) {
+
+        System.out.println(new String(message));
+
+
+    }
 
     private String arrayToStr(int[] arr) {
         String res = "";

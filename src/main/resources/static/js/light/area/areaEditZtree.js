@@ -10,9 +10,10 @@ $(document).ready(function(){
         url: '/getUserArea',
         type: 'GET',
         dataType: 'json',
+
         //开启同步可赋值
         success: function (result) {
-
+            console.log(result);
 
             userArea  = result.userArea ;//修改
             userAreaName  = result.userAreaName ;//修改

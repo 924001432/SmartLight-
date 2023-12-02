@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -78,6 +79,7 @@ public class areaLightController {
 
         try {
             int i = areaService.areaEdit(area); // 调用具体的区域编辑逻辑
+//            int i = 1;
             return ResultMapUtil.getHashMapSave(i); // 返回编辑结果
         } catch (Exception e) {
             return ResultMapUtil.getHashMapException(e); // 返回异常信息
@@ -195,6 +197,47 @@ public class areaLightController {
     public Object areaList() {
 
         return areaService.areaList();
+
+    }
+
+    @RequestMapping("/queryAreaById/{areaId}")
+    @ResponseBody
+    public Area queryAreaById(@PathVariable(name = "areaId",required = true)Integer areaId) {
+
+        return areaService.queryAreaById(areaId);
+
+    }
+
+    /**
+     * 根据用户负责区域查询区
+     * @param areaId
+     * @return
+     */
+    @RequestMapping("/areaDelete/{areaId}")
+    @ResponseBody
+    public Object menuDelete(@PathVariable(name = "areaId",required = true)Integer areaId){
+
+        try{
+            int i = areaService.areaDelete(areaId);
+
+            if(i == -1){//存在子节点
+                HashMap<String,Object> resultMap = new HashMap<>();
+
+                resultMap.put("msg","该节点存在子节点，不能删除");
+                resultMap.put("code",1);
+                resultMap.put("icon",5);
+                resultMap.put("anim",6);
+                return resultMap;
+
+            }else {
+                return ResultMapUtil.getHashMapSave(i);
+            }
+
+
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+
 
     }
 }

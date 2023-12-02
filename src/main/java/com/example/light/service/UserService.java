@@ -23,6 +23,8 @@ public interface UserService extends IService<User> {
 
     public List<User> queryUserByuserArea(Integer userArea);
 
+    public List<User> queryUserByuserRoleId(Integer roleId);
+
     public User queryUserByNameAndPassword(String username,String password);
 
     public List<User> queryUserList();
