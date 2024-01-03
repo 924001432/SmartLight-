@@ -176,7 +176,14 @@
                         field: 'deviceType',
                         align: 'center',
                         width: 70,
-                        valign: 'middle'
+                        formatter: function (cellval, row) {
+                            if (cellval == 0){
+                                return '<div  style="color:teal"> 路灯 </div>';
+                            } else  if (cellval == 1){
+                                return '<div  style="color:gray"> 路由 </div>';
+                            }else {
+                                return '<div  style="color:gray"> 网关 </div>';;
+                            }}
                     },
 
                     {

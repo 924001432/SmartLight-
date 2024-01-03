@@ -4,6 +4,7 @@ package com.example.light.controller;
 import com.example.light.annotation.LogAnnotation;
 
 import com.example.light.entity.Area;
+import com.example.light.entity.User;
 import com.example.light.mapper.UserMapper;
 import com.example.light.mapper.testMapper;
 import com.example.light.mqtt.MyMqttClient;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,16 +63,7 @@ public class testController {
 
     MyMqttClient mqttClient;
 
-    public void mqttconnect(){
-        String serviceUrl = "tcp://127.0.0.1:1883";
-        String userName = "java";
-        String password = "java";
-        String clientId = "javaSubscribeId";
-        String msg = "";
 
-        mqttClient = new MyMqttClient(serviceUrl, userName, password, clientId);
-        mqttClient.init();
-    }
 
 
     @RequestMapping("/testString")
@@ -104,7 +97,7 @@ public class testController {
 
 
 
-    @RequestMapping("/testIndex")
+    @RequestMapping("/test")
     public Object testIndex(){
         return "/index";
     }
@@ -167,6 +160,34 @@ public class testController {
     @ApiOperation(value = "ceshirizhi")
     public void testLogs() {
         System.out.println("测试日志");
+    }
+
+    @RequestMapping("/testAllUserInfo")
+    public Object allUserInfo(){
+        return "/test/allUserInfo";
+    }
+
+    /**
+     * 新增用户信息页面
+     * @return
+     */
+    @RequestMapping("/testUserAddPage")
+    public Object userAddPage(){
+
+        return "/test/userAddPage";
+    }
+
+    /**
+     * 编辑用户信息页面
+     */
+    @RequestMapping("/testUserEditPage/{userId}")
+    public Object userEditPage(@PathVariable(name = "userId",required = true)Integer userId, Model model){
+
+        User user = userService.queryUserById(userId);
+        model.addAttribute("obj",user);
+
+
+        return "/test/userEditPage";
     }
 
 

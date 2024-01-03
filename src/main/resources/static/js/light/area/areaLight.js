@@ -93,7 +93,7 @@ function createNode(d) {
 	var child = d['child'];
 
 	var node = {
-		open : false,
+		open : true,
 		id : id,
 		name : name,
 		level : level,
@@ -114,25 +114,6 @@ function createNode(d) {
 
 	}
 	return node;
-}
-
-function initParentMenuSelect(areaLevel){
-	$.ajax({
-        type : 'get',
-        url : '/permissions/parents/' + areaLevel,
-        async : false,
-        success : function(data) {
-            var select = $("#parentId");
-            select.append("<option value='0'>root</option>");
-            for(var i=0; i<data.length; i++){
-                var d = data[i];
-                var id = d['areaId'];
-                var name = d['areaName'];
-
-                select.append("<option value='"+ id +"'>" +name+"</option>");
-            }
-        }
-    });
 }
 
 function getSettting() {
@@ -156,7 +137,7 @@ function getSettting() {
 			}
 		},
 		callback : {
-			onClick : zTreeOnCheck,
+			onClick : zTreeOnClick,
 //			onRightClick : zTreeOnRightClick
 		}
 	};
@@ -164,7 +145,7 @@ function getSettting() {
 	return setting;
 }
 
-function zTreeOnCheck(event, treeId, treeNode) {
+function zTreeOnClick(event, treeId, treeNode) {
 
     console.log(treeNode.id);
     console.log(treeNode.level);
@@ -241,7 +222,7 @@ function initAreaList(myUrl,areaId){
 
                         var  e = '<button  id="add" data-id="98" class="btn btn-xs btn-success" onclick="addArea('+row.areaId+','+row.areaLevel+')">添加子区域</button> ';
                         var  f = '<button  id="add" data-id="98" class="btn btn-xs btn-warning" onclick="editArea('+row.areaId+')">编辑</button> ';
-                        var  d = '<button  id="add" data-id="98" class="btn btn-xs btn-danger" >删除</button> ';
+                        var  d = '<button  id="add" data-id="98" class="btn btn-xs btn-danger" onclick="deleteArea('+row.areaId+','+row.areaLevel+')">删除</button> ';
                         return  e + f + d;
                     }
                 }
@@ -255,7 +236,7 @@ function initAreaList(myUrl,areaId){
 function addArea( areaId,areaLevel){
 
     console.log("areaId:"+areaId);
-    if(areaLevel >= 4){
+    if(areaLevel >= 5){
         layer.msg("已经是最小区域，无法添加",{icon:5,anim:6});
         initAreaList("/areaListByareaId/", areaId);
     }else{
@@ -285,14 +266,18 @@ function addArea( areaId,areaLevel){
                             if(str.code === 0){
                                 console.log(1111);
                             }
-                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
+                            layer.msg(str.msg,{icon:str.icon,time:2000,anim:str.anim},function () {
+                                layer.close(index);     //关闭弹层
+                                location.reload();
+                                $("#table").bootstrapTable('refresh');
+                            });
                         }
                     });
 
 
-                    layer.close(index);     //关闭弹层
-                    $("#table").bootstrapTable('refresh');
-                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+//                    layer.close(index);     //关闭弹层
+//                    $("#table").bootstrapTable('refresh');
+//                    $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
                 });
                 submit.trigger('click');
             },
@@ -321,35 +306,89 @@ function editArea( areaId ){
             var submit = layero.find('iframe').contents().find("#LAY-front-submit");
             //监听提交
             iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                //返回数据，操作数据
                 var field = data.field;
+                var state = false;//判断是否满足条件
 
                 console.log(field);
 
-//                $.ajax({
-//                    url: '/areaEdit',
-//                    data: field,
-//                    dataType:'json',
-//                    async: false,
-//                    cache: false,
-//                    success: function (str) {
-//                        if(str.code === 0){
-//                            console.log(1111);
-//                        }
-//                            layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-//                    }
-//                });
+                if(field.parentId == -1 || field.parentId == "" || field.parentId == null){//判断是否选择负责区域
+                    console.log("未选择");
+                    layer.msg("未选择负责区域信息",{icon:0,anim:6});
+
+                    state = false;
+                }else {//判断用户角色和负责区域是否匹配
+                    console.log("选择成功");
+                    state = true;
+                }
+
+                //如果匹配，关闭弹层，添加数据
+                if(state){
+                    //关闭弹层
 
 
-                layer.close(index);     //关闭弹层
-                $("#table").bootstrapTable('refresh');
-                $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    //添加数据
+                    $.ajax({
+                        url: '/areaEdit',
+                        type: 'GET',
+                        dataType: 'json',
+                        data:field,
+                        success: function (str) {
+
+                            layer.msg(str.msg,{icon:str.icon,time:2000,anim:str.anim},function () {
+                                layer.close(index);
+                                location.reload();
+                                $("#table").bootstrapTable('refresh');
+                            });
+                        }
+                    })
+
+
+
+                }
+
+
+
             });
             submit.trigger('click');
         },
         success:function (layero,index) {
-
+            //congratulation!
         }
     });
 
 }
 
+function deleteArea( areaId,areaLevel){
+    //根据区域id查询是否有子区域，如果有子区域，提示不能删除，如果没有，删除
+    console.log("areaId:"+areaId);
+    //删除逻辑：查询是否有子节点（parentId列有该节点的编号），如果有，则无法删除该节点，提示先删除所有子节点；如果无，则删除
+    layui.use('layer',function(){
+        layer = layui.layer;
+        layer.confirm('确认删除?', {icon: 3, title:'提示'}, function(index){
+            //do something
+            $.ajax({
+                url: '/areaDelete/'+areaId,
+                type: 'post',
+                dataType: 'json',//dataType为“text”会导致数据获取不到
+
+                async: false,
+                cache: false,
+                success: function (str) {
+
+                    console.log(str);
+                    var i = str.code;
+                    console.log(i);
+
+                    layer.msg(str.msg,{icon:str.icon,time:2000,anim:str.anim},function () { location.reload(); });
+
+                }
+            })
+
+        });
+
+    })
+
+
+
+}

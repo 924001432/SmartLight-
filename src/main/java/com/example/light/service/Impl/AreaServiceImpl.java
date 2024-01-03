@@ -11,10 +11,7 @@ import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements AreaService {
@@ -83,40 +80,34 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
         //找相同父节点中Rank最大的
         //@Select("select * from area a where a.parent_id = #{parentId} order by a.area_rank desc limit 1")
 //        Area maxRankArea = areaMapper.findMaxRankByparentId(area.getParentId());
-        Area maxRankArea;
-        if (area.getAreaLevel() == 5) {
-            maxRankArea = areaMapper.findMaxRankByareaLevel(area.getAreaLevel());
-        } else {
-            maxRankArea = areaMapper.findMaxRankByparentId(area.getParentId());
+        Area maxRankArea = areaMapper.findMaxRankByparentId(area.getParentId());
+
+        if(maxRankArea == null){
+            maxRank = 0;
+        }else {
+            maxRank =  maxRankArea.getAreaRank();
         }
 
         maxRank = (maxRankArea == null) ? 0 : maxRankArea.getAreaRank();
 
-        System.out.println(maxRank);
+        System.out.println("maxRank:" + maxRank);
         System.out.println("area.getAreaLevel():"+area.getAreaLevel());
 
         area.setAreaRank(maxRank+1);
-        parentRanks[area.getAreaLevel()-1] = maxRank+1;
+        parentRanks[area.getAreaLevel()-1] = maxRank+1;//获取当前节点的Rank列表，用于后面拼接
         //获取所有父节点的Rank，
 
-        System.out.println(area.getParentId());
-        findParentRanks(area.getParentId(),parentRanks);
+        System.out.println("area.getParentId():" + area.getParentId());//父节点ID
+        findParentRanks(area.getParentId(),parentRanks);//获取所有父节点的Rank，用于后面拼接
 
-        System.out.println(Arrays.toString(parentRanks));
+        System.out.println(Arrays.toString(parentRanks));//输出[1, 1, 1, 2, 0]
 
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < parentRanks.length; i++) {
 
-            if(i < 4){
-                String numStr = String.format("%02d", parentRanks[i]);
-                sb.append(numStr);
-
-            }else{//01010101----
-                String hexString = String.format("%04X", parentRanks[i]);
-                System.out.println(hexString);
-                sb.append(hexString);
-            }
+            String numStr = String.format("%02d", parentRanks[i]);
+            sb.append(numStr);
 
         }
 
@@ -128,16 +119,24 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
 
         System.out.println(area.toString());
 
-//        return areaMapper.insert(area);
-        return 0;
+        return areaMapper.insert(area);
+//        return 0;
 
     }
 
     @Override
     public Integer areaEdit(Area area){
 
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("area_id",area.getAreaId());
 
+        if(Objects.equals(areaMapper.selectOne(wrapper).getParentId(), area.getParentId())) {//如果父节点结构没有改变，不更新区域位次和区域序列号
 
+            return areaMapper.updateById(area);
+
+        }
+
+        //如果父节点结构改变，更新区域位次和区域序列号
         int[] parentRanks = new int[5];
         int maxRank ;
         //找相同父节点中Rank最大的
@@ -168,15 +167,9 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
 
             //判断到达道路级，构造四位十六进制数，插入序列，同时网络编号更新
 
-            if(i < 4){
-              String numStr = String.format("%02d", parentRanks[i]);
-                sb.append(numStr);
+            String numStr = String.format("%02d", parentRanks[i]);
+            sb.append(numStr);
 
-            }else{//01010101----
-                String hexString = String.format("%04X", parentRanks[i]);
-                System.out.println(hexString);
-
-            }
         }
 
         String result = sb.toString();
@@ -187,8 +180,7 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
 
         System.out.println(area.toString());
 
-        QueryWrapper<Area> wrapper = new QueryWrapper<>();
-        wrapper.eq("area_id",area.getAreaId());
+
 
         return areaMapper.update(area,wrapper);
 //        return 0;
@@ -231,6 +223,31 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
 
 
 
+    }
+
+    @Override
+    public Integer areaDelete(Integer areaId){
+
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",areaId);
+        Area area = areaMapper.selectOne(wrapper);
+
+        if(area != null){//已经有子节点
+            System.out.println(area.getAreaName());
+            return -1;
+        }else {
+            return areaMapper.deleteById(areaId);
+        }
+
+
+
+    }
+
+    @Override
+    public Area queryAreaById(Integer areaId) {
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("area_id",areaId);
+        return areaMapper.selectOne(wrapper);
     }
 
 

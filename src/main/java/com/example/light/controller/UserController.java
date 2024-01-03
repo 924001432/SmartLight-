@@ -57,6 +57,8 @@ public class UserController {
     @Autowired
     private ServerProperties serverProperties;
 
+
+
     /**
      * 登录
      * @return
@@ -66,14 +68,16 @@ public class UserController {
 
 //        Session session = SecurityUtils.getSubject().getSession();
 //        String username = (String) session.getAttribute("username");
-        User user = UserUtil.getCurrentUser();
-        System.out.println(user);
+//        User user = UserUtil.getCurrentUser();
+//        System.out.println(user);
+//
+//        if (user == null){
+//            return "/main/login";
+//        }else {
+//            return "/main/index";
+//        }
 
-        if (user == null){
-            return "/main/login";
-        }else {
-            return "/main/index";
-        }
+        return "/main/login";
 
     }
 
@@ -81,8 +85,8 @@ public class UserController {
      * 登录判断
      * @return
      */
-    @LogAnnotation
-    @ApiOperation(value = "用户登录")
+//    @LogAnnotation
+//    @ApiOperation(value = "用户登录")
     @RequestMapping("/LoginIn")
     @ResponseBody
     public Object LoginIn(String username,String password){
@@ -90,6 +94,9 @@ public class UserController {
         if(username==null||password==null){
             return ResultMapUtil.getHashMapLogin("用户名密码不能为空","2","");
         }
+
+
+
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username,password);
         try{
@@ -271,6 +278,7 @@ public class UserController {
     }
 
 
+
     /**
      * 退出登录
      */
@@ -279,7 +287,14 @@ public class UserController {
     @RequestMapping(value = "/Logout")
     public String Logout(){
         Subject subject = SecurityUtils.getSubject();
+
+
+
+
         subject.logout();
+
+
+
         return "redirect:/login";
 //        return "/Login";
     }
@@ -473,6 +488,16 @@ public class UserController {
         Integer userArea = curUser.getUserArea();
         //获取当前用户的角色级别
         Integer userRoleLevel = curUser.getUserRoleLevel();
+        //返回的用户集合
+        List<User> userList = new ArrayList<>();
+        //如果角色级别为1，即为超级管理员，将级别为2的用户也加入到集合中
+        if (userRoleLevel == 1){
+            //在角色表中查询角色级别为2的角色
+            List<User> users =  userService.queryUserByuserRoleId(roleService.queryRoleByRoleLevel(2).getRoleId());//获取角色级别为2的用户
+
+            userList.addAll(users);//将角色级别为2的用户加入到集合中
+
+        }
 
         List<Area> areaList = areaService.areaList();
 
@@ -480,19 +505,24 @@ public class UserController {
         //获取当前用户的区域下的所有区域
         setAreaList(userArea, areaList, matchingAreas);
 
-        List<User> userList = new ArrayList<>();
+
         //遍历，构造用户集合，包含了该区域下的所有用户，通过用户的角色编号来确定角色级别，把级别低的用户加入到集合中
         for (Area area : matchingAreas) {
 //            userList.addAll(userService.queryUserByuserArea(area.getAreaId()));
+            //获取该区域下的所有用户
             List<User> users = userService.queryUserByuserArea(area.getAreaId());
-
+            //遍历用户集合，把级别低的用户加入到集合中
             for (User user : users) {
+                //判断用户的角色级别是否低于当前用户的角色级别
                 if(roleService.queryRoleById( user.getUserRole() ).getRoleLevel() > userRoleLevel){
                     userList.add(user);
                 }
             }
 
         }
+
+
+
 
         if(type == -1){//默认全部列表，该列表包含了该区域下的所有用户，通过用户的角色编号来确定角色级别，把级别低的用户加入到集合中
 //            System.out.println("userList:" + userList);
@@ -558,7 +588,9 @@ public class UserController {
     public Object userEdit(User user){
 
         try{
+            System.out.println(user.toString());
             int i = userService.userEdit(user);
+//            int i = 1;
             return ResultMapUtil.getHashMapSave(i);
         } catch (Exception e){
             return ResultMapUtil.getHashMapException(e);

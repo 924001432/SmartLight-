@@ -20,7 +20,7 @@ public interface RoleService extends IService<Role> {
 
     public List<Role> queryRoleByName(String roleName);
 
-//    public Role queryRoleByRoleLevel(Integer roleId);
+    public Role queryRoleByRoleLevel(Integer roleLevel);
 
 
     public void updateRole(Role role, Integer roleId);

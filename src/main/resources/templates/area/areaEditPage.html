@@ -34,46 +34,15 @@
 
 
 
-                <input id="parentId" name="parentId" th:value="${obj?.parentId}" class="layui-input layui-hide"/>
-                <div class="layui-form-item">
+                <input id="parentId" name="parentId"  class="layui-input layui-hide"/>
+                <div id="zone" class="layui-form-item">
                     <label class="layui-form-label">上级区域：</label>
                     <div class="col-md-10">
                         <ul id="treeDemo" class="ztree" name="userArea1"  ></ul>
                     </div>
                 </div>
 
-<!--                <input name="parentId" th:value="${obj?.parentId}" class="layui-input layui-hide"/>-->
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">上级区域：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text"  name="parentName" th:value="${obj?.parentId}" lay-verify="required"  autocomplete="off" class="layui-input" disabled>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">区域级别：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="areaLevel" th:value="${obj?.areaLevel}"  lay-verify="required"  autocomplete="off" class="layui-input" disabled>-->
-
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">区域位次：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="areaRank" th:value="${obj?.areaRank}"  lay-verify="required"  autocomplete="off" class="layui-input" disabled>-->
-
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="layui-form-item" >-->
-<!--                    <label class="layui-form-label" style="padding: 8px 4px;">区域序列号：</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input type="text" id="areaSerial" th:value="${obj?.areaSerial}"  lay-verify="required"  autocomplete="off" class="layui-input" disabled>-->
-
-<!--                    </div>-->
-<!--                </div>-->
-                <input name="parentName" th:value="${parentName}" class="layui-input layui-hide"/>
+                <input id="areaLevel" name="areaLevel"  class="layui-input layui-hide"/>
 
                 <div class="layui-form-item">
                     <label class="layui-form-label">经度：</label>
@@ -96,7 +65,7 @@
 
 
                 <div class="layui-form-item layui-hide">
-                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit" onclick="add()" value="确认">
+                    <input type="button" lay-submit lay-filter="LAY-front-submit" id="LAY-front-submit"  value="确认">
                 </div>
             </form>
         </div>
@@ -105,7 +74,7 @@
 <script th:src="@{/static/js/jquery/jQuery-2.2.0.min.js}"></script>
 <script th:src="@{/static/js/bstable/js/bootstrap.min.js}"></script>
 <script th:src="@{/static/layui/layui.js}"></script>
-<script th:src="@{/static/js/light/user/areaZtree.js}"></script>
+<script th:src="@{/static/js/light/area/areaEditZtree.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.core-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.excheck-3.5.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/ztree/jquery.ztree.exedit-3.5.js}"></script>
@@ -117,44 +86,33 @@
             var laydate = layui.laydate;
             var form = layui.form;
 
+            //获取数据，填充
+            //
+            var areaLevel = '[[${obj?.areaLevel}]]';
+            //如果是省级，不显示上级区域
+            if(areaLevel == 1){
+<!--                $("#parentId").val(0);-->
+<!--                $("#areaLevel").val(1);-->
+                $("#zone").hide();
+            }else{
+                $("#zone").show();
+            }
+            //构造区域目录树形结构
+            initMenuTree(areaLevel-1);
+
+            var parentId = '[[${obj?.parentId}]]';//th:value="${obj?.parentId}"
+            console.log(parentId);
+
+            initMenuDatas(parentId);
+            //赋值
+            $("#parentId").val(getCheckedMenuIds()[0]);
+            $("#areaLevel").val(parseInt(getCheckedMenuIds()[1])+1);
+
         });
 
 
-        //构造区域目录树形结构
-        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
-
-        var parentId = $("#parentId").val();
-        console.log(parentId);
-
-        initMenuDatas(parentId);
-
-        function add() {
-            //保存用户信息的同时保存负责区域信息
-
-            var area = $("#form").serializeObject();
-            console.log(getCheckedMenuIds());
-            var temp = getCheckedMenuIds();//[父节点编号，父节点的级别]
-            area.parentId = temp[0];
-            area.areaLevel = temp[1]+1;//temp返回的是父节点的级别，所以加一
-<!--            user.userArea = getCheckedMenuIds();-->
-<!--            console.log("user:" + user.userArea);-->
 
 
-
-            $.ajax({
-				type : 'GET',
-				url : '/areaEdit',
-				dataType: 'json',
-				data : area,
-				async: false,
-                success: function (str) {
-                    if(str.code === 0){
-
-                    }
-                    layer.msg(str.msg,{icon:str.icon,anim:str.anim});
-                }
-			});
-		}
 
         //$("#postStatus").serializeObject is not a function 报错，引入该段代码解决
 		$.fn.serializeObject = function()
@@ -213,6 +171,21 @@
             }
         });
     });
+
+    function zTreeOnCheck(event, treeId, treeNode) {
+    //到达
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getCheckedNodes(true);
+
+        console.log("zTreeOnCheck");
+        var user = $("#form").serializeObject();
+
+        $("#parentId").val(getCheckedMenuIds()[0]);
+        $("#areaLevel").val(parseInt(getCheckedMenuIds()[1])+1);
+
+
+    }
+
     </script>
 </body>
 </html>

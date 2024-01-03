@@ -51,7 +51,7 @@ public class Monitor {
         //帧头帧尾检测，消息类型识别
         if(integers[0]==0x58 && integers[1]==0x44 && integers[integers.length-1]==0x23){
 
-            switch (integers[16]) {
+            switch (integers[20]) {
                 //路灯信息协议
                 case 0x02 : {     //协议类型
                     //可以改进
@@ -106,34 +106,40 @@ public class Monitor {
     //路灯信息处理方法
     public void infoProcess(String Messages){
 
-        //PanID
-        System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
-        //MAC地址
-        device.setDeviceMac(Messages.substring(8, 24));
+        System.out.println("get info message");
 
-        //短地址
-        String temp = Messages.substring(26, 28) + Messages.substring(24, 26);
-        device.setDeviceShort(temp);
+//        //PanID
+//        System.out.println(Messages.substring(6, 8) + Messages.substring(4, 6));
+//
+//        //区域编号
+//        System.out.println(Messages.substring(4, 26));
+//
+//        //MAC地址
+//        device.setDeviceMac(Messages.substring(26, 42));
+//
+//        //短地址
+//        String temp = Messages.substring(44, 46) + Messages.substring(42, 44);
+//        device.setDeviceShort(temp);
+//
+//        //序列号
+//        temp = Messages.substring(48, 50) + Messages.substring(46, 48);
+//        device.setDeviceSerial(temp);
+//
+//        //开灯状态,int型
+//        device.setDeviceLight(Integer.parseInt(Messages.substring(36, 38)));
+//
+//        Date date = new Date();
+//        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String update_time = sf.format(date);
+//
+//        device.setDeviceUpdatetime(update_time);
 
-        //序列号
-        temp = Messages.substring(30, 32) + Messages.substring(28, 30);
-        device.setDeviceSerial(temp);
-
-        //开灯状态,int型
-        device.setDeviceLight(Integer.parseInt(Messages.substring(36, 38)));
-
-        Date date = new Date();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String update_time = sf.format(date);
-
-        device.setDeviceUpdatetime(update_time);
-
-        deviceService.insertDevice(device);
+//        deviceService.insertDevice(device);
 
         //Java端对Zigbee端的应答消息
-        byte[] payload = {0x58, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xAA, 0x01, 0x02, 0x23};
-
-        newsProducerService.publishBytes(payload);
+//        byte[] payload = {0x58, 0x44, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xAA, 0x01, 0x02, 0x23};
+//
+//        newsProducerService.publishBytes(payload);
     }
 
     //报警处理方法
@@ -199,21 +205,22 @@ public class Monitor {
 
     public void heartProcess(String Messages){
         //PanID
-        System.out.println("PanID:" + Messages.substring(6, 8) + Messages.substring(4, 6));
-
-        //序列号
-        String temp = Messages.substring(30, 32) + Messages.substring(28, 30);
-        device.setDeviceSerial(temp);
-
-
-        Date date = new Date();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String heart_time = sf.format(date);
-
-        device.setDeviceHearttime(heart_time);
-
-        //获取心跳包的时间，写入数据库
-        deviceService.insertDevice(device);
+        System.out.println("get heart message");
+//        System.out.println("PanID:" + Messages.substring(6, 8) + Messages.substring(4, 6));
+//
+//        //序列号
+//        String temp = Messages.substring(30, 32) + Messages.substring(28, 30);
+//        device.setDeviceSerial(temp);
+//
+//
+//        Date date = new Date();
+//        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String heart_time = sf.format(date);
+//
+//        device.setDeviceHearttime(heart_time);
+//
+//        //获取心跳包的时间，写入数据库
+//        deviceService.insertDevice(device);
     }
 
 }

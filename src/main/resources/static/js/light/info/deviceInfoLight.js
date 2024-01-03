@@ -363,7 +363,15 @@ function deviceListByDeviceCoord(myUrl,deviceCoord){
                                 field: 'deviceType',
                                 align: 'center',
                                 width: 70,
-                                valign: 'middle'
+                                formatter: function (cellval, row) {
+                                    if (cellval == 0){
+                                        return '<div  "> 路灯 </div>';
+                                    } else  if (cellval == 1){
+                                        return '<div  "> 路由 </div>';
+                                    }else {
+                                        return '<div  "> 网关 </div>';;
+                                    }
+                                }
                             },
 
 

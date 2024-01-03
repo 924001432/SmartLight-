@@ -50,6 +50,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     }
 
     @Override
+    public Role queryRoleByRoleLevel(Integer roleLevel){
+        QueryWrapper<Role> wrapper = new QueryWrapper<>();
+        wrapper.eq("role_level",roleLevel);
+        return roleMapper.selectOne(wrapper);
+    }
+
+    @Override
     public void updateRole(Role role, Integer roleId){
 
         QueryWrapper<Role> wrapper = new QueryWrapper<>();

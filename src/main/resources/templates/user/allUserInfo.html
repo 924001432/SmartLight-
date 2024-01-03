@@ -23,20 +23,20 @@
 </head>
 <body style="background-color: #ecf0f5;font-family: 微软雅黑;color: #475059;min-width: 1000px;" >
 <div class="notice_main">
-    <h5>用户列表</h5>
+    <h5>测试用户列表</h5>
     <div style="border-bottom: 1px #ccc solid;padding-bottom: 8px">
         <p style="line-height: 24px;font-size: 14px;padding: 4px 0 0 36px ;color:#bb8940;background-image: url(static/img/ts_03.png);background-repeat: no-repeat;background-position: 10px 8px;font-weight: bold">温馨提示</p>
         <ul class="ts">
-            <li><span>*</span>该页面主要显示的是所有用户的信息</li>
+            <li><span>*</span>用户管理界面</li>
 
         </ul>
     </div>
-<!--                            查找功能，未实现！                         -->
+    <!--                            查找功能，未实现！                         -->
     <div class="notice_check">
         <label class="">用户名：</label> <input id="userName" type="text" class="find_input">
         <button class="check_btn" onclick="queryUserByUserName()">查询</button>
-<!--        <label class="">用户角色：</label> <input id="userRole" type="text" class="find_input">-->
-<!--        <button class="check_btn">查询</button>-->
+        <!--        <label class="">用户角色：</label> <input id="userRole" type="text" class="find_input">-->
+        <!--        <button class="check_btn">查询</button>-->
 
 
         <div class="notice_nav r_right paddingBotme">
@@ -74,7 +74,7 @@
 
                 }
         })
-
+        //初始化表格，未传参数，查询所有
         userList("/userListByuserArg/","-1&",-1);
 
     });
@@ -87,7 +87,7 @@
         //调用查询方法，判空
         if(e == ""){
             userList("/userListByuserArg/","-1&",-1);
-<!--            $('#table').bootstrapTable('refresh');-->
+
         }else{
             userList("/userListByuserArg/","1&", e );
 
@@ -239,8 +239,8 @@
         console.log(userId);
         layer.open({
             type: 2,
-            title: '编辑用户',
-            content: '/userEditPage/' + userId,
+            title: '测试编辑用户',
+            content: '/testUserEditPage/' + userId,
             shade:[0.8,'#393d49'],
             area:['500px','450px'],
             btn:['确定','取消'],
@@ -249,18 +249,49 @@
                 var submit = layero.find('iframe').contents().find("#LAY-front-submit");
                 //监听提交
                 iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {
+                    //返回数据，操作数据
                     var field = data.field;
+                    var state = false;//判断是否满足条件
 
-                    if(field.userArea == null || field.userArea == undefined || field.userArea == ""){
-                        layer.msg("请填写负责区域信息",{icon:1,anim:6});
+                    console.log(field);
+                    roleLevel = getRoleLevel(field.userRole);//获取用户角色等级
 
-                    }else if( field.userArea == -1){
-                        layer.msg("用户角色和负责区域不匹配",{icon:2,anim:6});
-                    }else{
-                        layer.close(index);     //关闭弹层
-                        $("#table").bootstrapTable('refresh');
-                        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    if(field.userAreaLevel == -1 || field.userAreaLevel == "" || field.userAreaLevel == null){//判断是否选择负责区域
+                        console.log("未选择");
+                        layer.msg("未选择负责区域信息",{icon:0,anim:6});
+
+                        state = false;
+                    }else if( parseInt(roleLevel-2) != parseInt(field.userAreaLevel) ){//判断用户角色和负责区域是否匹配
+                        console.log("不匹配");
+                        layer.msg("负责区域与用户角色不匹配",{icon:0,anim:6});
+                        state = false;
+                    }else if( parseInt(roleLevel-2) == parseInt(field.userAreaLevel) ){//判断用户角色和负责区域是否匹配
+                        console.log("匹配");
+                        state = true;
                     }
+
+                    //如果匹配，关闭弹层，添加数据
+                    if(state){
+                        //关闭弹层
+                        layer.close(index);
+
+                        //添加数据
+                        $.ajax({
+                            url: '/userEdit',
+                            type: 'GET',
+                            dataType: 'json',
+                            data:field,
+                            success: function (result) {
+                                $("#table").bootstrapTable('refresh');
+                            }
+                        })
+
+                        //$.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    }
+
+
+
+
 
                 });
                 submit.trigger('click');
@@ -294,8 +325,8 @@
     function addUser(){
         layer.open({
             type: 2,
-            title: '新增用户',
-            content: '/userAddPage',
+            title: '测试新增用户',
+            content: '/testUserAddPage',
             shade:[0.8,'#393d49'],
             area:['500px','450px'],
             btn:['确定','取消'],
@@ -305,18 +336,42 @@
                 //监听提交
                 iframeWindow.layui.form.on('submit(LAY-front-submit)',function (data) {//data接收到的是form表单的数据，是不包含额外数据的。
                     var field = data.field;
+                    var state = false;//判断是否满足条件
 
-                    console.log(field);
 
-                    if(field.userArea == null || field.userArea == undefined || field.userArea == ""){
-                        layer.msg("请填写负责区域信息",{icon:0,anim:6});
+                    roleLevel = getRoleLevel(field.userRole);//获取用户角色等级
 
-                    }else if( field.userArea == -1){
-                        layer.msg("用户角色和负责区域不匹配",{icon:2,anim:6});
-                    }else{
-                        layer.close(index);     //关闭弹层
-                        $("#table").bootstrapTable('refresh');
-                        $.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
+                    if(field.userAreaLevel == -1 || field.userAreaLevel == "" || field.userAreaLevel == null){//判断是否选择负责区域
+                        console.log("未选择");
+                        layer.msg("未选择负责区域信息",{icon:0,anim:6});
+
+                        state = false;
+                    }else if( parseInt(roleLevel-2) != parseInt(field.userAreaLevel) ){//判断用户角色和负责区域是否匹配
+                        console.log("不匹配");
+                        layer.msg("负责区域与用户角色不匹配",{icon:0,anim:6});
+                        state = false;
+                    }else if( parseInt(roleLevel-2) == parseInt(field.userAreaLevel) ){//判断用户角色和负责区域是否匹配
+                        console.log("匹配");
+                        state = true;
+                    }
+
+                    //如果匹配，关闭弹层，添加数据
+                    if(state){
+                        //关闭弹层
+                        layer.close(index);
+
+                        //添加数据
+                        $.ajax({
+                            url: '/userAdd',
+                            type: 'GET',
+                            dataType: 'json',
+                            data:field,
+                            success: function (result) {
+                                $("#table").bootstrapTable('refresh');
+                            }
+                        })
+
+                        //$.fn.zTree.init($("#treeDemo"), getSettting(), getMenuTree());
                     }
 
 
@@ -328,6 +383,22 @@
             }
         });
     }
+
+    function getRoleLevel(roleId){
+		    var roleLevel;
+		    $.ajax({
+                url: '/queryRoleById/'+roleId,
+                type: 'GET',
+                dataType: 'json',
+                //开启同步可赋值
+                async:false,
+                success: function (result) {
+                    roleLevel  = result.roleLevel;//修改
+                }
+            })
+            return roleLevel;
+
+		}
 
 
 
