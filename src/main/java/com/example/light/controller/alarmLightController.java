@@ -59,6 +59,14 @@ public class alarmLightController {
 
     }
 
+
+    @RequestMapping("/queryAlarmById/{alarmId}")
+    @ResponseBody
+    public Alarm queryAlarmById(@PathVariable(name = "alarmId",required = true)Integer alarmId){
+        Alarm alarm = alarmService.queryAlarmById(alarmId);
+        return alarm;
+    }
+
     /**
      * 查看某设备的未处理报警信息
      * @param deviceSerial

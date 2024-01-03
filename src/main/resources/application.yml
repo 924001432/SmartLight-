@@ -1,11 +1,12 @@
 server:
-  port: 80
+  port: 8081
+
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/light?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
-#    url: jdbc:mysql://8.130.142.11:3307/light?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/roadlight?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
+    #    url: jdbc:mysql://8.130.142.11:3307/light?useUnicode=true&characterEncoding=utf8&useSSL=true&serverTimezone=UTC
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
@@ -13,13 +14,16 @@ spring:
   mvc:
     static-path-pattern: /static/**
 
+
+
+
   thymeleaf:
     prefix: classpath:/templates
     cache: false
 
   activemq:
     broker-url: tcp://127.0.0.1:61616
-#    broker-url: tcp://8.130.142.11:61617
+    #    broker-url: tcp://8.130.142.11:61617
     user: admin
     password: admin
     pool:
@@ -31,3 +35,8 @@ spring:
   jms:
     pub-sub-domain: true
 
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+file-save-path:
+  D:\研究生学习\智能路灯\SmartLight-wx-new\src\main\resources\static\wx_img\

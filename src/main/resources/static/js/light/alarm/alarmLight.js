@@ -219,7 +219,7 @@ function tableLoad(myUrl,myFuc){
                     if (cellval == 0){
                         return '<div  style="color:red"> 未处理 </div>';
                     } else  if (cellval == 1){
-                        return '<div  style="color:green"> 待处理 </div>';
+                        return '<div  style="color:green"> 已处理 </div>';
                     }else  if (cellval == 2){
                         return '<div  style="color:grey"> 已报修 </div>';
                     }else {
@@ -651,7 +651,7 @@ function alarmListByDeviceCoord(myUrl,deviceCoord,alarmStatus){
                     if (cellval == 0){
                         return '<div  style="color:red"> 未处理 </div>';
                     } else  if (cellval == 1){
-                        return '<div  style="color:green"> 待处理 </div>';
+                        return '<div  style="color:green"> 已处理 </div>';
                     }else  if (cellval == 2){
                         return '<div  style="color:grey"> 已报修 </div>';
                     }else {

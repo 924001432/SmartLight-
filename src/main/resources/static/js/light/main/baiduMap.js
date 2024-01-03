@@ -15,6 +15,7 @@ var DeviceCoordList = undefined;
 var marker = undefined;
 var label = undefined;
 var pathName = undefined;
+var markerClusterer = undefined;
 $(document).ready(function(){
     var userArea=0;
     var userAreaName="";
@@ -53,6 +54,33 @@ $(document).ready(function(){
                 success: function(response) {
                     // 成功获取数据后，更新指定位置的内容
                     $('#total').text("总数: "+response.data.length); // 将获取的数据写入到id为total的元素中
+                    var markers = [];
+                    var devices = response.data;
+                    for(let i = 0; i < devices.length; i++){
+                        $.ajax({
+                            url: '/alarmListBydeviceSerial/' + devices[i].deviceSerial, // 替换成你的后台接口地址
+                            type: 'GET',
+                            success: function (response) {
+                                // 根据设备状态创建不同的图标
+                                var icon;
+                                if (response.data.length > 0) {
+                                    icon = new BMap.Icon("../../../static/img/guzhang.svg", new BMap.Size(40, 40));
+                                } else {
+                                    if (devices[i].deviceStatus === 1) {
+                                        icon = new BMap.Icon("../../../static/img/zaixian.svg", new BMap.Size(40, 40));
+                                    } else if (devices[i].deviceStatus === 0) {
+                                        icon = new BMap.Icon("../../../static/img/lixian.svg", new BMap.Size(40, 40));
+                                    }
+                                }
+                                var pt = new BMap.Point( devices[i].deviceLon, devices[i].deviceLat);
+                                markers.push(new BMap.Marker(pt, {icon: icon}));
+                                if(markers.length === devices.length){//控制在所有请求得到结果后再渲染点聚合
+                                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+                                }
+                            }
+                        })
+                    }
+
                     $.ajax({
                         url: '/deviceListByIsOnlineList/'+deviceCoordList, // 替换成你的后台接口地址
                         type: 'GET',
@@ -766,11 +794,24 @@ function listUp(){
 }
 
 function getMenuTree(userArea,userAreaName) {
-    var root = {
-        id : userArea,
-        name : userAreaName,//变量，如何赋值
-        open : true,
-    };
+    var root;
+    $.ajax({
+        type : 'get',
+        url : '/queryAreaById/'+userArea,
+        contentType : "application/json; charset=utf-8",
+        async : false,
+        success : function(data) {
+            root = {
+                id : userArea,
+                name : userAreaName,//变量，如何赋值
+                open : true,
+                lon: data.areaLon,
+                lat: data.areaLat
+            };
+        }
+    });
+
+
 
     $.ajax({
         type : 'get',
@@ -932,6 +973,9 @@ function zTreeOnCheck(event, treeId, treeNode) {
             map.removeOverlay(allOverlays[i]);
         }
     }
+    if(markerClusterer !== undefined) {
+        markerClusterer.clearMarkers();
+    }
     var parentNodes = getPath(treeNode);
     var pathNames = [];
     // 打印所有父节点的id和name
@@ -942,14 +986,14 @@ function zTreeOnCheck(event, treeId, treeNode) {
         pathNames.push(parentNodes[i].name);
     }
     pathNames.push(treeNode.name);
-    var pathLen = pathNames.length;
     var pathName = pathNames.join("");
     console.log(pathName);
     // 在地图上标记该地点
     var longitude = treeNode.lon;
     var latitude = treeNode.lat;
     var newPoint = new BMap.Point(longitude, latitude);
-    zoomLevel = getZoomLevelByPathLen(pathLen);
+    zoomLevel = getZoomLevelByName(treeNode.name);
+    console.log(treeNode.name,':',zoomLevel);
     map.centerAndZoom(newPoint, zoomLevel);
     // 创建标注物
     marker = new BMap.Marker(newPoint);
@@ -965,7 +1009,9 @@ function zTreeOnCheck(event, treeId, treeNode) {
     latitude = parseFloat(latitude);
     var location_id = longitude.toFixed(2)+","+latitude.toFixed(2);
     console.log(location_id);
-    getWeather(pathName,location_id);
+    if(treeNode.name !== '所有区域'){
+        getWeather(pathName,location_id);
+    }
 
 
     if(!treeNode.isParent){//到达最底层，路段信息
@@ -980,6 +1026,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
                 ////以下为正确代码
                 deviceList = response.data;
                 console.log(deviceList);
+                var bPoints = new Array();
                 $.each(deviceList, function(index, device) {
                     var longitude = device.deviceLon;
                     var latitude = device.deviceLat;
@@ -1003,6 +1050,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
                     selectOptions += '</select><br>';
                     // 创建设备的经纬度位置对象
                     var point = new BMap.Point(longitude, latitude);
+                    bPoints.push(point);
                     $.ajax({
                         url: '/alarmListBydeviceSerial/'+device.deviceSerial, // 替换成你的后台接口地址
                         type: 'GET',
@@ -1037,8 +1085,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
                                         '<label>网络地址:</label><input id="deviceShort" type="text" value="' + device.deviceShort + '">' +
                                         '<label>设备标签:</label><input id="deviceSerial" type="text" value="' + device.deviceSerial + '">' +
                                         '<label>网关编号:</label><input id="deviceCoord" type="text" value="' + device.deviceCoord + '"><br>' +
-                                        selectOptions
-                                        +
+                                        selectOptions +
                                         '<label>设备类型:</label><input id="deviceType" type="text" value="' + device.deviceType + '"><br>' +
                                         '<label>经度:</label><input id="deviceLongitude" type="text" value="' + device.deviceLon + '">' +
                                         '<label>纬度:</label><input id="deviceLatitude" type="text" value="' + device.deviceLat + '"><br>' +
@@ -1060,6 +1107,9 @@ function zTreeOnCheck(event, treeId, treeNode) {
                     });
 
                 });
+                setTimeout(function () {
+                    setZoom(bPoints);
+                }, 100)
 
                 $.ajax({
                     url: '/deviceListByIsOnline/'+DeviceCoord, // 替换成你的后台接口地址
@@ -1106,11 +1156,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
 
     } else {//父节点
 
-        if( treeNode.id == 0 ){   //最高级别区域，仍显示默认内容
 
-            deviceListByDeviceCoord("/deviceList","");
-
-        } else {
 
             var childNodes = zTree.transformToArray(treeNode);
             var deviceCoordList = new Array();
@@ -1124,6 +1170,32 @@ function zTreeOnCheck(event, treeId, treeNode) {
                 success: function(response) {
                     // 成功获取数据后，更新指定位置的内容
                     $('#total').text("总数: "+response.data.length); // 将获取的数据写入到id为total的元素中
+                    var markers = [];
+                    var devices = response.data;
+                    for(let i = 0; i < devices.length; i++){
+                        $.ajax({
+                            url: '/alarmListBydeviceSerial/' + devices[i].deviceSerial, // 替换成你的后台接口地址
+                            type: 'GET',
+                            success: function (response) {
+                                // 根据设备状态创建不同的图标
+                                var icon;
+                                if (response.data.length > 0) {
+                                    icon = new BMap.Icon("../../../static/img/guzhang.svg", new BMap.Size(40, 40));
+                                } else {
+                                    if (devices[i].deviceStatus === 1) {
+                                        icon = new BMap.Icon("../../../static/img/zaixian.svg", new BMap.Size(40, 40));
+                                    } else if (devices[i].deviceStatus === 0) {
+                                        icon = new BMap.Icon("../../../static/img/lixian.svg", new BMap.Size(40, 40));
+                                    }
+                                }
+                                var pt = new BMap.Point( devices[i].deviceLon, devices[i].deviceLat);
+                                markers.push(new BMap.Marker(pt, {icon: icon}));
+                                if(markers.length === devices.length){//控制在所有请求得到结果后再渲染点聚合
+                                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+                                }
+                            }
+                        })
+                    }
                     $.ajax({
                         url: '/deviceListByIsOnlineList/'+deviceCoordList, // 替换成你的后台接口地址
                         type: 'GET',
@@ -1177,7 +1249,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
                 }
             });
 
-        }
+
 
     }
     isCover = 1;
@@ -1195,15 +1267,19 @@ function getPath(treeNode) {
 }
 
 
-function getZoomLevelByPathLen(pathLen) {
+function getZoomLevelByName(areaName) {
     var zoomLevel;
-    if (pathLen === 1) {
+    if (areaName === '所有区域'){
+        zoomLevel = 5;//所有区域
+    }else if (areaName.includes('省')) {
         zoomLevel = 7; // 省级别的缩放级别
-    } else if (pathLen === 2) {
+    } else if (areaName.includes('市')) {
         zoomLevel = 12; // 城市级别的缩放级别
-    } else if (pathLen === 3){
+    } else if (areaName.includes('区') || areaName.includes('县')){
         zoomLevel = 13; // 区县的缩放级别
-    } else if (pathLen === 4){
+    } else if (areaName.includes('乡') || areaName.includes('镇')){
+        zoomLevel = 15; // 乡镇
+    } else if (areaName.includes('路') || areaName.includes('街')){
         zoomLevel = 18; //街道
     }
     return zoomLevel;
@@ -1368,6 +1444,13 @@ function deviceListByDeviceCoord(myUrl,deviceCoord){
         ]
     });
 
+}
+//根据标记点自动设置缩放比例
+function setZoom(bPoints) {
+    var view = map.getViewport(eval(bPoints));
+    var mapZoom = view.zoom;
+    var centerPoint = view.center;
+    map.centerAndZoom(centerPoint, mapZoom);
 }
 
 // 修改设备数据方法

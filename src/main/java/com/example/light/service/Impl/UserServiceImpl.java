@@ -1,6 +1,7 @@
 package com.example.light.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.light.entity.User;
 import com.example.light.mapper.UserMapper;
@@ -119,6 +120,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setUserPassword(password);
 
             return userMapper.update(user , wrapper);
+    }
+
+    @Override
+    public Integer wxBindUser(Integer userId, String openId) {
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        wrapper.eq("user_id", userId).
+                set("user_wx_id", openId);
+        return userMapper.update(null, wrapper);
+    }
+
+    @Override
+    public Integer wxUnbindUser(Integer userId) {
+        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
+        wrapper.eq("user_id", userId).
+                set("user_wx_id", null);
+        return userMapper.update(null, wrapper);
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        return userMapper.selectList(wrapper);
     }
 
 

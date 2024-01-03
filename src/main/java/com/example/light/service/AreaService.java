@@ -28,4 +28,6 @@ public interface AreaService extends IService<Area> {
     public Integer areaEdit(Area area);
 
 
+    Area queryAreaById(Integer areaId);
+    Area queryAreaByName(String areaName);
 }

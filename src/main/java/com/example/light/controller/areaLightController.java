@@ -187,9 +187,6 @@ public class areaLightController {
 
     }
 
-
-
-
     @RequestMapping("/areaList")
     @ResponseBody
     public Object areaList() {
@@ -197,4 +194,13 @@ public class areaLightController {
         return areaService.areaList();
 
     }
+
+    @RequestMapping("/queryAreaById/{areaId}")
+    @ResponseBody
+    public Area queryAreaById(@PathVariable(name = "areaId",required = true)Integer areaId) {
+
+        return areaService.queryAreaById(areaId);
+
+    }
+
 }

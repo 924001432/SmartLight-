@@ -195,6 +195,20 @@ public class AreaServiceImpl extends ServiceImpl<AreaMapper, Area> implements Ar
 
     }
 
+    @Override
+    public Area queryAreaById(Integer areaId) {
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("area_id",areaId);
+        return areaMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public Area queryAreaByName(String areaName) {
+        QueryWrapper<Area> wrapper = new QueryWrapper<>();
+        wrapper.eq("area_name",areaName);
+        return areaMapper.selectOne(wrapper);
+    }
+
     public void findParentRanks(Integer parentId,int[] parentRanks){
 
 //        int[] parentRanks = new int[5];

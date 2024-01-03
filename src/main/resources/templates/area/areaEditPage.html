@@ -183,7 +183,7 @@
         var parentName = $('input[name="parentName"]').val();
         var pathName = parentName + areaName;
         console.log("经纬度请求获取："+pathName);
-        var apiUrl = "http://api.map.baidu.com/geocoding/v3/";
+        var apiUrl = "https://api.map.baidu.com/geocoding/v3/";
         var apiKey = "iduvzqDgfsZnhN1vi9HqaIbFgFqY84sT"
         var requestUrl = apiUrl + "?address=" + encodeURIComponent(pathName) + "&output=json&ak=" + apiKey;
         // 发送JSONP请求

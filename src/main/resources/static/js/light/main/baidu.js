@@ -7,7 +7,7 @@ var map = new BMap.Map("allmap");
 
 /**-----------------------------设置中心点坐标和地图级别----------------------- */
 //map.centerAndZoom(new BMap.Point(120.38946 , 36.07223), 12);
-map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+map.centerAndZoom(new BMap.Point(116.404, 39.915), 3);
 
 /**-----------------------------开启鼠标滚轮缩放----------------------- */
 map.enableScrollWheelZoom(true);

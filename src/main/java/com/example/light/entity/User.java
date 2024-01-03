@@ -46,7 +46,8 @@ public class User implements Serializable {
     @TableField(value = "user_updatetime")
     private String userUpdatetime;
 
-
+    @TableField(value = "user_wx_id")
+    private String userwxId;
 
 
 

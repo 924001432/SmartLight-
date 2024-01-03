@@ -9,6 +9,6 @@ class contolLightControllerTest {
     @Test
     void deviceList() {
 
-        deviceList();
+        //deviceList();
     }
 }

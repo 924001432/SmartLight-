@@ -37,6 +37,7 @@ public class ShiroFilterConfiguration {
         filterMap.put("/Login","anon");
         filterMap.put("/LoginIn","anon");
         filterMap.put("/LoginByWxAccount","anon");
+        filterMap.put("/wxLogin/**","anon");
         filterMap.put("/**","authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
         //不登录自动转向的页面

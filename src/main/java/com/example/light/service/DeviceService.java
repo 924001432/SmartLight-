@@ -24,5 +24,5 @@ public interface DeviceService extends IService<Device> {
 
     public List<Device> deviceListByIsNotOnline(String deviceCoord);
 
-
+    Device queryDeviceBySerial(String deviceSerial);
 }

@@ -1,6 +1,7 @@
 package com.example.light.controller;
 
 import com.example.light.annotation.LogAnnotation;
+import com.example.light.entity.Alarm;
 import com.example.light.entity.Device;
 import com.example.light.mqtt.MyMqttClient;
 import com.example.light.service.DeviceService;
@@ -332,4 +333,13 @@ public class contolLightController {
         System.out.println("设备数据已成功更新");
         return ResultMapUtil.getHashMapSave(1);
     }
+
+    @RequestMapping("/queryDeviceBySerial/{deviceSerial}")
+    @ResponseBody
+    public Device queryDeviceBySerial(@PathVariable(name = "deviceSerial",required = true)String deviceSerial){
+        Device device = deviceService.queryDeviceBySerial(deviceSerial);
+        return device;
+    }
+
+
 }
