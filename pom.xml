@@ -59,6 +59,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.30</version>
 			<scope>runtime</scope>
 		</dependency>
 		<!--数据库连接池-->
@@ -106,6 +107,7 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.2.49</version>
 		</dependency>
+
 
 		<!--AMQP依赖，包含RabbitMQ-->
 <!--		<dependency>-->
@@ -205,6 +207,14 @@
 <!--			<artifactId>javax.jms-api</artifactId>-->
 <!--			<version>2.0.1</version>-->
 <!--		</dependency>-->
+
+
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+
 
 
 	</dependencies>

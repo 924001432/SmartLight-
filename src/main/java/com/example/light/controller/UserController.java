@@ -1,9 +1,11 @@
 package com.example.light.controller;
 
+import com.alibaba.excel.util.StringUtils;
 import com.example.light.annotation.LogAnnotation;
 import com.example.light.common.ResultMapUtil;
 import com.example.light.common.UserUtil;
 import com.example.light.dto.curUserDto;
+import com.example.light.dto.handleResultDto;
 import com.example.light.entity.Area;
 import com.example.light.entity.Role;
 import com.example.light.entity.User;
@@ -11,27 +13,31 @@ import com.example.light.mapper.UserMapper;
 import com.example.light.service.AreaService;
 import com.example.light.service.RoleService;
 import com.example.light.service.UserService;
-import com.google.common.collect.Lists;
-import com.sun.org.apache.xpath.internal.operations.Mod;
+
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.example.light.common.UserUtil.getSession;
 
 @Controller
 public class UserController {
@@ -86,7 +92,7 @@ public class UserController {
     public Object LoginIn(String username,String password){
 
         if(username==null||password==null){
-            return ResultMapUtil.getHashMapLogin("用户名密码不能为空","2");
+            return ResultMapUtil.getHashMapLogin("用户名密码不能为空","2","");
         }
 
 
@@ -98,13 +104,13 @@ public class UserController {
             //设置session会话过期时间
 //            SecurityUtils.getSubject().getSession().setTimeout(serverProperties.getServlet().getSession().getTimeout().toMillis());
         }catch (UnknownAccountException e){
-            return ResultMapUtil.getHashMapLogin("用户名不存在","2");
+            return ResultMapUtil.getHashMapLogin("用户名不存在","2","");
         }catch (IncorrectCredentialsException e){
-            return ResultMapUtil.getHashMapLogin("密码错误","2");
+            return ResultMapUtil.getHashMapLogin("密码错误","2","");
         }
 
 
-        return ResultMapUtil.getHashMapLogin("验证成功","1");
+        return ResultMapUtil.getHashMapLogin("验证成功","1","");
 
     }
 
@@ -113,31 +119,144 @@ public class UserController {
      * 微信登录
      * @return
      */
-    @RequestMapping("/LoginByWxAccount")
+    @PostMapping("/LoginByWxAccount")
     @ResponseBody
-    public Object LoginByWxAccount(@RequestBody HashMap<String,String> map){
-
-        String username = map.get("username") ;
+    public Object LoginByWxAccount(@RequestBody HashMap<String, String> map){
+        String username = map.get("username");
         String password = map.get("password");
-
-        if(username==null||password==null){
-            return ResultMapUtil.getHashMapLogin("用户名密码不能为空","2");
-        }
+        System.out.println("即将登录用户为:"+username+", "+password);
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+        System.out.println(token);
         try{
             subject.login(token);
 
         }catch (UnknownAccountException e){
-            return ResultMapUtil.getHashMapLogin("用户名不存在","2");
+            return ResultMapUtil.getHashMapLogin("用户名不存在","2","");
         }catch (IncorrectCredentialsException e){
-            return ResultMapUtil.getHashMapLogin("密码错误","2");
+            return ResultMapUtil.getHashMapLogin("密码错误","2","");
         }
 
-
-        return ResultMapUtil.getHashMapLogin("验证成功","1");
+        String sessionId = (String) getSession().getId();
+        return ResultMapUtil.getHashMapLogin("验证成功","1",sessionId);
 
     }
+
+    /**
+     * 微信账号绑定
+     * @param appid
+     * @param code
+     * @param userId
+     * @return
+     */
+    @RequestMapping ("/wxBind/{appid}/{code}/{userId}")
+    @ResponseBody
+    public Object wxBind(@PathVariable(name = "appid",required = true)String appid, @PathVariable(name = "code",required = true)String code, @PathVariable(name = "userId",required = true)Integer userId) {
+        if (StringUtils.isBlank(code)) {
+            return "empty jscode";
+        }
+        String url = "https://api.weixin.qq.com/sns/jscode2session";
+        String grantType = "authorization_code";
+
+        // 构造请求参数
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // 发送POST请求
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                url + "?appid=" + appid + "&secret=5ca584e3aecd7bb36242d6cd6dcf027a"  + "&js_code=" + code + "&grant_type=" + grantType,
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
+
+
+        String responseBody = response.getBody();
+        JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+        String openId = jsonObject.get("openid").getAsString();
+
+
+
+        try{
+            int i = userService.wxBindUser(userId, openId);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+    }
+
+    /**
+     * 解绑微信
+     * @param userId
+     * @return
+     */
+    @RequestMapping ("/wxUnbind/{userId}")
+    @ResponseBody
+    public Object wxUnbind( @PathVariable(name = "userId",required = true)Integer userId) {
+
+        try{
+            int i = userService.wxUnbindUser(userId);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
+    }
+
+    /**
+     * 微信账号登录
+     * @param code
+     * @return
+     */
+    @RequestMapping ("/wxLogin/{code}")
+    @ResponseBody
+    public Object wxLogin(@PathVariable(name = "code",required = true)String code) {
+
+        String url = "https://api.weixin.qq.com/sns/jscode2session";
+        String grantType = "authorization_code";
+
+        // 构造请求参数
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        // 发送POST请求
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(
+                url + "?appid=wx3287ca8f13d9679a" + "&secret=5ca584e3aecd7bb36242d6cd6dcf027a"  + "&js_code=" + code + "&grant_type=" + grantType,
+                HttpMethod.POST,
+                entity,
+                String.class
+        );
+
+
+        String responseBody = response.getBody();
+        JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
+        String openId = jsonObject.get("openid").getAsString();
+        System.out.println(openId);
+        String session_key = jsonObject.get("session_key").getAsString();
+
+        List<User> userList = userService.getAllUser();
+        System.out.println(userList);
+        for(User user : userList){
+            if(user.getUserwxId() != null) {
+                if (user.getUserwxId().equals(openId)) {
+
+                    Subject subject = SecurityUtils.getSubject();
+                    UsernamePasswordToken token = new UsernamePasswordToken(user.getUserName(), user.getUserPassword());
+                    System.out.println(token);
+
+                    subject.login(token);
+                    String sessionId = (String) getSession().getId();
+                    return ResultMapUtil.getHashMapLogin("验证成功", "1", sessionId);
+                }
+            }
+        }
+       return ResultMapUtil.getHashMapLogin("还未绑定微信账号","2","");
+
+    }
+
 
     /**
      * 主页跳转
@@ -310,7 +429,7 @@ public class UserController {
         user.setUserRoleName(role.getRoleName());
         user.setUserRoleLevel(role.getRoleLevel());
 
-        Area area = areaService.getById(user.getUserArea());
+        Area area = areaService.queryAreaById(user.getUserArea());
         user.setUserAreaName(area.getAreaName());
 
         return  user;
@@ -511,6 +630,30 @@ public class UserController {
 
         userService.userDelete(userId);
 
+    }
+
+
+    /**
+     * 修改用户信息
+     * @param dataMap
+     * @return
+     */
+    @RequestMapping("/modifyUserInfoWX")
+    @ResponseBody
+    public Object modifyUserInfoWX(@RequestBody Map<String, String> dataMap) {
+        System.out.println("更新用户信息:"+dataMap);
+        try{
+            Integer areaId = areaService.queryAreaByName(dataMap.get("userArea")).getAreaId();
+            User user = userService.queryUserById(Integer.parseInt(dataMap.get("userId")));
+            user.setUserName(dataMap.get("userName"));
+            user.setUserPhone(dataMap.get("userPhone"));
+            user.setUserEmail(dataMap.get("userEmail"));
+            user.setUserArea(areaId);
+            int i = userService.userEdit(user);
+            return ResultMapUtil.getHashMapSave(i);
+        } catch (Exception e){
+            return ResultMapUtil.getHashMapException(e);
+        }
     }
 
 

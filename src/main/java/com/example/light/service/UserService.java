@@ -37,4 +37,9 @@ public interface UserService extends IService<User> {
 
     public Integer passwordEdit(Integer userId,String password);
 
+    Integer wxBindUser(Integer userId, String openId);
+
+    Integer wxUnbindUser(Integer userId);
+
+    List<User> getAllUser();
 }

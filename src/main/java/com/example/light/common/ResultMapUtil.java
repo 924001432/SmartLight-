@@ -13,11 +13,11 @@ public class ResultMapUtil {
     /**
      * 登录返回结果
      */
-    public static HashMap<String,Object> getHashMapLogin(String msg,String code){
+    public static HashMap<String,Object> getHashMapLogin(String msg,String code,String sessionId){
         HashMap<String,Object> resultMap = new HashMap<>();
         resultMap.put("msg",msg);
         resultMap.put("code",code);
-
+        resultMap.put("sessionId",sessionId);
 
         if("1".equals(code)){
             resultMap.put("icon",1);

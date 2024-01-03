@@ -83,4 +83,11 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
         wrapper.eq("device_status",0);
         return deviceMapper.selectList(wrapper);
     }
+
+    @Override
+    public Device queryDeviceBySerial(String deviceSerial) {
+        QueryWrapper<Device> wrapper = new QueryWrapper<>();
+        wrapper.eq("device_serial",deviceSerial);
+        return deviceMapper.selectOne(wrapper);
+    }
 }

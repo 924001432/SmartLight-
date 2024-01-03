@@ -189,9 +189,6 @@ public class areaLightController {
 
     }
 
-
-
-
     @RequestMapping("/areaList")
     @ResponseBody
     public Object areaList() {
@@ -207,6 +204,8 @@ public class areaLightController {
         return areaService.queryAreaById(areaId);
 
     }
+
+
 
     /**
      * 根据用户负责区域查询区

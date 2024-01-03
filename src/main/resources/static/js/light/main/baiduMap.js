@@ -55,14 +55,31 @@ $(document).ready(function(){
                     // 成功获取数据后，更新指定位置的内容
                     $('#total').text("总数: "+response.data.length); // 将获取的数据写入到id为total的元素中
                     var markers = [];
-                    var icon = new BMap.Icon("../../../static/img/ludeng.svg", new BMap.Size(40, 40));
-                    for(let i = 0; i < response.data.length; i++){
-                        var pt = new BMap.Point( response.data[i].deviceLon, response.data[i].deviceLat);
-                        markers.push(new BMap.Marker(pt,{icon:icon}));
+                    var devices = response.data;
+                    for(let i = 0; i < devices.length; i++){
+                        $.ajax({
+                            url: '/alarmListBydeviceSerial/' + devices[i].deviceSerial, // 替换成你的后台接口地址
+                            type: 'GET',
+                            success: function (response) {
+                                // 根据设备状态创建不同的图标
+                                var icon;
+                                if (response.data.length > 0) {
+                                    icon = new BMap.Icon("../../../static/img/guzhang.svg", new BMap.Size(40, 40));
+                                } else {
+                                    if (devices[i].deviceStatus === 1) {
+                                        icon = new BMap.Icon("../../../static/img/zaixian.svg", new BMap.Size(40, 40));
+                                    } else if (devices[i].deviceStatus === 0) {
+                                        icon = new BMap.Icon("../../../static/img/lixian.svg", new BMap.Size(40, 40));
+                                    }
+                                }
+                                var pt = new BMap.Point( devices[i].deviceLon, devices[i].deviceLat);
+                                markers.push(new BMap.Marker(pt, {icon: icon}));
+                                if(markers.length === devices.length){//控制在所有请求得到结果后再渲染点聚合
+                                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+                                }
+                            }
+                        })
                     }
-                    console.log('要聚合的点为:',markers);
-
-                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
 
                     $.ajax({
                         url: '/deviceListByIsOnlineList/'+deviceCoordList, // 替换成你的后台接口地址
@@ -1068,8 +1085,7 @@ function zTreeOnCheck(event, treeId, treeNode) {
                                         '<label>网络地址:</label><input id="deviceShort" type="text" value="' + device.deviceShort + '">' +
                                         '<label>设备标签:</label><input id="deviceSerial" type="text" value="' + device.deviceSerial + '">' +
                                         '<label>网关编号:</label><input id="deviceCoord" type="text" value="' + device.deviceCoord + '"><br>' +
-                                        selectOptions
-                                        +
+                                        selectOptions +
                                         '<label>设备类型:</label><input id="deviceType" type="text" value="' + device.deviceType + '"><br>' +
                                         '<label>经度:</label><input id="deviceLongitude" type="text" value="' + device.deviceLon + '">' +
                                         '<label>纬度:</label><input id="deviceLatitude" type="text" value="' + device.deviceLat + '"><br>' +
@@ -1155,14 +1171,31 @@ function zTreeOnCheck(event, treeId, treeNode) {
                     // 成功获取数据后，更新指定位置的内容
                     $('#total').text("总数: "+response.data.length); // 将获取的数据写入到id为total的元素中
                     var markers = [];
-                    var icon = new BMap.Icon("../../../static/img/ludeng.svg", new BMap.Size(40, 40));
-                    for(let i = 0; i < response.data.length; i++){
-                        var pt = new BMap.Point( response.data[i].deviceLon, response.data[i].deviceLat);
-                        markers.push(new BMap.Marker(pt,{icon:icon}));
+                    var devices = response.data;
+                    for(let i = 0; i < devices.length; i++){
+                        $.ajax({
+                            url: '/alarmListBydeviceSerial/' + devices[i].deviceSerial, // 替换成你的后台接口地址
+                            type: 'GET',
+                            success: function (response) {
+                                // 根据设备状态创建不同的图标
+                                var icon;
+                                if (response.data.length > 0) {
+                                    icon = new BMap.Icon("../../../static/img/guzhang.svg", new BMap.Size(40, 40));
+                                } else {
+                                    if (devices[i].deviceStatus === 1) {
+                                        icon = new BMap.Icon("../../../static/img/zaixian.svg", new BMap.Size(40, 40));
+                                    } else if (devices[i].deviceStatus === 0) {
+                                        icon = new BMap.Icon("../../../static/img/lixian.svg", new BMap.Size(40, 40));
+                                    }
+                                }
+                                var pt = new BMap.Point( devices[i].deviceLon, devices[i].deviceLat);
+                                markers.push(new BMap.Marker(pt, {icon: icon}));
+                                if(markers.length === devices.length){//控制在所有请求得到结果后再渲染点聚合
+                                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+                                }
+                            }
+                        })
                     }
-                    console.log('要聚合的点为:',markers);
-
-                    markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
                     $.ajax({
                         url: '/deviceListByIsOnlineList/'+deviceCoordList, // 替换成你的后台接口地址
                         type: 'GET',
